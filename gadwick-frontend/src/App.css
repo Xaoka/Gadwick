@@ -13,6 +13,24 @@
   color: rgb(39, 133, 187);
 }
 
+.subheading
+{
+  font-weight: bold;
+  font-size: 18px;
+  width: 90%;
+  border-bottom: rgb(39, 133, 187) 2px solid;
+  color: rgb(39, 133, 187);
+  margin-bottom: 2vh;
+}
+
+.info
+{
+  font-weight: bold;
+  font-size: 12px;
+  font-style: italic;
+  color: rgb(116, 116, 116);
+}
+
 button
 {
   font-size: 24px;
@@ -20,4 +38,5 @@ button
   background-color: rgb(220, 220, 241);
   border-color: transparent;
   border-radius: 5px;
+  margin: 0.2em;
 }

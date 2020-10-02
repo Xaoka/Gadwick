@@ -13,6 +13,8 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import FeatureConfig from './FeatureConfig'
+import { IFeature } from './overview'
 
 const useRowStyles = makeStyles({
   root: {
@@ -25,7 +27,7 @@ const useRowStyles = makeStyles({
 interface ICollapsableRow<T>
 {
     data: { name: string, value: T }[];
-    moreInfo: string;
+    featureData: IFeature;
 }
 
 export default function ExpandableTableRow(props: ICollapsableRow<any>) {
@@ -47,8 +49,8 @@ export default function ExpandableTableRow(props: ICollapsableRow<any>) {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
-              <div>Feature Stats</div>
-              {props.moreInfo}
+              {/* {props.moreInfo} */}
+              <FeatureConfig feature={props.featureData}/>
             </Box>
           </Collapse>
         </TableCell>

@@ -1,21 +1,38 @@
 import React, { CSSProperties, useEffect, useState } from 'react';
 import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, makeStyles, Paper } from '@material-ui/core';
 import { FlexibleXYPlot, VerticalBarSeries, XAxis, XYPlot, YAxis } from 'react-vis';
-import serverAPI from '../apis/api';
+import serverAPI, { API, HTTP } from '../apis/api';
 import ExpandableTableRow from './ExpandableTableRow';
 
-interface IFeature
+export interface IFeatureRatings
 {
+    passRate: number;
+    distinctness: number;
+    ease: number;
+    priority: number;
+    problem_frequency: number;
+    severity: number;
+    similar_frequency: number;
+    use_frequency: number;
+    time: number;
+}
+
+export interface IFeature extends IFeatureRatings
+{
+    "feature-id": string;
     name: string;
     description: string;
-    passRate: number;
 }
 
 export default function Overview()
 {
     const [features, setFeatures] = useState<IFeature[]>([])
     useEffect(() => {
-        serverAPI<IFeature[]>().then((data) => setFeatures(data));
+        serverAPI<IFeature[]>(API.Features, HTTP.READ).then((data) =>
+        {
+            setFeatures(data);
+            console.dir(data)
+        });
     }, [])
     // const useStyles = makeStyles({
     //   table: {
@@ -50,8 +67,8 @@ export default function Overview()
                 </TableRow>
                 </TableHead>
                 <TableBody>
-                {features.map((feature) => (
-                    <ExpandableTableRow key={feature.name} data={rowMapping(feature)} moreInfo={feature.name}/>
+                {(features.length > 0) && features.map((feature) => (
+                    <ExpandableTableRow key={feature.name} data={rowMapping(feature)} featureData={feature}/>
                     // <TableRow key={feature.name}>
                     // <TableCell component="th" scope="row">
                     //     {feature.name}
@@ -72,13 +89,17 @@ export default function Overview()
       ]
     return <>
         <div className="title">Project overview</div>
-        <div className="subtitle">Historic Utility</div>
+        <div className="subtitle">Test Suite Performance</div>
         <div style={{ padding: 50 }}>
         <FlexibleXYPlot xType="ordinal" width={700} height={200} yDomain={[0, 20]} >
             <VerticalBarSeries data={myData} barWidth={0.95}/>
             <XAxis />
             <YAxis />
         </FlexibleXYPlot>
+        </div>
+        <div>
+            <button>Pass Rate</button>
+            <button>Priority Feature Coverage</button>
         </div>
         <div className="subtitle">Features</div>
         <button style={{ color: "green" }}>New</button>
