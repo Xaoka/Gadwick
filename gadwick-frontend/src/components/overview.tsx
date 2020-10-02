@@ -14,7 +14,7 @@ export interface IFeatureRatings
     severity: number;
     similar_frequency: number;
     use_frequency: number;
-    time: number;
+    cost: number;
 }
 
 export interface IFeature extends IFeatureRatings
