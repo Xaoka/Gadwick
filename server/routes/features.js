@@ -38,6 +38,21 @@ router.get('/', cors(corsOptions), function(req, res, next) {
 const expressionKeys =
 [
   {
+    dbKey: "name",
+    shorthand: ":n",
+    dynamoType: "S"
+  },
+  {
+    dbKey: "description",
+    shorthand: ":desc",
+    dynamoType: "S"
+  },
+  {
+    dbKey: "passRate",
+    shorthand: ":pass",
+    dynamoType: "N"
+  },
+  {
     dbKey: "use_frequency",
     shorthand: ":u",
     dynamoType: "N"
@@ -79,7 +94,7 @@ const expressionKeys =
   }
 ]
 
-function packAWSData(userData, keysConfig)
+function createAWSExpression(userData, keysConfig)
 {
   if (!userData)
   {
@@ -94,7 +109,7 @@ function packAWSData(userData, keysConfig)
   for (const keyConfig of keysConfig)
     {
       // console.log(`Adding ${keyConfig.dbKey}`)
-      if (userData[keyConfig.dbKey])
+      if (userData[keyConfig.dbKey] !== null && userData[keyConfig.dbKey] !== undefined)
       {
         if (expression.length === 0)
         {
@@ -108,7 +123,7 @@ function packAWSData(userData, keysConfig)
 
         attributeValues[keyConfig.shorthand] = { };
         // console.log(`Setting dynamoTyped map to ${userData[keyConfig.dbKey]}`)
-        attributeValues[keyConfig.shorthand][keyConfig.dynamoType] = `${userData[keyConfig.dbKey]}`;
+        attributeValues[keyConfig.shorthand][keyConfig.dynamoType] = `${userData[keyConfig.dbKey]}`;//TODO: Turn into packAWSData and getAWSExpression ?
         // console.dir(attributeValues)
       }
     }
@@ -117,9 +132,25 @@ function packAWSData(userData, keysConfig)
     return { expression, attributeValues };
 }
 
+function packAWSData(data, awsKeys)
+{
+  const awsData = {};
+  for (const keyConfig of awsKeys)
+  {
+    console.log(`Trying to pack: ${keyConfig.dbKey}:: ${data[keyConfig.dbKey]}`)
+    if (data[keyConfig.dbKey] !== null && data[keyConfig.dbKey] !== undefined)
+    {
+      awsData[keyConfig.dbKey] = { };
+      awsData[keyConfig.dbKey][keyConfig.dynamoType] = `${data[keyConfig.dbKey]}`;
+    }
+  }
+  console.log(`Packed Data: ${JSON.stringify(awsData)}`)
+  return awsData;
+}
+
  router.put(`/:id`, cors(corsOptions), function(req, res, next) {
     const userData = req.body;
-    let { expression, attributeValues } = packAWSData(userData, expressionKeys);
+    let { expression, attributeValues } = createAWSExpression(userData, expressionKeys);
     // console.dir(expressionKeys)
     
     // console.dir(req.params)
@@ -155,7 +186,7 @@ function packAWSData(userData, keysConfig)
   //  const { expression, attributeValues } = packAWSData(userData, expressionKeys);
    var params = {
     TableName: 'Features',
-    Item: { "feature-id": {"S": `${uniqueID}`}, name: { S: userData.name}, description: { S: userData.description } }
+    Item: { "feature-id": {"S": `${uniqueID}`}, ...packAWSData(userData, expressionKeys) }
     // Key: { 'feature-id': {"S": `${uniqueID}`} },
     // UpdateExpression: expression,
     // ExpressionAttributeValues: attributeValues
