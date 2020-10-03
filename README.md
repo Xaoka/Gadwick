@@ -20,3 +20,10 @@ A website for bringing QA and DevOps into one stack
 * Ability to manage test case suite.
 * Ability to walk through a feature/site and get requirement suggestions.
 * Integration with CI tools.
+
+## Feature Wishlist
+
+* I want to be able to manage which users can do and see what on my project
+* I want logins!
+* I want to be able to be a part of many projects
+* Reports / Report management

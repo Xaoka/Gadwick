@@ -35,55 +35,63 @@ router.get('/', cors(corsOptions), function(req, res, next) {
   })
 });
 
- router.put(`/:id`, cors(corsOptions), function(req, res, next) {
-    const userData = req.body;
-    const expressionKeys =
-    [
-      {
-        dbKey: "use_frequency",
-        shorthand: ":u",
-        dynamoType: "N"
-      },
-      {
-        dbKey: "severity",
-        shorthand: ":s",
-        dynamoType: "N"
-      },
-      {
-        dbKey: "distinctness",
-        shorthand: ":d",
-        dynamoType: "N"
-      },
-      {
-        dbKey: "priority",
-        shorthand: ":p",
-        dynamoType: "N"
-      },
-      {
-        dbKey: "cost",
-        shorthand: ":c",
-        dynamoType: "N"
-      },
-      {
-        dbKey: "ease",
-        shorthand: ":ease",
-        dynamoType: "N"
-      },
-      {
-        dbKey: "similar_frequency",
-        shorthand: ":f",
-        dynamoType: "N"
-      },
-      {
-        dbKey: "problem_frequency",
-        shorthand: ":q",
-        dynamoType: "N"
-      }
-    ]
-    // console.dir(expressionKeys)
-    let expression = ``;
-    const attributeValues = { }
-    for (const keyConfig of expressionKeys)
+const expressionKeys =
+[
+  {
+    dbKey: "use_frequency",
+    shorthand: ":u",
+    dynamoType: "N"
+  },
+  {
+    dbKey: "severity",
+    shorthand: ":s",
+    dynamoType: "N"
+  },
+  {
+    dbKey: "distinctness",
+    shorthand: ":d",
+    dynamoType: "N"
+  },
+  {
+    dbKey: "priority",
+    shorthand: ":p",
+    dynamoType: "N"
+  },
+  {
+    dbKey: "cost",
+    shorthand: ":c",
+    dynamoType: "N"
+  },
+  {
+    dbKey: "ease",
+    shorthand: ":ease",
+    dynamoType: "N"
+  },
+  {
+    dbKey: "similar_frequency",
+    shorthand: ":f",
+    dynamoType: "N"
+  },
+  {
+    dbKey: "problem_frequency",
+    shorthand: ":q",
+    dynamoType: "N"
+  }
+]
+
+function packAWSData(userData, keysConfig)
+{
+  if (!userData)
+  {
+    console.log(`No userdata found`)
+  }
+  if (!keysConfig)
+  {
+    console.log(`no keys config found`)
+  }
+  let expression = ``;
+  const attributeValues = { };
+  for (const keyConfig of keysConfig)
     {
       // console.log(`Adding ${keyConfig.dbKey}`)
       if (userData[keyConfig.dbKey])
@@ -104,8 +112,16 @@ router.get('/', cors(corsOptions), function(req, res, next) {
         // console.dir(attributeValues)
       }
     }
-    // console.dir(attributeValues)
-    // console.log(expression)
+    console.dir(attributeValues)
+    console.log(expression)
+    return { expression, attributeValues };
+}
+
+ router.put(`/:id`, cors(corsOptions), function(req, res, next) {
+    const userData = req.body;
+    let { expression, attributeValues } = packAWSData(userData, expressionKeys);
+    // console.dir(expressionKeys)
+    
     // console.dir(req.params)
     // console.log(`ID: ${req.params.id}`)
     expression = `set ${expression}`;
@@ -123,5 +139,28 @@ router.get('/', cors(corsOptions), function(req, res, next) {
     // Call DynamoDB to add the item to the table
     ddb.updateItem(params, () => res.send({ "msg": "Success" }));
  })
+
+ router.delete(`/:id`, cors(corsOptions), function(req, res, next) {
+  var params = {
+    TableName: 'Features',
+    Key: { 'feature-id': {"S": `${req.params.id}`} },
+  }
+   ddb.deleteItem(params, () => res.send({ "msg": "Success" }));
+ })
+
+ router.post(`/`, cors(corsOptions), function(req, res, next) {
+  const userData = req.body;
+   var uniqueID = Date.now();
+   console.log(`Packing for UID: ${uniqueID}, data: ${JSON.stringify(userData)}`)
+  //  const { expression, attributeValues } = packAWSData(userData, expressionKeys);
+   var params = {
+    TableName: 'Features',
+    Item: { "feature-id": {"S": `${uniqueID}`}, name: { S: userData.name}, description: { S: userData.description } }
+    // Key: { 'feature-id': {"S": `${uniqueID}`} },
+    // UpdateExpression: expression,
+    // ExpressionAttributeValues: attributeValues
+  };
+   ddb.putItem(params, (err, data) => res.send({ msg: "Success", data: { 'feature-id': uniqueID }, error: err }))
+ });
 
 module.exports = router;

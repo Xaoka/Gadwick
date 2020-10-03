@@ -28,11 +28,7 @@ export default function Overview()
 {
     const [features, setFeatures] = useState<IFeature[]>([])
     useEffect(() => {
-        serverAPI<IFeature[]>(API.Features, HTTP.READ).then((data) =>
-        {
-            setFeatures(data);
-            console.dir(data)
-        });
+        updateList();
     }, [])
     // const useStyles = makeStyles({
     //   table: {
@@ -52,6 +48,27 @@ export default function Overview()
         ]
     }
 
+    function updateList()
+    {
+        serverAPI<IFeature[]>(API.Features, HTTP.READ).then((data) =>
+        {
+            setFeatures(data);
+            console.dir(data)
+        });
+    }
+
+    async function onDelete(feature: IFeature)
+    {
+      await serverAPI(API.Features, HTTP.DELETE, feature["feature-id"]);
+      updateList();
+    }
+
+    async function createNew()
+    {
+        await serverAPI(API.Features, HTTP.CREATE, undefined, { name: "New Feature", description: "New Feature", passRate: 0 });
+        updateList();
+    }
+
     function renderFeatureTable()
     {
         return <>
@@ -68,7 +85,7 @@ export default function Overview()
                 </TableHead>
                 <TableBody>
                 {(features.length > 0) && features.map((feature) => (
-                    <ExpandableTableRow key={feature.name} data={rowMapping(feature)} featureData={feature}/>
+                    <ExpandableTableRow key={feature.name} data={rowMapping(feature)} featureData={feature} onDelete={onDelete}/>
                     // <TableRow key={feature.name}>
                     // <TableCell component="th" scope="row">
                     //     {feature.name}
@@ -102,7 +119,7 @@ export default function Overview()
             <button>Priority Feature Coverage</button>
         </div>
         <div className="subtitle">Features</div>
-        <button style={{ color: "green" }}>New</button>
+        <button style={{ color: "green", float: "right" }} onClick={createNew}>New Feature</button>
         {renderFeatureTable()}
     </>
 }

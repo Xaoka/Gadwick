@@ -15,6 +15,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import FeatureConfig from './FeatureConfig'
 import { IFeature } from './overview'
+import serverAPI, { API, HTTP } from '../apis/api';
 
 const useRowStyles = makeStyles({
   root: {
@@ -28,6 +29,7 @@ interface ICollapsableRow<T>
 {
     data: { name: string, value: T }[];
     featureData: IFeature;
+    onDelete: (data: IFeature) => void;
 }
 
 export default function ExpandableTableRow(props: ICollapsableRow<any>) {
@@ -43,6 +45,7 @@ export default function ExpandableTableRow(props: ICollapsableRow<any>) {
           </IconButton>
         </TableCell>
         {props.data.map((datum) => <TableCell key={datum.name} align="left">{datum.value}</TableCell>)}
+        <TableCell><button className="danger" onClick={() => props.onDelete(props.featureData)}>🗑️</button></TableCell>
       </TableRow>
       {/* {"Collapsible content"} */}
       <TableRow>
