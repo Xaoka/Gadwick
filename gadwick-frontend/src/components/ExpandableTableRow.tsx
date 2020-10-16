@@ -16,6 +16,7 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import FeatureConfig from './FeatureConfig'
 import { IFeature } from './overview'
 import serverAPI, { API, HTTP } from '../apis/api';
+import EditableText from './EditableText';
 
 const useRowStyles = makeStyles({
   root: {
@@ -25,9 +26,20 @@ const useRowStyles = makeStyles({
   },
 });
 
+interface IData<T>
+{
+  name: string,
+  value: T,
+  inputProperties?:
+  {
+    editable: true,
+    onUpdate: (data: string) => void
+  } | { editable: false }
+}
+
 interface ICollapsableRow<T>
 {
-    data: { name: string, value: T }[];
+    data: IData<T>[];
     featureData: IFeature;
     onDelete: (data: IFeature) => void;
 }
@@ -35,6 +47,15 @@ interface ICollapsableRow<T>
 export default function ExpandableTableRow(props: ICollapsableRow<any>) {
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
+
+  function renderHeaderCell(datum: IData<any>)
+  {
+    if (datum.inputProperties && datum.inputProperties.editable && datum.inputProperties.onUpdate)
+    {
+      return <TableCell key={datum.name} align="left"><EditableText text={datum.value} onChanged={datum.inputProperties.onUpdate}/></TableCell>
+    }
+    return <TableCell key={datum.name} align="left">{datum.value}</TableCell>
+  }
 
   return (
     <React.Fragment>
@@ -44,7 +65,7 @@ export default function ExpandableTableRow(props: ICollapsableRow<any>) {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        {props.data.map((datum) => <TableCell key={datum.name} align="left">{datum.value}</TableCell>)}
+        {props.data.map((datum) => renderHeaderCell(datum))}
         <TableCell><button className="danger" onClick={() => props.onDelete(props.featureData)}>🗑️</button></TableCell>
       </TableRow>
       {/* {"Collapsible content"} */}

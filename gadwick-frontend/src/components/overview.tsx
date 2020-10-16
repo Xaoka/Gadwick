@@ -42,8 +42,8 @@ export default function Overview()
     function rowMapping(feature: IFeature)
     {
         return [
-            { name: "Name", value: feature.name },
-            { name: "Description", value: feature.description },
+            { name: "Name", value: feature.name, inputProperties: { editable: true } },
+            { name: "Description", value: feature.description, inputProperties: { editable: true } },
             { name: "Pass Rate", value: `${feature.passRate}%` }
         ]
     }

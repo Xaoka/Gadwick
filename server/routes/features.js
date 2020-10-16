@@ -123,7 +123,7 @@ function createAWSExpression(userData, keysConfig)
 
         attributeValues[keyConfig.shorthand] = { };
         // console.log(`Setting dynamoTyped map to ${userData[keyConfig.dbKey]}`)
-        attributeValues[keyConfig.shorthand][keyConfig.dynamoType] = `${userData[keyConfig.dbKey]}`;//TODO: Turn into packAWSData and getAWSExpression ?
+        attributeValues[keyConfig.shorthand][keyConfig.dynamoType] = `${userData[keyConfig.dbKey]}`;
         // console.dir(attributeValues)
       }
     }
