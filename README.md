@@ -27,3 +27,4 @@ A website for bringing QA and DevOps into one stack
 * I want logins!
 * I want to be able to be a part of many projects
 * Reports / Report management
+* Test case history

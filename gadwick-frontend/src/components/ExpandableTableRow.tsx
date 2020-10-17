@@ -26,7 +26,7 @@ const useRowStyles = makeStyles({
   },
 });
 
-interface IData<T>
+export interface IData<T>
 {
   name: string,
   value: T,
@@ -37,7 +37,7 @@ interface IData<T>
   } | { editable: false }
 }
 
-interface ICollapsableRow<T>
+export interface ICollapsableRow<T>
 {
     data: IData<T>[];
     featureData: IFeature;

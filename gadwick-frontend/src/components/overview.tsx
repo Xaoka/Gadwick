@@ -2,7 +2,7 @@ import React, { CSSProperties, useEffect, useState } from 'react';
 import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, makeStyles, Paper } from '@material-ui/core';
 import { FlexibleXYPlot, VerticalBarSeries, XAxis, XYPlot, YAxis } from 'react-vis';
 import serverAPI, { API, HTTP } from '../apis/api';
-import ExpandableTableRow from './ExpandableTableRow';
+import ExpandableTableRow, { IData } from './ExpandableTableRow';
 
 export interface IFeatureRatings
 {
@@ -20,7 +20,7 @@ export interface IFeatureRatings
 export interface IFeature extends IFeatureRatings
 {
     "feature-id": string;
-    name: string;
+    feature_name: string;
     description: string;
 }
 
@@ -39,12 +39,31 @@ export default function Overview()
     // });
     // const [features, setFeatures] = useState([{ name: "Feature 1", status: "NEW", passRate: 12}])
 
-    function rowMapping(feature: IFeature)
+    function rowMapping(feature: IFeature): IData<any>[]
     {
         return [
-            { name: "Name", value: feature.name, inputProperties: { editable: true } },
-            { name: "Description", value: feature.description, inputProperties: { editable: true } },
-            { name: "Pass Rate", value: `${feature.passRate}%` }
+            {
+                name: "Name",
+                value: feature.feature_name,
+                inputProperties:
+                {
+                    editable: true,
+                    onUpdate: (feature_name: string) => serverAPI(API.Features, HTTP.UPDATE, feature["feature-id"], { feature_name })
+                }
+            },
+            {
+                name: "Description",
+                value: feature.description,
+                inputProperties:
+                {
+                    editable: true,
+                    onUpdate: (description: string) => serverAPI(API.Features, HTTP.UPDATE, feature["feature-id"], { description })
+                }
+            },
+            {
+                name: "Pass Rate",
+                value: `${feature.passRate}%`
+            }
         ]
     }
 
@@ -85,7 +104,7 @@ export default function Overview()
                 </TableHead>
                 <TableBody>
                 {(features.length > 0) && features.map((feature) => (
-                    <ExpandableTableRow key={feature.name} data={rowMapping(feature)} featureData={feature} onDelete={onDelete}/>
+                    <ExpandableTableRow key={feature.feature_name} data={rowMapping(feature)} featureData={feature} onDelete={onDelete}/>
                     // <TableRow key={feature.name}>
                     // <TableCell component="th" scope="row">
                     //     {feature.name}

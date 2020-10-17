@@ -38,7 +38,7 @@ router.get('/', cors(corsOptions), function(req, res, next) {
 const expressionKeys =
 [
   {
-    dbKey: "name",
+    dbKey: "feature_name",
     shorthand: ":n",
     dynamoType: "S"
   },
