@@ -9,6 +9,7 @@ var AWS = require('aws-sdk');
 AWS.config.update({region: 'eu-west-2'});
 var credentials = new AWS.SharedIniFileCredentials({profile: 'big-books'});
 AWS.config.credentials = credentials;
+var packAWSData = require('../utils/AWSPack');
 
 // Create the DynamoDB service object
 var ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
@@ -130,22 +131,6 @@ function createAWSExpression(userData, keysConfig)
     console.dir(attributeValues)
     console.log(expression)
     return { expression, attributeValues };
-}
-
-function packAWSData(data, awsKeys)
-{
-  const awsData = {};
-  for (const keyConfig of awsKeys)
-  {
-    console.log(`Trying to pack: ${keyConfig.dbKey}:: ${data[keyConfig.dbKey]}`)
-    if (data[keyConfig.dbKey] !== null && data[keyConfig.dbKey] !== undefined)
-    {
-      awsData[keyConfig.dbKey] = { };
-      awsData[keyConfig.dbKey][keyConfig.dynamoType] = `${data[keyConfig.dbKey]}`;
-    }
-  }
-  console.log(`Packed Data: ${JSON.stringify(awsData)}`)
-  return awsData;
 }
 
  router.put(`/:id`, cors(corsOptions), function(req, res, next) {

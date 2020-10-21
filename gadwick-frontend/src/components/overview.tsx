@@ -105,19 +105,34 @@ export default function Overview()
                 <TableBody>
                 {(features.length > 0) && features.map((feature) => (
                     <ExpandableTableRow key={feature.feature_name} data={rowMapping(feature)} featureData={feature} onDelete={onDelete}/>
-                    // <TableRow key={feature.name}>
-                    // <TableCell component="th" scope="row">
-                    //     {feature.name}
-                    // </TableCell>
-                    // <TableCell align="right">{feature.description}</TableCell>
-                    // <TableCell align="right">{feature.passRate}%</TableCell>
-                    // </TableRow>
                 ))}
                 </TableBody>
             </Table>
             </TableContainer>
         </>
     }
+    function renderReportsTable()
+    {
+        return <>
+            <TableContainer component={Paper}>
+            <Table aria-label="simple table">
+                <TableHead>
+                <TableRow>
+                    <TableCell></TableCell>
+                    <TableCell>Product Version</TableCell>
+                    <TableCell align="left">Status</TableCell>
+                </TableRow>
+                </TableHead>
+                <TableBody>
+                    <TableRow>
+                        <TableCell></TableCell>
+                    </TableRow>
+                </TableBody>
+            </Table>
+            </TableContainer>
+        </>
+    }
+
     const myData = [
         {x: 'A', y: 10},
         {x: 'B', y: 5},
@@ -140,5 +155,7 @@ export default function Overview()
         <div className="subtitle">Features</div>
         <button style={{ color: "green", float: "right" }} onClick={createNew}>New Feature</button>
         {renderFeatureTable()}
+        <div className="subtitle">Reports</div>
+        {renderReportsTable()}
     </>
 }
