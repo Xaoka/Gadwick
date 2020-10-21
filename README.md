@@ -28,3 +28,10 @@ A website for bringing QA and DevOps into one stack
 * I want to be able to be a part of many projects
 * Reports / Report management
 * Test case history
+
+## Test Structure
+
+Each user should be able to view multiple Projects
+A Project should have multiple Features
+A feature should support multiple Requirements
+At what level should automation threshold be done - per requirement or per feature?

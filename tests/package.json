@@ -1,0 +1,9 @@
+{
+    "name": "server",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+      "start": "cypress run --spec \"cypress/integration/*.spec.js\" --reporter gadwick-test/reporter.js --quiet"
+    }
+  }
+  
