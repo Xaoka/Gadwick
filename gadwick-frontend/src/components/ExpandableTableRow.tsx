@@ -1,21 +1,13 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import FeatureConfig from './FeatureConfig'
 import { IFeature } from './overview'
-import serverAPI, { API, HTTP } from '../apis/api';
 import EditableText from './EditableText';
 
 const useRowStyles = makeStyles({
@@ -42,9 +34,10 @@ export interface ICollapsableRow<T>
     data: IData<T>[];
     featureData: IFeature;
     onDelete: (data: IFeature) => void;
+    style?: CSSProperties;
 }
 
-export default function ExpandableTableRow(props: ICollapsableRow<any>) {
+export default function ExpandableTableRow(props: React.PropsWithChildren<ICollapsableRow<any>>) {
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
 
@@ -59,22 +52,21 @@ export default function ExpandableTableRow(props: ICollapsableRow<any>) {
 
   return (
     <React.Fragment>
-      <TableRow className={classes.root}>
+      <TableRow className={classes.root} style={props.style}>
         <TableCell>
           <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
         {props.data.map((datum) => renderHeaderCell(datum))}
-        <TableCell><button className="danger" onClick={() => props.onDelete(props.featureData)}>🗑️</button></TableCell>
+        <TableCell><button className="danger" onClick={() => props.onDelete(props.featureData)}><span role="img" aria-label="trash">🗑️</span></button></TableCell>
       </TableRow>
       {/* {"Collapsible content"} */}
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box margin={1}>
-              {/* {props.moreInfo} */}
-              <FeatureConfig feature={props.featureData}/>
+            <Box margin={1} style={{display: "flex", flexDirection: "row"}}>
+              {props.children}
             </Box>
           </Collapse>
         </TableCell>

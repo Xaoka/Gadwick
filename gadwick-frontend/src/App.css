@@ -13,6 +13,16 @@
   color: rgb(39, 133, 187);
 }
 
+.heading
+{
+  font-weight: bold;
+  font-size: 28px;
+  width: 90%;
+  /* border-bottom: rgb(39, 133, 187) 2px solid; */
+  color: rgb(39, 133, 187);
+  margin-bottom: 2.5vh;
+}
+
 .subheading
 {
   font-weight: bold;
@@ -45,4 +55,23 @@ button
 {
   color: darkred;
   background-color: rgb(241, 156, 156);
+}
+
+.sidebar
+{
+  background-color: rgb(39, 133, 187);;
+  flex: 1;
+  flex-grow: 0;
+}
+
+.sidebar > div
+{
+  background-color: rgb(39, 133, 187);
+  border: 3px solid transparent;
+  transition: 0.25s;
+}
+.sidebar > .selected
+{
+  filter: brightness(85%);
+  border-left: 3px solid lightblue;
 }

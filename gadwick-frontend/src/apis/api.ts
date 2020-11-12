@@ -1,6 +1,6 @@
 import Axios from 'axios';
 
-export enum API { Features = "features" }
+export enum API { Features = "features", TestResults = "results" }
 export enum HTTP { CREATE, READ, UPDATE, DELETE }
 
 function getHTTPMethod(httpMethod: HTTP)

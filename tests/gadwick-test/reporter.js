@@ -11,36 +11,45 @@ const {
   EVENT_SUITE_BEGIN,
   EVENT_SUITE_END
 } = Mocha.Runner.constants;
+const Axios = require(`axios`);
 
 // this reporter outputs test results, indenting two spaces per suite
 class MyReporter {
   constructor(runner) {
     this._indents = 0;
     const stats = runner.stats;
-
     runner
       .once(EVENT_RUN_BEGIN, () => {
-        console.log('start');
+        // console.log('start');
       })
       .on(EVENT_SUITE_BEGIN, () => {
+        // console.log(`Suite start`)
         this.increaseIndent();
       })
-      .on(EVENT_SUITE_END, () => {
+      .on(EVENT_SUITE_END, (suite) => {
+        // console.log(`Suite end`)
         this.decreaseIndent();
+        // Dispatch a test result report to Gadwick
+        if (suite.title.length > 0)
+        {
+          console.dir(`Uploading results of the test suite for feature "${suite.title}"`);
+          Axios.post(`http://localhost:3003/results`, { feature_id: suite.title, passed: (stats.failures === 0)})
+        }
       })
       .on(EVENT_TEST_PASS, test => {
         // Test#fullTitle() returns the suite name(s)
         // prepended to the test title
-        console.log(`${this.indent()}pass: ${test.fullTitle()}`);
+        // console.log(`${this.indent()}pass: ${test.fullTitle()}`);
       })
       .on(EVENT_TEST_FAIL, (test, err) => {
-        console.log(
-          `${this.indent()}fail: ${test.fullTitle()} - error: ${err.message}`
-        );
+        // console.log(
+        //   `${this.indent()}fail: ${test.fullTitle()} - error: ${err.message}`
+        // );
       })
       .once(EVENT_RUN_END, () => {
-        console.log(`end: ${stats.passes}/${stats.passes + stats.failures} ok`);
-      });
+        // We WOULD send an entire report here, but cypress runs each spec independently
+        // console.log(`end: ${stats.passes}/${stats.passes + stats.failures} ok`);
+      })
   }
 
   indent() {

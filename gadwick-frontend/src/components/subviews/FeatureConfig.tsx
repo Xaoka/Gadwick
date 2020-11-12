@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { CSSProperties, useState } from 'react';
 import { useEffect } from 'react';
-import serverAPI, { API, HTTP } from '../apis/api';
-import CombinedRating from './CombinedRating';
-import { IFeature, IFeatureRatings } from './overview';
-import SimpleRating from './SimpleRating';
+import serverAPI, { API, HTTP } from '../../apis/api';
+import CombinedRating from '../CombinedRating';
+import { IFeature, IFeatureRatings } from '../overview';
+import SimpleRating from '../SimpleRating';
 
-export default function FeatureConfig(props: { feature: IFeature })
+export default function FeatureConfig(props: { feature: IFeature, style: CSSProperties })
 {
     const [riskRating, setRiskRating] = useState(0);
     const [valueRating, setValueRating] = useState(0);
@@ -52,7 +52,8 @@ export default function FeatureConfig(props: { feature: IFeature })
         return <CombinedRating primaryRating={{ title: primaryTitle, initialValue: props.feature[primaryKey] }} secondaryRating={{ title: secondaryTitle, initialValue: props.feature[secondaryKey] }} resultRatingTitle={resultTitle} onResultChanged={onResultChanged}/>
     }    
 
-    return <>
+    return <span style={props.style}>
+        <div className="heading">Feature Configuration</div>
         <div className="subheading">General<div className="info">How important is this feature to your product</div></div>
         {renderCombinedRating("Frequency of use", "use_frequency", "Severity", "severity", "Risk", setRiskRating)}
         {renderCombinedRating("Distinctness", "distinctness", "Fix Priority", "priority", "Value", setValueRating)}
@@ -70,5 +71,5 @@ export default function FeatureConfig(props: { feature: IFeature })
             <SimpleRating key="primary" title={"Priority Score"} initialValue={priorityRating} disabled={true}/>
             {/* <button style={{ float: "right" }} onClick={saveFeature}>Save Changes</button> */}
         </div>
-    </>
+    </span>
 }

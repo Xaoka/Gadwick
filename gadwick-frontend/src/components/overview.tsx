@@ -1,8 +1,14 @@
-import React, { CSSProperties, useEffect, useState } from 'react';
-import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, makeStyles, Paper } from '@material-ui/core';
-import { FlexibleXYPlot, VerticalBarSeries, XAxis, XYPlot, YAxis } from 'react-vis';
+import React, { useEffect, useState } from 'react';
+import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper } from '@material-ui/core';
+import { FlexibleXYPlot, VerticalBarSeries, XAxis, YAxis } from 'react-vis';
 import serverAPI, { API, HTTP } from '../apis/api';
 import ExpandableTableRow, { IData } from './ExpandableTableRow';
+import FeatureConfig from './subviews/FeatureConfig';
+import TuneIcon from '@material-ui/icons/Tune';
+import ListIcon from '@material-ui/icons/List';
+import AssessmentIcon from '@material-ui/icons/Assessment';
+import View from './subviews/View';
+import FeatureReport from './subviews/FeatureReports';
 
 export interface IFeatureRatings
 {
@@ -104,29 +110,23 @@ export default function Overview()
                 </TableHead>
                 <TableBody>
                 {(features.length > 0) && features.map((feature) => (
-                    <ExpandableTableRow key={feature.feature_name} data={rowMapping(feature)} featureData={feature} onDelete={onDelete}/>
+                    <ExpandableTableRow key={feature.feature_name} data={rowMapping(feature)} featureData={feature} onDelete={onDelete} style={{ display: "flex", flexDirection: "row" }}>
+                        <View pages={[
+                            {
+                                subView: <FeatureConfig feature={feature} style={{flex: 5, paddingLeft: 20}}/>,
+                                icon: TuneIcon
+                            },
+                            {
+                                subView: <FeatureReport style={{flex: 5, paddingLeft: 20}} feature={feature}/>,
+                                icon: ListIcon
+                            },
+                            {
+                                subView: <FeatureReport style={{flex: 5, paddingLeft: 20}} feature={feature}/>,
+                                icon: AssessmentIcon
+                            }
+                        ]}/>
+                    </ExpandableTableRow>
                 ))}
-                </TableBody>
-            </Table>
-            </TableContainer>
-        </>
-    }
-    function renderReportsTable()
-    {
-        return <>
-            <TableContainer component={Paper}>
-            <Table aria-label="simple table">
-                <TableHead>
-                <TableRow>
-                    <TableCell></TableCell>
-                    <TableCell>Product Version</TableCell>
-                    <TableCell align="left">Status</TableCell>
-                </TableRow>
-                </TableHead>
-                <TableBody>
-                    <TableRow>
-                        <TableCell></TableCell>
-                    </TableRow>
                 </TableBody>
             </Table>
             </TableContainer>
@@ -155,7 +155,5 @@ export default function Overview()
         <div className="subtitle">Features</div>
         <button style={{ color: "green", float: "right" }} onClick={createNew}>New Feature</button>
         {renderFeatureTable()}
-        <div className="subtitle">Reports</div>
-        {renderReportsTable()}
     </>
 }
