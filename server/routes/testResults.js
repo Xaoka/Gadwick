@@ -54,6 +54,7 @@ router.get('/:id', cors(corsOptions), function(req, res, next) {
       return {
         id: item.id.S,
         feature_id: item.feature_id.S,
+        version: item.version ? item.version.S : "0.0.0",
         passed: item.passed.BOOL
       }
     });
@@ -73,6 +74,11 @@ router.post('/', cors(corsOptions), async function(req, res, next) {
           dbKey: "passed",
           shorthand: ":p",
           dynamoType: "BOOL"
+      },
+      {
+          dbKey: "version",
+          shorthand: ":v",
+          dynamoType: "S"
       }
   ]
   const result = req.body;

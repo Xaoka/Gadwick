@@ -12,6 +12,8 @@ const {
   EVENT_SUITE_END
 } = Mocha.Runner.constants;
 const Axios = require(`axios`);
+const version = require('../package.json').version;
+const IDMapping = require('./mapFile')
 
 // this reporter outputs test results, indenting two spaces per suite
 class MyReporter {
@@ -32,8 +34,9 @@ class MyReporter {
         // Dispatch a test result report to Gadwick
         if (suite.title.length > 0)
         {
-          console.dir(`Uploading results of the test suite for feature "${suite.title}"`);
-          Axios.post(`http://localhost:3003/results`, { feature_id: suite.title, passed: (stats.failures === 0)})
+          const id =  IDMapping.names[suite.title];
+          console.dir(`Uploading results of the test suite for feature "${suite.title} (${id}"`);
+          Axios.post(`http://localhost:3003/results`, { feature_id: id, passed: (stats.failures === 0), version})
         }
       })
       .on(EVENT_TEST_PASS, test => {

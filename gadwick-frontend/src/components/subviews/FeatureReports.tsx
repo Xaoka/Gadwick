@@ -10,6 +10,7 @@ interface ITestResult
     feature_id: string;
     passed: boolean;
     id: string;
+    version: string;
 }
 
 export default function FeatureReports(props: { feature: IFeature, style: CSSProperties })
@@ -33,7 +34,7 @@ export default function FeatureReports(props: { feature: IFeature, style: CSSPro
             <TableBody>
                 {results.map((result) =>
                 <TableRow key={result.id}>
-                    <TableCell>{"Unknown"}</TableCell>
+                    <TableCell>{result.version}</TableCell>
                     <TableCell>{result.passed ? "PASSED" : "FAILED"}</TableCell>
                 </TableRow>)}
             </TableBody>
