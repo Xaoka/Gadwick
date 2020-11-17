@@ -2,7 +2,7 @@ import React, { CSSProperties, useState } from 'react';
 import { useEffect } from 'react';
 import serverAPI, { API, HTTP } from '../../apis/api';
 import CombinedRating from '../CombinedRating';
-import { IFeature, IFeatureRatings } from '../overview';
+import { IFeature, IFeatureRatings } from '../Features';
 import SimpleRating from '../SimpleRating';
 
 export default function FeatureConfig(props: { feature: IFeature, style: CSSProperties })

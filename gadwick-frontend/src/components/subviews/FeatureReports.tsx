@@ -3,7 +3,7 @@ import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import serverAPI, { API, HTTP } from '../../apis/api';
-import { IFeature } from '../overview';
+import { IFeature } from '../Features';
 
 interface ITestResult
 {
@@ -13,16 +13,19 @@ interface ITestResult
     version: string;
 }
 
-export default function FeatureReports(props: { feature: IFeature, style: CSSProperties })
+export default function FeatureReports(props: { /*feature: IFeature,*/ style?: CSSProperties })
 {
     const [results, setResults] = useState<ITestResult[]>([]);
 
+    // useEffect(() => {
+    //     serverAPI<ITestResult[]>(API.TestResults, HTTP.READ, props.feature["feature-id"]).then(setResults);
+    // }, [props.feature])
     useEffect(() => {
-        serverAPI<ITestResult[]>(API.TestResults, HTTP.READ, props.feature["feature-id"]).then(setResults);
-    }, [props.feature])
+        serverAPI<ITestResult[]>(API.TestResults, HTTP.READ).then(setResults);
+    }, [])
 
     return <span style={props.style}>
-        <div className="heading">Feature Test Reports</div>
+        <div className="title">Test Reports</div>
         <TableContainer component={Paper}>
         <Table aria-label="simple table">
             <TableHead>

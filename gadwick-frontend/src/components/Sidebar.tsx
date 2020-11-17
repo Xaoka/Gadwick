@@ -8,7 +8,8 @@ interface ISidebar
     {
         callback: (index: number) => void;
         icon: OverridableComponent<SvgIconTypeMap>;
-    }[]
+    }[];
+    scale: number;
 }
 
 export default function Sidebar(props: ISidebar)
@@ -16,7 +17,7 @@ export default function Sidebar(props: ISidebar)
     const [activeIndex, setActiveIndex] = useState(0);
 
     const divStyle: CSSProperties =
-    { width: "1em", height: "1em", fontSize: "2.5rem", paddingLeft: "0.08em", paddingTop: "0.08em", color: "white" }
+    { width: `${props.scale}em`, height: `${props.scale}em`, fontSize: `${props.scale * 2.5}rem`, paddingLeft: `${props.scale * 0.08}em`, paddingTop: `${props.scale * 0.08}em`, color: "white" }
 
 
     return <span className="sidebar">

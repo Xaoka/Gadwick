@@ -7,7 +7,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import { IFeature } from './overview'
+import { IFeature } from './Features'
 import EditableText from './EditableText';
 
 const useRowStyles = makeStyles({

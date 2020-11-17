@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Landing from './components/landing';
 import Header from './components/header';
-import Overview from './components/overview';
+import Dashboard from './components/Dashboard';
 import './App.css';
 
 function App()
@@ -20,15 +20,13 @@ function App()
     }
     else
     {
-      return <Overview/>
+      return <Dashboard/>
     }
   }
 
   return <>
     <Header onClick={onLogin} loggedIn={loggedIn}/>
-    <div style={{ padding: 35 }}>
-      {renderInnerPage()}
-    </div>
+    {renderInnerPage()}
   </>
 }
 
