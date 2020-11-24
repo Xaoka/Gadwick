@@ -3,6 +3,8 @@ import Landing from './components/landing';
 import Header from './components/header';
 import Dashboard from './components/Dashboard';
 import './App.css';
+import history from './utils/history';
+import { Route, Router, Switch } from 'react-router-dom';
 
 function App()
 {
@@ -10,6 +12,7 @@ function App()
   function onLogin()
   {
     setLoggedIn(true);
+    history.push("/dashboard")
   }
 
   function renderInnerPage()
@@ -25,8 +28,14 @@ function App()
   }
 
   return <>
-    <Header onClick={onLogin} loggedIn={loggedIn}/>
-    {renderInnerPage()}
+    <Router history={history}>
+      <Header onClick={onLogin} loggedIn={loggedIn}/>
+      <Switch>
+        <Route path="/dashboard" ><Dashboard/></Route>
+        <Route path="/login" ><Landing/></Route>
+      </Switch>
+      {/* {renderInnerPage()} */}
+    </Router>
   </>
 }
 

@@ -12,8 +12,8 @@ if (err) {
     return;
 }
 
-console.log('Connected to database.');
-connection.query(`USE gadwick`)
+    console.log('Connected to database.');
+    connection.query(`USE gadwick`)
 });
 
 function makeQuery(query, callback)

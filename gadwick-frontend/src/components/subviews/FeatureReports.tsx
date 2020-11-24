@@ -3,7 +3,7 @@ import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import serverAPI, { API, HTTP } from '../../apis/api';
-import { IFeature } from '../Features';
+import { IFeature } from './Features';
 
 interface ITestResult
 {
@@ -11,6 +11,7 @@ interface ITestResult
     passed: boolean;
     id: string;
     version: string;
+    name: string;
 }
 
 export default function FeatureReports(props: { /*feature: IFeature,*/ style?: CSSProperties })
@@ -26,20 +27,26 @@ export default function FeatureReports(props: { /*feature: IFeature,*/ style?: C
 
     return <span style={props.style}>
         <div className="title">Test Reports</div>
+        <div className="subtitle">Version stability</div>
         <TableContainer component={Paper}>
         <Table aria-label="simple table">
             <TableHead>
             <TableRow>
                 <TableCell>Product Version</TableCell>
+                <TableCell>Feature</TableCell>
                 <TableCell align="left">Status</TableCell>
             </TableRow>
             </TableHead>
             <TableBody>
                 {results.map((result) =>
-                <TableRow key={result.id}>
-                    <TableCell>{result.version}</TableCell>
-                    <TableCell>{result.passed ? "PASSED" : "FAILED"}</TableCell>
-                </TableRow>)}
+                {
+                    const domID = `result_entry_${result.name ? result.name.replace(" ", "_").toLowerCase() : " "}`;
+                    return <TableRow key={domID} id={domID}>
+                        <TableCell id={`${domID}_version`}>{result.version}</TableCell>
+                        <TableCell id={`${domID}_name`}>{result.name}</TableCell>
+                        <TableCell id={`${domID}_passed`}>{result.passed ? "PASSED" : "FAILED"}</TableCell>
+                    </TableRow>
+                } )}
             </TableBody>
         </Table>
         </TableContainer>

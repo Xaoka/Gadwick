@@ -1,34 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper } from '@material-ui/core';
-import serverAPI, { API, HTTP } from '../apis/api';
-import ExpandableTableRow, { IData } from './ExpandableTableRow'
+import serverAPI, { API, HTTP } from '../../apis/api';
+import ExpandableTableRow, { IData } from '../ExpandableTableRow'
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
-import FeatureConfig from './subviews/FeatureConfig';
-import View from './subviews/View';
+import FeatureConfig from './FeatureConfig';
+import View from './View';
+import FeatureConfigDialog from '../dialogs/FeatureConfig';
 
 export interface IFeatureRatings
 {
     passRate: number;
     distinctness: number;
     ease: number;
-    priority: number;
+    fix_priority: number;
     problem_frequency: number;
     severity: number;
-    similar_frequency: number;
+    similar_problem_frequency: number;
     use_frequency: number;
-    cost: number;
+    time_cost: number;
 }
 
 export interface IFeature extends IFeatureRatings
 {
-    "feature-id": string;
-    feature_name: string;
+    id: string;
+    name: string;
     description: string;
 }
 
 export default function Features(props: { style?: CSSProperties })
 {
-
+    const [dialogFeature, setDialogFeature] = useState<IFeature|null>(null);
     const [features, setFeatures] = useState<IFeature[]>([])
     useEffect(() => {
         updateList();
@@ -47,21 +48,11 @@ export default function Features(props: { style?: CSSProperties })
         return [
             {
                 name: "Name",
-                value: feature.feature_name,
-                inputProperties:
-                {
-                    editable: true,
-                    onUpdate: (feature_name: string) => serverAPI(API.Features, HTTP.UPDATE, feature["feature-id"], { feature_name })
-                }
+                value: feature.name
             },
             {
                 name: "Description",
-                value: feature.description,
-                inputProperties:
-                {
-                    editable: true,
-                    onUpdate: (description: string) => serverAPI(API.Features, HTTP.UPDATE, feature["feature-id"], { description })
-                }
+                value: feature.description
             },
             {
                 name: "Pass Rate",
@@ -78,15 +69,17 @@ export default function Features(props: { style?: CSSProperties })
             console.dir(data)
         });
     }
-    async function onDelete(feature: IFeature)
+    async function onDelete(evt: React.MouseEvent<HTMLButtonElement, MouseEvent>, feature: IFeature)
     {
-      await serverAPI(API.Features, HTTP.DELETE, feature["feature-id"]);
-      updateList();
+        evt.preventDefault();
+        evt.stopPropagation();
+        await serverAPI(API.Features, HTTP.DELETE, feature.id);
+        updateList();
     }
 
     async function createNew()
     {
-        await serverAPI(API.Features, HTTP.CREATE, undefined, { name: "New Feature", description: "New Feature", passRate: 0 });
+        await serverAPI(API.Features, HTTP.CREATE, undefined, { name: "New Feature", description: "New Feature" });
         updateList();
     }
 
@@ -106,23 +99,29 @@ export default function Features(props: { style?: CSSProperties })
                 </TableHead>
                 <TableBody>
                 {(features.length > 0) && features.map((feature) => (
-                    <>
-                    {/* <TableRow key={feature["feature-id"]}>
-                        {rowMapping(feature).map((datum) => <TableCell key={datum.name} align="left">{datum.value}</TableCell>)}
-                    </TableRow> */}
-                    <ExpandableTableRow key={feature.feature_name} data={rowMapping(feature)} featureData={feature} onDelete={onDelete} style={{ display: "flex", flexDirection: "row" }}>
-                        <FeatureConfig feature={feature} style={{flex: 5, paddingLeft: 20}}/>
-                    </ExpandableTableRow>
-                    </>
+                    <TableRow onClick={() => setDialogFeature(feature)} key={feature.id}>
+                        {rowMapping(feature).map((datum) => <TableCell key={datum.name} align="left" >{datum.value}</TableCell>)}
+                        <TableCell>
+                            <button className="danger" onClick={(evt: React.MouseEvent<HTMLButtonElement, MouseEvent>) => onDelete(evt, feature)}>
+                                <span role="img" aria-label="trash">🗑️</span>
+                            </button>
+                        </TableCell>
+                    {/* <ExpandableTableRow key={feature.name} data={rowMapping(feature)} featureData={feature} onDelete={onDelete}>
+                        <FeatureConfig feature={feature} />
+                    </ExpandableTableRow> */}
+                    </TableRow>
                 ))}
                 </TableBody>
             </Table>
             </TableContainer>
         </>
     }
-    return <span style={props.style}>
-        <div className="title">Features</div>
-        <button style={{ color: "green", float: "right" }} onClick={createNew}>New Feature</button>
-        {renderFeatureTable()}
+    return <>
+        <span style={props.style}>
+            <div className="title">Features</div>
+            <button style={{ color: "green", float: "right" }} onClick={createNew}>New Feature</button>
+            {renderFeatureTable()}
         </span>
+        <FeatureConfigDialog feature={dialogFeature} onClose={() => setDialogFeature(null)}/>
+    </>
 }
