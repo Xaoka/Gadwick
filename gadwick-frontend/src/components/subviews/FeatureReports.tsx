@@ -3,7 +3,6 @@ import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import serverAPI, { API, HTTP } from '../../apis/api';
-import { IFeature } from './Features';
 
 interface ITestResult
 {

@@ -1,7 +1,7 @@
 import { SvgIconTypeMap } from '@material-ui/core';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import React, { CSSProperties, useState } from 'react';
-import { Link, useRouteMatch } from 'react-router-dom';
+// import { useRouteMatch } from 'react-router-dom';
 
 interface ISidebar
 {
@@ -16,7 +16,7 @@ interface ISidebar
 
 export default function Sidebar(props: ISidebar)
 {
-    let { path, url } = useRouteMatch();
+    // let { path, url } = useRouteMatch();
     const [activeIndex, setActiveIndex] = useState(0);
 
     const divStyle: CSSProperties =

@@ -29,6 +29,7 @@ export default function CombinedRating(props: ICombinedRating)
         {
             props.onResultChanged(primaryRating, secondaryRating, newRating);
         }
+    // eslint-disable-next-line
     }, [primaryRating, secondaryRating]);
 
     return <div>

@@ -1,5 +1,4 @@
 import React from 'react';
-import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { SvgIconTypeMap } from '@material-ui/core';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 

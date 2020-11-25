@@ -12,7 +12,7 @@ export default function Landing()
         {
             history.push("/dashboard");
         }
-    }, [isAuthenticated])
+    }, [isAuthenticated, isLoading])
 
     const titlePosition: CSSProperties =
     {

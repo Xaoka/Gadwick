@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper } from '@material-ui/core';
 import serverAPI, { API, HTTP } from '../../apis/api';
-import ExpandableTableRow, { IData } from '../ExpandableTableRow'
+import { IData } from '../ExpandableTableRow'
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
-import FeatureConfig from './FeatureConfig';
-import View from './View';
 import FeatureConfigDialog from '../dialogs/FeatureConfig';
 
 export interface IFeatureRatings

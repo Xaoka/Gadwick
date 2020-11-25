@@ -12,7 +12,7 @@ export default function PrivateRoute(props: React.PropsWithChildren<{ path: stri
         {
             history.push("/");
         }
-    }, [isLoading])
+    }, [isLoading, isAuthenticated])
 
     return <Route path={props.path}>{isAuthenticated ? props.children : null}</Route>
 }

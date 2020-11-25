@@ -22,6 +22,7 @@ export default function FeatureConfig(props: { feature: IFeature, style?: CSSPro
 
     useEffect(() => {
         setPriorityRating(calculateRisk());
+    // eslint-disable-next-line
     }, [riskRating, valueRating, efficiencyRating, volatilityRating])
 
     function getRecommendation()
