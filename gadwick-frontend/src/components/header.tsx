@@ -1,15 +1,24 @@
 import React from 'react';
+import { useAuth0 } from "@auth0/auth0-react";
 
-export interface IHeader
+export default function Header()
 {
-    onClick: () => void;
-    loggedIn: boolean;
-}
-
-export default function Header(props: IHeader)
-{
-    const text = props.loggedIn ? "Log Out" : "Log In";
-    return <>
-        <button style={{ position: "absolute", top: 15, right: 15 }} onClick={props.onClick}>{text}</button>
-    </>
+    const { loginWithRedirect, isAuthenticated, logout, user } = useAuth0();
+    function onLogin()
+    {
+      // history.push("/dashboard")
+      if (isAuthenticated)
+      {
+        logout({ returnTo: window.location.origin })
+      }
+      else
+      {
+        loginWithRedirect();
+      }
+    }
+    const text = isAuthenticated ? "Log Out" : "Log In";
+    return <div style={{ position: "absolute", top: 15, right: 15 }}>
+        { isAuthenticated ? <span>Logged in as {user.name}</span> : null }
+        <button onClick={onLogin}>{text}</button>
+    </div>
 }

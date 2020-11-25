@@ -3,13 +3,17 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { BrowserRouter } from 'react-router-dom';
+import { Auth0Provider } from "@auth0/auth0-react";
 
 ReactDOM.render(
   <React.StrictMode>
-    {/* <BrowserRouter> */}
+    <Auth0Provider
+    domain="gadwick.eu.auth0.com"
+    clientId="eoun44L6fDIskjM3mfwTLsLrq21WvJZd"
+    redirectUri={`${window.location.origin}/dashboard`}
+    >
       <App />
-    {/* </BrowserRouter> */}
+    </Auth0Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -1,4 +1,5 @@
 var mysql = require('mysql');
+const util = require('util');
 
 var connection = mysql.createConnection({
     host     : "gadwick-db.coqc02b1gisw.eu-west-2.rds.amazonaws.com",//process.env.RDS_HOSTNAME,
@@ -21,4 +22,16 @@ function makeQuery(query, callback)
     connection.query(query, callback);
 }
 
-module.exports = { makeQuery };
+function awaitQuery(query)
+{
+    return new Promise((resolve, reject) =>
+    {
+        connection.query(query, (error, results, fields) =>
+        {
+            if (error) { reject(error) }
+            resolve(results);
+        })
+    })
+}
+
+module.exports = { makeQuery, awaitQuery };

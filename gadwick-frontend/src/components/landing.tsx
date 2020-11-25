@@ -1,8 +1,19 @@
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, useEffect } from 'react';
 import octopus from '../imgs/gadwick_octopus.jpg';
+import { useAuth0 } from "@auth0/auth0-react";
+import history from '../utils/history';
 
 export default function Landing()
 {
+    const { isAuthenticated, isLoading } = useAuth0();
+
+    useEffect(() => {
+        if (isAuthenticated && !isLoading)
+        {
+            history.push("/dashboard");
+        }
+    }, [isAuthenticated])
+
     const titlePosition: CSSProperties =
     {
         position: "absolute",

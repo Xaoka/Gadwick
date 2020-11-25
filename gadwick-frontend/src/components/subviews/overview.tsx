@@ -12,12 +12,21 @@ interface IVersionPassRate
     version: string;
 }
 
+interface IStats
+{
+    featureCount: number;
+    failedCount: number;
+    untestedCount: number;
+}
+
 export default function Overview(props: { style?: CSSProperties, children?: React.ReactNode })
 {
     const [versionData, setVersionData] = useState<IVersionPassRate[]>([]);
+    const [stats, setStats] = useState<IStats>({ featureCount: 0, failedCount: 0,untestedCount: 0 });
     useEffect(() =>
     {
         serverAPI<IVersionPassRate[]>(API.VersionRates, HTTP.READ).then(setVersionData);
+        serverAPI<IStats>(API.Stats, HTTP.READ).then(setStats);
     }, [])
     
     return <span style={props.style}>
@@ -31,12 +40,12 @@ export default function Overview(props: { style?: CSSProperties, children?: Reac
         </FlexibleXYPlot>
         <Grid container direction="column" justify="center" alignItems="center" style={{ display: "inline" }}>
             <Grid container direction="row" justify="center" alignItems="center">
-                <StatBox label="tests" value={345} icon={CategoryIcon}/>
-                <StatBox label="incomplete" value={12} icon={CategoryIcon}/>
+                <StatBox label="Features" value={stats.featureCount} icon={CategoryIcon}/>
+                <StatBox label="Untested Features" value={stats.untestedCount} icon={CategoryIcon}/>
             </Grid>
             <Grid container direction="row" justify="center" alignItems="center">
-                <StatBox label="users" value={123546} icon={CategoryIcon}/>
-                <StatBox label="bugs caught" value={44095682} icon={CategoryIcon}/>
+                <StatBox label="users" value={0} icon={CategoryIcon}/>
+                <StatBox label="bugs caught" value={stats.failedCount} icon={CategoryIcon}/>
             </Grid>
         </Grid>
         </div>
