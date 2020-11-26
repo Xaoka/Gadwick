@@ -5,7 +5,10 @@ export enum API
     Features = "features",
     TestResults = "results",
     VersionRates  = "results/versions",
-    Stats = "stats"
+    Stats = "stats",
+    Applications = "applications",
+    Users = "users",
+    UsersByAuth = "users/auth"
 }
 export enum HTTP { CREATE, READ, UPDATE, DELETE }
 

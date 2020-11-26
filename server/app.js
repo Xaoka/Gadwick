@@ -8,6 +8,9 @@ var logger = require('morgan');
 var featuresRouter = require('./routes/mysql/Features');
 // var reportsRouter = require('./routes/reports');
 var resultsRouter = require('./routes/mysql/Results');
+var applicationsRouter = require('./routes/mysql/Applications');
+var statsRouter = require('./routes/mysql/Stats');
+var usersRouter = require('./routes/mysql/Users');
 
 var cors = require('cors')
 var app = express();
@@ -25,8 +28,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // app.use('/', indexRouter);
 app.use('/features', featuresRouter);
-// app.use('/reports', reportsRouter);
+app.use('/stats', statsRouter);
 app.use('/results', resultsRouter);
+app.use('/applications', applicationsRouter);
+app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
