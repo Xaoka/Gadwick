@@ -1,13 +1,12 @@
 import React, { CSSProperties } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import { IFeature } from './subviews/Features'
+import { IFeature } from './subviews/Features/Features'
 import EditableText from './EditableText';
 
 const useRowStyles = makeStyles({

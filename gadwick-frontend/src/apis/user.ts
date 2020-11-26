@@ -9,7 +9,7 @@ interface IUser
     auth_id: string;
     name: string;
 }
-
+// TODO: Use auth0 hooks to generate accounts: https://manage.auth0.com/dashboard/eu/gadwick/hooks
 export default async function getUserID(auth_id: string)
 {
     if (user_id) { return user_id; }

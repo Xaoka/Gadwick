@@ -1,7 +1,7 @@
 import React from 'react';
 import Dialog from '@material-ui/core/Dialog'
-import FeatureConfig from '../subviews/FeatureConfig';
-import { IFeature } from '../subviews/Features';
+import FeatureConfig from './FeatureConfig';
+import { IFeature } from './Features';
 import { Skeleton } from '@material-ui/lab';
 import { DialogTitle, IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close'

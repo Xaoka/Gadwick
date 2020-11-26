@@ -80,3 +80,20 @@ button
   filter: brightness(85%);
   border-left: 3px solid lightblue;
 }
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+  margin: 30px;
+  padding: 20px;
+  background-color: #1c1c1c;
+  color: white;
+  display: block;
+}
+
+.comment
+{
+  color: grey;
+  margin: initial;
+  padding: initial;
+}
