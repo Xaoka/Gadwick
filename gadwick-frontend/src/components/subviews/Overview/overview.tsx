@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { FlexibleXYPlot, VerticalBarSeries, XAxis, YAxis } from 'react-vis';
-import serverAPI, { API, HTTP } from '../../apis/api';
+import serverAPI, { API, HTTP } from '../../../apis/api';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { Grid } from '@material-ui/core';
-import StatBox from '../StatBox';
+import StatBox from './StatBox';
 import CategoryIcon from '@material-ui/icons/Category';
+import { useAuth0 } from "@auth0/auth0-react";
 
 interface IVersionPassRate
 {
@@ -21,6 +22,7 @@ interface IStats
 
 export default function Overview(props: { style?: CSSProperties, children?: React.ReactNode })
 {
+    const { user } = useAuth0();
     const [versionData, setVersionData] = useState<IVersionPassRate[]>([]);
     const [stats, setStats] = useState<IStats>({ featureCount: 0, failedCount: 0,untestedCount: 0 });
     useEffect(() =>
@@ -30,8 +32,8 @@ export default function Overview(props: { style?: CSSProperties, children?: Reac
     }, [])
     
     return <span style={props.style}>
-        <div className="title">Project overview</div>
-        <div className="subtitle">Test Suite Performance</div>
+        <div className="title">Profile</div>
+        <div className="subtitle">{user.name}</div>
         <div style={{ padding: 50 }}>
         <FlexibleXYPlot xType="ordinal" width={700} height={200} yDomain={[0, 100]} >
             <VerticalBarSeries data={versionData.map((v) => { return { x: v.version, y: v.passRate * 100 }})} barWidth={0.95}/>

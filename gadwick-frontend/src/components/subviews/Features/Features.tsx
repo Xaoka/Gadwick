@@ -77,8 +77,9 @@ export default function Features(props: { style?: CSSProperties })
 
     async function createNew()
     {
-        await serverAPI(API.Features, HTTP.CREATE, undefined, { name: "New Feature", description: "New Feature" });
+        const newFeature = await serverAPI<IFeature>(API.Features, HTTP.CREATE, undefined, { name: "New Feature", description: "New Feature" });
         updateList();
+        setDialogFeature(newFeature);
     }
 
     function renderFeatureTable()
@@ -120,6 +121,10 @@ export default function Features(props: { style?: CSSProperties })
             <button style={{ color: "green", float: "right" }} onClick={createNew}>New Feature</button>
             {renderFeatureTable()}
         </span>
-        <FeatureConfigDialog feature={dialogFeature} onClose={() => setDialogFeature(null)}/>
+        <FeatureConfigDialog feature={dialogFeature} onClose={() =>
+        {
+            setDialogFeature(null)
+            updateList()
+        }}/>
     </>
 }

@@ -1,22 +1,23 @@
 import React from 'react';
 import View from './subviews/View';
-import Overview from './subviews/overview';
+import Overview from './subviews/Overview/overview';
 import Features from './subviews/Features/Features';
 import FeatureReports from './subviews/FeatureReports';
 import Applications from './subviews/Applications/Applications';
+import Tutorials from './subviews/Tutorials/Tutorials';
 
 import TuneIcon from '@material-ui/icons/Tune';
 import ListIcon from '@material-ui/icons/List';
-import AssessmentIcon from '@material-ui/icons/Assessment';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import EmojiObjectsIcon from '@material-ui/icons/EmojiObjects';
 
 export default function Dashboard()
 {
     return <View pages={[
         {
             subView: <Overview/>,
-            icon: AssessmentIcon,
+            icon: AccountCircleIcon,
             buttonID: "sidebar_overview",
             pageURL: "overview"
         },
@@ -39,10 +40,10 @@ export default function Dashboard()
             pageURL: "applications"
         },
         {
-            subView: <Applications/>,
-            icon: AccountCircleIcon,
-            buttonID: "sidebar_account",
-            pageURL: "account"
+            subView: <Tutorials/>,
+            icon: EmojiObjectsIcon,
+            buttonID: "sidebar_tutorials",
+            pageURL: "tutorials"
         }
     ]} sidebarScale={1.25}/>
 }

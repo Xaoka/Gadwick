@@ -1,9 +1,9 @@
 import React, { CSSProperties, useState } from 'react';
 import { useEffect } from 'react';
 import serverAPI, { API, HTTP } from '../../../apis/api';
-import CombinedRating from '../../CombinedRating';
+import CombinedRating from './CombinedRating';
 import { IFeature, IFeatureRatings } from './Features';
-import SimpleRating from '../../SimpleRating';
+import SimpleRating from './SimpleRating';
 import { TextField } from '@material-ui/core';
 
 export default function FeatureConfig(props: { feature: IFeature, style?: CSSProperties })

@@ -4,6 +4,7 @@ import serverAPI, { API, HTTP } from '../../../apis/api';
 import { useAuth0 } from "@auth0/auth0-react";
 import getUserID from '../../../apis/user';
 import NewApplicationDialog from './NewApplicationDialog';
+import DeleteApplicationDialog from './DeleteApplicationDialog';
 import Snippets from './Snippets';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import copyToClipboard from '../../../utils/Clipboard';
@@ -21,7 +22,8 @@ export default function Applications()
 {
     const { user } = useAuth0();
     const [configuredApplications, setConfiguredApplications] = useState<IConfiguredApplication[]>([]);
-    const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+    const [newDialogOpen, setNewDialogOpen] = useState<boolean>(false);
+    const [appToDelete, setAppToDelete] = useState<IConfiguredApplication|null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     
     useEffect(loadApplications, [])
@@ -53,6 +55,15 @@ export default function Applications()
         setConfiguredApplications(newApps);
     }
 
+    async function onAppDeleted()
+    {
+        if (!appToDelete) { return; }
+        const id = appToDelete.id;
+        setAppToDelete(null);
+        await serverAPI(API.Applications, HTTP.DELETE, id);
+        loadApplications();
+    }
+
     if (isLoading)
     {
         return <div>
@@ -70,6 +81,7 @@ export default function Applications()
                     <TableCell>Features</TableCell>
                     <TableCell>Stability</TableCell>
                     <TableCell>Client Secret</TableCell>
+                    <TableCell></TableCell>
                 </TableRow>
                 </TableHead>
                 <TableBody>
@@ -86,6 +98,11 @@ export default function Applications()
                                     <FileCopyIcon/>
                                 </IconButton>
                             </TableCell>
+                            <TableCell>
+                                <button className="danger" onClick={(evt: React.MouseEvent<HTMLButtonElement, MouseEvent>) => setAppToDelete(app)}>
+                                    <span role="img" aria-label="trash">🗑️</span>
+                                </button>
+                            </TableCell>
                         </TableRow>
                     } )}
                 </TableBody>
@@ -96,8 +113,9 @@ export default function Applications()
             <p>An application in Gadwick is a product or site you wish to set up testing for.</p>
             <p>You'll need to choose a name for your application.</p>
         </> : null}
-        <button onClick={() => setDialogOpen(true)}>New Application</button>
-        <NewApplicationDialog open={dialogOpen} onClose={() => setDialogOpen(false)} onSubmit={onSubmit}/>
+        <button onClick={() => setNewDialogOpen(true)}>New Application</button>
+        <NewApplicationDialog open={newDialogOpen} onClose={() => setNewDialogOpen(false)} onSubmit={onSubmit}/>
+        <DeleteApplicationDialog open={appToDelete!==null} onClose={() => setAppToDelete(null)} onSubmit={onAppDeleted}/>
         <div className="subtitle">Testing with Gadwick</div>
         <p>Testing with Gadwick is simple and fits right into your existing test suites.</p>
         <Snippets app={configuredApplications[0]}/> {/** TODO: User to select the app for the tutorial */}
