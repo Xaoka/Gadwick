@@ -12,8 +12,18 @@ router.get('/', cors(corsOptions), function(req, res, next) {
         res.send(result);
     });
 });
+
+router.get('/:app_id', cors(corsOptions), function(req, res, next) {
+    const id = req.params.app_id;
+    makeQuery(`SELECT * FROM Features WHERE app_id = ${id}`, function (err, result, fields) {
+        if (err) throw err;
+        console.log(result);
+        res.send(result);
+    });
+});
+
 router.post('/', cors(corsOptions), function(req, res, next) {
-    insertInto(["name", "description"], "Features", req, res);
+    insertInto(["name", "description", "app_id"], "Features", req, res, next);
 })
 
 router.put('/:id', cors(corsOptions), function(req, res, next) {

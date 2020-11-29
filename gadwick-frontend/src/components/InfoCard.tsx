@@ -12,22 +12,41 @@ media: {
 },
 });
 
-interface ITutorialCard
+export enum MediaType { Code, Application }
+
+interface IInfoCard
 {
     title: string;
     summary: string;
+    image: MediaType;
+    onClick?: () => void;
 }
 
-export default function TutorialCard(props: ITutorialCard)
+export default function InfoCard(props: IInfoCard)
 {
-    const classes = useStyles();
-    return  <Card className={classes.root}>
-      <CardActionArea>
-        <CardMedia
+  function getImage()
+  {
+    switch (props.image)
+    {
+      case MediaType.Code:
+        return <CardMedia
           className={classes.media}
           image="/tutorials/code.png"
           title="Code"
         />
+      case MediaType.Application:
+        return <CardMedia
+          className={classes.media}
+          image="/tutorials/product.png"
+          title="Application"
+        />
+    }
+  }
+
+    const classes = useStyles();
+    return  <Card className={classes.root}>
+      <CardActionArea onClick={props.onClick}>
+        {getImage()}
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
             {props.title}

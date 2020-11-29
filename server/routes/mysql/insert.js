@@ -1,16 +1,16 @@
 
 const { makeQuery } = require('./mysql');
 
-function insertInto(allowedKeys, table, req, res)
+function insertInto(allowedKeys, table, req, res, next)
 {
     const userData = req.body;
     for (const key of allowedKeys)
     {
-        if (userData[key] === undefined) { res.send({ error: `Missing field '${key}'`}); return; }
+        if (userData[key] === undefined) { next({ message: `Missing field '${key}'`}); return; }
     }
     for (const key of Object.keys(userData))
     {
-        if (!allowedKeys.includes(key)) { res.send({ error: `Erroneous field '${key}'`}); return; }
+        if (!allowedKeys.includes(key)) { next({ message: `Erroneous field '${key}'`}); return; }
     }
     var uniqueID = Date.now();
     userData.id = uniqueID;

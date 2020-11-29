@@ -22,18 +22,6 @@ export default function Dashboard()
             pageURL: "overview"
         },
         {
-            subView: <FeatureReports/>,
-            icon: ListIcon,
-            buttonID: "sidebar_reports",
-            pageURL: "reports"
-        },
-        {
-            subView: <Features/>,
-            icon: TuneIcon,
-            buttonID: "sidebar_features",
-            pageURL: "features"
-        },
-        {
             subView: <Applications/>,
             icon: VerifiedUserIcon,
             buttonID: "sidebar_applications",
@@ -44,6 +32,12 @@ export default function Dashboard()
             icon: EmojiObjectsIcon,
             buttonID: "sidebar_tutorials",
             pageURL: "tutorials"
+        },
+        {
+            subView: <FeatureReports/>,
+            icon: ListIcon,
+            buttonID: "sidebar_reports",
+            pageURL: "reports"
         }
     ]} sidebarScale={1.25}/>
 }

@@ -1,13 +1,10 @@
-import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, IconButton } from '@material-ui/core';
+import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, IconButton, Card } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import serverAPI, { API, HTTP } from '../../../apis/api';
 import { useAuth0 } from "@auth0/auth0-react";
 import getUserID from '../../../apis/user';
-import NewApplicationDialog from './NewApplicationDialog';
-import DeleteApplicationDialog from './DeleteApplicationDialog';
-import Snippets from './Snippets';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import copyToClipboard from '../../../utils/Clipboard';
+import AppView from './AppView';
+import AppDetails from './AppDetails';
 
 export interface IConfiguredApplication
 {
@@ -16,108 +13,26 @@ export interface IConfiguredApplication
     features: number;
     stability: number;
     client_secret: string;
+    description: string;
 }
 
 export default function Applications()
 {
     const { user } = useAuth0();
-    const [configuredApplications, setConfiguredApplications] = useState<IConfiguredApplication[]>([]);
-    const [newDialogOpen, setNewDialogOpen] = useState<boolean>(false);
-    const [appToDelete, setAppToDelete] = useState<IConfiguredApplication|null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [appToView, setAppToView] = useState<IConfiguredApplication|null>(null);
     
-    useEffect(loadApplications, [])
-
-    function loadApplications()
+    if (appToView)
     {
-        setIsLoading(true);
-        getUserID(user.sub).then((user_id) =>
-        {
-            serverAPI<IConfiguredApplication[]>(API.Applications, HTTP.READ, user_id).then((apps) =>
-            {
-                setConfiguredApplications(apps)
-                setIsLoading(false);
-            });
-        })
+        return <>
+            <div className="title">Applications</div>
+            <AppDetails app={appToView}/>
+        </>
     }
-
-    async function onSubmit(event: React.FormEvent<HTMLFormElement>)
+    else
     {
-        event.preventDefault();
-        event.stopPropagation();
-        console.dir(event.target);
-        const formData = event.target as any; // TODO: Figure out why react doesn't know the typing
-        setIsLoading(true);
-        const user_id = await getUserID(user.sub);
-        await serverAPI<IConfiguredApplication[]>(API.Applications, HTTP.CREATE, undefined, { user_id, name: formData[0].value })
-        const newApps = await serverAPI<IConfiguredApplication[]>(API.Applications, HTTP.READ, user_id)
-        setIsLoading(false);
-        setConfiguredApplications(newApps);
+        return <>
+            <div className="title">Applications</div>
+            <AppView onAppSelected={setAppToView}/>
+        </>
     }
-
-    async function onAppDeleted()
-    {
-        if (!appToDelete) { return; }
-        const id = appToDelete.id;
-        setAppToDelete(null);
-        await serverAPI(API.Applications, HTTP.DELETE, id);
-        loadApplications();
-    }
-
-    if (isLoading)
-    {
-        return <div>
-            Loading...
-        </div>
-    }
-    return <>
-        <div className="title">Applications</div>
-        <div className="subtitle">Configured Applications</div>
-        <TableContainer component={Paper}>
-            <Table aria-label="simple table">
-                <TableHead>
-                <TableRow>
-                    <TableCell>Application</TableCell>
-                    <TableCell>Features</TableCell>
-                    <TableCell>Stability</TableCell>
-                    <TableCell>Client Secret</TableCell>
-                    <TableCell></TableCell>
-                </TableRow>
-                </TableHead>
-                <TableBody>
-                    {configuredApplications.map((app) =>
-                    {
-                        const domID = app.id;
-                        return <TableRow key={domID} id={domID}>
-                            <TableCell id={`${domID}_name`}>{app.name}</TableCell>
-                            <TableCell id={`${domID}_features`}>{app.features || 0}</TableCell>
-                            <TableCell id={`${domID}_stability`}>{app.stability || 0}%</TableCell>
-                            <TableCell id={`${domID}_client_secret`}>
-                                {app.client_secret}
-                                <IconButton onClick={() => copyToClipboard(app.client_secret)}>
-                                    <FileCopyIcon/>
-                                </IconButton>
-                            </TableCell>
-                            <TableCell>
-                                <button className="danger" onClick={(evt: React.MouseEvent<HTMLButtonElement, MouseEvent>) => setAppToDelete(app)}>
-                                    <span role="img" aria-label="trash">🗑️</span>
-                                </button>
-                            </TableCell>
-                        </TableRow>
-                    } )}
-                </TableBody>
-            </Table>
-        </TableContainer>
-        { !isLoading && configuredApplications.length === 0 ? <>
-            <div className="subtitle">Configure your first application</div>
-            <p>An application in Gadwick is a product or site you wish to set up testing for.</p>
-            <p>You'll need to choose a name for your application.</p>
-        </> : null}
-        <button onClick={() => setNewDialogOpen(true)}>New Application</button>
-        <NewApplicationDialog open={newDialogOpen} onClose={() => setNewDialogOpen(false)} onSubmit={onSubmit}/>
-        <DeleteApplicationDialog open={appToDelete!==null} onClose={() => setAppToDelete(null)} onSubmit={onAppDeleted}/>
-        <div className="subtitle">Testing with Gadwick</div>
-        <p>Testing with Gadwick is simple and fits right into your existing test suites.</p>
-        <Snippets app={configuredApplications[0]}/> {/** TODO: User to select the app for the tutorial */}
-    </>
 }

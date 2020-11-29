@@ -25,7 +25,7 @@ export interface IFeature extends IFeatureRatings
     description: string;
 }
 
-export default function Features(props: { style?: CSSProperties })
+export default function Features(props: { style?: CSSProperties, appID?: string })
 {
     const [dialogFeature, setDialogFeature] = useState<IFeature|null>(null);
     const [features, setFeatures] = useState<IFeature[]>([])
@@ -61,7 +61,7 @@ export default function Features(props: { style?: CSSProperties })
 
     function updateList()
     {
-        serverAPI<IFeature[]>(API.Features, HTTP.READ).then((data) =>
+        serverAPI<IFeature[]>(API.Features, HTTP.READ, props.appID).then((data) =>
         {
             setFeatures(data);
             console.dir(data)
@@ -77,7 +77,7 @@ export default function Features(props: { style?: CSSProperties })
 
     async function createNew()
     {
-        const newFeature = await serverAPI<IFeature>(API.Features, HTTP.CREATE, undefined, { name: "New Feature", description: "New Feature" });
+        const newFeature = await serverAPI<IFeature>(API.Features, HTTP.CREATE, undefined, { name: "New Feature", description: "New Feature", app_id: props.appID });
         updateList();
         setDialogFeature(newFeature);
     }
@@ -117,7 +117,7 @@ export default function Features(props: { style?: CSSProperties })
     }
     return <>
         <span style={props.style}>
-            <div className="title">Features</div>
+            <div className="heading">Features</div>
             <button style={{ color: "green", float: "right" }} onClick={createNew}>New Feature</button>
             {renderFeatureTable()}
         </span>

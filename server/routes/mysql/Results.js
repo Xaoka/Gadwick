@@ -14,7 +14,7 @@ router.get('/', cors(corsOptions), function(req, res, next) {
 });
 
 router.post('/', cors(corsOptions), function(req, res, next) {
-    insertInto(["passed", "version", "feature_id"], "Results", req, res);
+    insertInto(["passed", "version", "feature_id"], "Results", req, res, next);
 });
 
 router.get('/versions', cors(corsOptions), function(req, res, next) {
