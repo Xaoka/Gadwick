@@ -1,0 +1,39 @@
+{
+  "test_directory": "apis",
+  "clientSecret": "ae278d07-5e8a-4b5c-842c-80180d5952d9",
+  "idMap": {
+    "ids": {
+      "0": "Updating Features",
+      "1605713201218": "Updating Feature Scores",
+      "1606491721831": "Creating and deleting apps",
+      "1606492264779": "Reading Tutorials",
+      "1606650027167": "NPM Module Config",
+      "1606672503985": "Feature API",
+      "1606726812968": "test feature",
+      "1606726881898": "test feature",
+      "1606727462342": "test feature",
+      "1606727527229": "test feature",
+      "1606727711313": "test feature",
+      "1606727826434": "test feature",
+      "1606727900909": "test feature",
+      "1606727917493": "test feature",
+      "1606727979983": "test feature",
+      "1606728025175": "test feature",
+      "1606728054656": "test feature",
+      "1606728124014": "test feature",
+      "1606728153470": "test feature",
+      "1606728207473": "test feature",
+      "1606728258794": "test feature",
+      "1606728474583": "test feature"
+    },
+    "names": {
+      "Updating Features": "0",
+      "Updating Feature Scores": "1605713201218",
+      "Creating and deleting apps": "1606491721831",
+      "Reading Tutorials": "1606492264779",
+      "NPM Module Config": "1606650027167",
+      "Feature API": "1606672503985",
+      "test feature": "1606728474583"
+    }
+  }
+}

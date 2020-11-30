@@ -3,9 +3,21 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "cypress run --spec \"cypress/integration/*.spec.js\" --reporter gadwick-test/reporter.js --quiet"
+    "start": "cypress run --spec \"cypress/integration/*.spec.js\" --reporter gadwick-test/reporter.js --quiet",
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "testMatch": [
+      "**/apis/*.spec.js"
+    ]
   },
   "dependencies": {
-    "gadwick": "^1.0.2"
+    "axios": "^0.21.0",
+    "gadwick": "^1.0.6",
+    "jest": "^26.6.3"
   }
 }

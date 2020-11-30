@@ -22,6 +22,17 @@ router.get('/:app_id', cors(corsOptions), function(req, res, next) {
     });
 });
 
+router.get('/s/:client_secret', cors(corsOptions), function(req, res, next) {
+    const client_secret = req.params.client_secret;
+    console.log(client_secret)
+    makeQuery(`SELECT * FROM Features LEFT JOIN (SELECT id app_id, client_secret FROM Applications) AS Apps ON Features.app_id = Apps.app_id WHERE Apps.client_secret = "${client_secret}"`, function (err, result, fields) {
+        if (err) throw err;
+        console.log(result);
+        res.send(result);
+    });
+});
+
+
 router.post('/', cors(corsOptions), function(req, res, next) {
     insertInto(["name", "description", "app_id"], "Features", req, res, next);
 })
