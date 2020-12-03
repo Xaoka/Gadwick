@@ -3,21 +3,19 @@ import Landing from './components/landing';
 import Header from './components/header';
 import Dashboard from './components/Dashboard';
 import './App.css';
-import history from './utils/history';
-import { Route, Router, Switch } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Switch, useHistory } from 'react-router-dom';
 import PrivateRoute from './components/PrivateRoute';
 
 function App()
 {
-
+  const history = useHistory();
   return <>
-    <Router history={history}>
+    <Router>
       <Header/>
       <Switch>
         <PrivateRoute path="/dashboard" ><Dashboard/></PrivateRoute>
         <Route path="/" ><Landing/></Route>
       </Switch>
-      {/* {renderInnerPage()} */}
     </Router>
   </>
 }

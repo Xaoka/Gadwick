@@ -1,11 +1,12 @@
 import React, { CSSProperties, useEffect } from 'react';
 import octopus from '../imgs/gadwick_octopus.jpg';
 import { useAuth0 } from "@auth0/auth0-react";
-import history from '../utils/history';
+import { useHistory } from 'react-router-dom';
 
 export default function Landing()
 {
     const { isAuthenticated, isLoading } = useAuth0();
+    const history = useHistory();
 
     useEffect(() => {
         if (isAuthenticated && !isLoading)
