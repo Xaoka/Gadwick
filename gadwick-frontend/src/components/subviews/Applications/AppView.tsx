@@ -7,17 +7,26 @@ import NewApplicationDialog from './NewApplicationDialog';
 import DeleteApplicationDialog from './DeleteApplicationDialog';
 import InfoCard, { MediaType } from '../../InfoCard';
 import AddIcon from '@material-ui/icons/Add';
-import { IConfiguredApplication } from './Applications';
+import PrivateRoute from '../../PrivateRoute';
+import { useRouteMatch, useHistory } from 'react-router-dom';
+import AppDetails from './AppDetails';
+import BreadcrumbPath from '../../BreadcrumbPath';
 
-
-interface IAppView
+export interface IConfiguredApplication
 {
-    onAppSelected: (app: IConfiguredApplication) => void;
+    id: string;
+    name: string;
+    features: number;
+    stability: number;
+    client_secret: string;
+    description: string;
 }
 
-export default function AppView(props: IAppView)
+export default function AppView()
 {
     const { user } = useAuth0();
+    let { path, url } = useRouteMatch();
+    const history = useHistory();
     const [configuredApplications, setConfiguredApplications] = useState<IConfiguredApplication[]>([]);
     const [newDialogOpen, setNewDialogOpen] = useState<boolean>(false);
     const [appToDelete, setAppToDelete] = useState<IConfiguredApplication|null>(null);
@@ -67,18 +76,38 @@ export default function AppView(props: IAppView)
             Loading...
         </div>
     }
+
+    function appNameToURL(appName: string)
+    {
+        return appName.toLowerCase().replace(" ", "-");
+    }
+
+    function onAppSelected(app: IConfiguredApplication)
+    {
+        history.push(`${url}/${appNameToURL(app.name)}`)
+    }
+
     return <>
-        <div className="subtitle">My Applications</div>
+        <h1>Applications</h1>
         
         <div style={{ padding: 40 }}>
             {configuredApplications.map((app) =>
-                <InfoCard image={MediaType.Application} title={app.name} summary="My app description goes here" key={app.name} onClick={() => props.onAppSelected(app)}/>
+                <PrivateRoute path={`${path}/${appNameToURL(app.name)}`}>
+                    <BreadcrumbPath baseURL={url} stages={["My Apps", app.name]}/>
+                    <AppDetails app={app}/>
+                </PrivateRoute>
             )}
-            <Card style={{ width: 200, height: 230, display: "inline-block", margin: 10}}>
-                <IconButton style={{ width: "100%", height: "100%" }} onClick={() => setNewDialogOpen(true)}>
-                    <AddIcon fontSize="large"/>
-                </IconButton>
-            </Card>
+            <PrivateRoute path="/">
+                <BreadcrumbPath baseURL={url} stages={["My Apps"]}/>
+                {configuredApplications.map((app) =>
+                    <InfoCard image={MediaType.Application} title={app.name} summary="My app description goes here" key={app.name} onClick={() => onAppSelected(app)}/>
+                )}
+                <Card style={{ width: 200, height: 230, display: "inline-block", margin: 10}}>
+                    <IconButton style={{ width: "100%", height: "100%" }} onClick={() => setNewDialogOpen(true)}>
+                        <AddIcon fontSize="large"/>
+                    </IconButton>
+                </Card>
+            </PrivateRoute>
         </div>
         <NewApplicationDialog open={newDialogOpen} onClose={() => setNewDialogOpen(false)} onSubmit={onSubmit}/>
         <DeleteApplicationDialog open={appToDelete!==null} onClose={() => setAppToDelete(null)} onSubmit={onAppDeleted}/>

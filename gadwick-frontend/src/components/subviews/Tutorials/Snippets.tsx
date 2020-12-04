@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IConfiguredApplication } from '../Applications/Applications';
+import { IConfiguredApplication } from '../Applications/AppView';
 
 type SupportedLanguages = "NodeJS" | "Java" | "Python";
 

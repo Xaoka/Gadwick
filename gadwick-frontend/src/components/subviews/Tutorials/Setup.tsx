@@ -1,5 +1,5 @@
 import React from 'react';
-import { IConfiguredApplication } from '../Applications/Applications';
+import { IConfiguredApplication } from '../Applications/AppView';
 import Snippets from './Snippets';
 import BreadcrumbPath from '../../BreadcrumbPath';
 import { useRouteMatch } from 'react-router-dom';

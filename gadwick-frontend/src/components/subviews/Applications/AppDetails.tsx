@@ -1,7 +1,7 @@
 import React from 'react';
 import Features from '../Features/Features';
 import StatBox from '../Overview/StatBox';
-import { IConfiguredApplication } from './Applications';
+import { IConfiguredApplication } from './AppView';
 import CategoryIcon from '@material-ui/icons/Category';
 import { IconButton } from '@material-ui/core';
 import copyToClipboard from '../../../utils/Clipboard';
@@ -15,7 +15,6 @@ interface IAppDetails
 export default function AppDetails(props: IAppDetails)
 {
     return <>
-        <h2>{"My Applications >"} {props.app.name}</h2>
         <div>
             <StatBox label="Version" icon={CategoryIcon} value={0} style={{ display: "inline-block" }}/>
             <StatBox label="Features" icon={CategoryIcon} value={0} style={{ display: "inline-block" }}/>

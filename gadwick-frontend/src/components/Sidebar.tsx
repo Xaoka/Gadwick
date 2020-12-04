@@ -13,7 +13,7 @@ interface ISidebar
     scale: number;
     selected: number;
 }
-
+// TODO: Replace with tabs https://material-ui.com/components/tabs/
 export default function Sidebar(props: ISidebar)
 {
     const divStyle: CSSProperties =

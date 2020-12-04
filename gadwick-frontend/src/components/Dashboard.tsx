@@ -3,7 +3,7 @@ import View from './subviews/View';
 import Overview from './subviews/Overview/overview';
 import Features from './subviews/Features/Features';
 import FeatureReports from './subviews/FeatureReports';
-import Applications from './subviews/Applications/Applications';
+import AppView from './subviews/Applications/AppView';
 import Tutorials from './subviews/Tutorials/Tutorials';
 
 import TuneIcon from '@material-ui/icons/Tune';
@@ -22,7 +22,7 @@ export default function Dashboard()
             pageURL: "overview"
         },
         {
-            subView: <Applications/>,
+            subView: <AppView/>,
             icon: VerifiedUserIcon,
             buttonID: "sidebar_applications",
             pageURL: "applications"
