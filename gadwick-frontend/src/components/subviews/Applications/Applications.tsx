@@ -24,14 +24,14 @@ export default function Applications()
     if (appToView)
     {
         return <>
-            <div className="title">Applications</div>
+            <h1>Applications</h1>
             <AppDetails app={appToView}/>
         </>
     }
     else
     {
         return <>
-            <div className="title">Applications</div>
+            <h1>Applications</h1>
             <AppView onAppSelected={setAppToView}/>
         </>
     }

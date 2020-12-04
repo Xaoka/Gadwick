@@ -25,8 +25,8 @@ export default function FeatureReports(props: { /*feature: IFeature,*/ style?: C
     }, [])
 
     return <span style={props.style}>
-        <div className="title">Test Reports</div>
-        <div className="subtitle">Version stability</div>
+        <h1>Test Reports</h1>
+        <h2>Version stability</h2>
         <TableContainer component={Paper}>
         <Table aria-label="simple table">
             <TableHead>

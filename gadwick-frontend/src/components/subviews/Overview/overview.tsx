@@ -32,8 +32,8 @@ export default function Overview(props: { style?: CSSProperties, children?: Reac
     }, [])
     
     return <span style={props.style}>
-        <div className="title">Profile</div>
-        <div className="subtitle">{user.name}</div>
+        <h1>Profile</h1>
+        <h2>{user.name}</h2>
         <div style={{ padding: 50 }}>
         <FlexibleXYPlot xType="ordinal" width={700} height={200} yDomain={[0, 100]} >
             <VerticalBarSeries data={versionData.map((v) => { return { x: v.version, y: v.passRate * 100 }})} barWidth={0.95}/>

@@ -15,13 +15,13 @@ interface IAppDetails
 export default function AppDetails(props: IAppDetails)
 {
     return <>
-        <div className="subtitle">{"My Applications >"} {props.app.name}</div>
+        <h2>{"My Applications >"} {props.app.name}</h2>
         <div>
             <StatBox label="Version" icon={CategoryIcon} value={0} style={{ display: "inline-block" }}/>
             <StatBox label="Features" icon={CategoryIcon} value={0} style={{ display: "inline-block" }}/>
             <StatBox label="Stability" icon={CategoryIcon} value={0} style={{ display: "inline-block" }}/>
         </div>
-        <div className="heading">Details</div>
+        <h3>Details</h3>
         <div>Name <input defaultValue={props.app.name}/></div>
         <div>Description <input defaultValue={props.app.description}/></div>
         <div>

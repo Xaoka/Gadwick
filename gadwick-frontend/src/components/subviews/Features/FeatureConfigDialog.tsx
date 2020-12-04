@@ -16,7 +16,7 @@ export default function FeatureConfigDialog(props: IFeatureConfigDialog)
 {
     return <Dialog open={props.feature !== null} maxWidth="md" onClose={props.onClose} id="feature_config_dialog">
             <DialogTitle style={{ padding: 40, paddingBottom: 0 }}>
-                <span className="heading">Feature Configuration</span>
+                <h3>Feature Configuration</h3>
                 <IconButton style={{float: "right"}} onClick={props.onClose}><CloseIcon/></IconButton>
             </DialogTitle>
             {props.feature ? <FeatureConfig feature={props.feature} style={{ padding: 40 }}/> : <Skeleton></Skeleton>}

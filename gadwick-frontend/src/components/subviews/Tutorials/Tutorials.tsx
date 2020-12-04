@@ -16,8 +16,8 @@ export default function Tutorials()
     }
 
     return <>
-        <div className="title">Tutorials</div>
-        <div className="subtitle">Learn more about automation</div>
+        <h1>Tutorials</h1>
+        <h2>Learn more about automation</h2>
         <div style={{ padding: 40 }}>
             <Switch>
                 <PrivateRoute path={`${path}/setup`}>

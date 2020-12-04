@@ -15,7 +15,7 @@ export default function NewApplicationDialog(props: INewApplicationDialog)
     // TODO: Ensure the app name is unique to the user
     return <Dialog open={props.open} maxWidth="md" onClose={props.onClose} id="new_app_dialog">
             <DialogTitle style={{ padding: 40, paddingBottom: 0 }}>
-                <span className="heading">New Application</span>
+                <h3>New Application</h3>
                 <IconButton style={{float: "right"}} onClick={props.onClose}><CloseIcon/></IconButton>
             </DialogTitle>
             Create a new application, these represent your products and allow you to track testing data on a per-product basis.

@@ -32,8 +32,8 @@ export default function Landing()
 
     return <>
     <div style={{ ...titlePosition }}>
-        <div className="title">Gadwick</div>
-        <div className="subtitle">Get automated, get confident.</div>
+        <h1>Gadwick</h1>
+        <h2>Get automated, get confident.</h2>
     </div>
     <img src={octopus} alt="Gadwick Octopus Logo" style={{ ...logoPosition}}/>
     </>

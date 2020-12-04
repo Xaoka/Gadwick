@@ -117,7 +117,7 @@ export default function Features(props: { style?: CSSProperties, appID?: string 
     }
     return <>
         <span style={props.style}>
-            <div className="heading">Features</div>
+            <h3>Features</h3>
             <button style={{ color: "green", float: "right" }} onClick={createNew}>New Feature</button>
             {renderFeatureTable()}
         </span>

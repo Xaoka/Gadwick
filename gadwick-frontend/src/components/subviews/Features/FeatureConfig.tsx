@@ -68,13 +68,13 @@ export default function FeatureConfig(props: { feature: IFeature, style?: CSSPro
     return <span style={props.style}>
         {renderTextField("Feature Name", props.feature.name, "name")}
         {renderTextField("Description", props.feature.description, "description")}
-        <div className="subheading">General<div className="info">How important is this feature to your product</div></div>
+        <h4>General<div className="info">How important is this feature to your product</div></h4>
         {renderCombinedRating("Frequency of use", "use_frequency", "Severity", "severity", "Risk", setRiskRating)}
         {renderCombinedRating("Distinctness", "distinctness", "Fix Priority", "fix_priority", "Value", setValueRating)}
-        <div className="subheading">Automation<div className="info">Is it worth our time to automate</div></div>
+        <h4>Automation<div className="info">Is it worth our time to automate</div></h4>
         {renderCombinedRating("Time Cost", "time_cost", "Ease", "ease", "Efficiency", setEfficiencyRating)}
         {renderCombinedRating("Similar Problem Frequency", "similar_problem_frequency", "Problem Frequency", "problem_frequency", "Volatility", setVolatilityRating)}
-        <div className="subheading">Summary</div>
+        <h4>Summary</h4>
 
         <span>This feature is {riskRating > 3 ? "high" : "low"} risk, </span>
         <span>{valueRating > 3 ? "very" : "not very"} valuable to test, </span>

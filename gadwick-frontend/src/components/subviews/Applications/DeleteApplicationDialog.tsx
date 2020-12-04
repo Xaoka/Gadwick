@@ -15,7 +15,7 @@ export default function DeleteApplicationDialog(props: IDeleteApplicationDialog)
     // TODO: Ensure the app name is unique to the user
     return <Dialog open={props.open} maxWidth="sm" onClose={props.onClose} id="new_app_dialog">
             <DialogTitle style={{ padding: 40, paddingBottom: 0 }}>
-                <span className="heading">Delete Application</span>
+                <h3>Delete Application</h3>
                 <IconButton style={{float: "right"}} onClick={props.onClose}><CloseIcon/></IconButton>
             </DialogTitle>
             <div style={{ padding: 40, paddingTop: 0 }}>
