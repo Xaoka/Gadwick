@@ -11,7 +11,7 @@ export default function Landing()
     useEffect(() => {
         if (isAuthenticated && !isLoading)
         {
-            history.push("/dashboard");
+            history.push("/dashboard/overview");
         }
     }, [isAuthenticated, isLoading])
 

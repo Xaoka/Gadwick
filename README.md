@@ -12,6 +12,8 @@ A website for bringing QA and DevOps into one stack
 * CI developers should be able to easily get insight into problem areas and priorities for work.
 * CI developers should quickly be able to plan out new tests and feature requirements.
 * Gadwick should assist in CI development as much as possible to streamline the process of feature concepts to requirements and tests.
+* Users should be able to quickly get set up.
+* Users should be able to avoid manually entering data wherever possible.
 
 ## Feature Goals
 

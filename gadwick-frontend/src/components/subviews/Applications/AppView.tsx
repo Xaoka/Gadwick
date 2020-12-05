@@ -8,7 +8,7 @@ import DeleteApplicationDialog from './DeleteApplicationDialog';
 import InfoCard, { MediaType } from '../../InfoCard';
 import AddIcon from '@material-ui/icons/Add';
 import PrivateRoute from '../../PrivateRoute';
-import { useRouteMatch, useHistory } from 'react-router-dom';
+import { useRouteMatch, useHistory, Switch } from 'react-router-dom';
 import AppDetails from './AppDetails';
 import BreadcrumbPath from '../../BreadcrumbPath';
 
@@ -91,23 +91,25 @@ export default function AppView()
         <h1>Applications</h1>
         
         <div style={{ padding: 40 }}>
-            {configuredApplications.map((app) =>
-                <PrivateRoute path={`${path}/${appNameToURL(app.name)}`}>
-                    <BreadcrumbPath baseURL={url} stages={["My Apps", app.name]}/>
-                    <AppDetails app={app}/>
-                </PrivateRoute>
-            )}
-            <PrivateRoute path="/">
-                <BreadcrumbPath baseURL={url} stages={["My Apps"]}/>
+            <Switch>
                 {configuredApplications.map((app) =>
-                    <InfoCard image={MediaType.Application} title={app.name} summary="My app description goes here" key={app.name} onClick={() => onAppSelected(app)}/>
+                    <PrivateRoute path={`${path}/${appNameToURL(app.name)}`}>
+                        <BreadcrumbPath baseURL={url} stages={["My Apps", app.name]}/>
+                        <AppDetails app={app}/>
+                    </PrivateRoute>
                 )}
-                <Card style={{ width: 200, height: 230, display: "inline-block", margin: 10}}>
-                    <IconButton style={{ width: "100%", height: "100%" }} onClick={() => setNewDialogOpen(true)}>
-                        <AddIcon fontSize="large"/>
-                    </IconButton>
-                </Card>
-            </PrivateRoute>
+                <PrivateRoute path="/">
+                    <BreadcrumbPath baseURL={url} stages={["My Apps"]}/>
+                    {configuredApplications.map((app) =>
+                        <InfoCard image={MediaType.Application} title={app.name} summary="My app description goes here" key={app.name} onClick={() => onAppSelected(app)}/>
+                    )}
+                    <Card style={{ width: 200, height: 230, display: "inline-block", margin: 10}}>
+                        <IconButton style={{ width: "100%", height: "100%" }} onClick={() => setNewDialogOpen(true)}>
+                            <AddIcon fontSize="large"/>
+                        </IconButton>
+                    </Card>
+                </PrivateRoute>
+            </Switch>
         </div>
         <NewApplicationDialog open={newDialogOpen} onClose={() => setNewDialogOpen(false)} onSubmit={onSubmit}/>
         <DeleteApplicationDialog open={appToDelete!==null} onClose={() => setAppToDelete(null)} onSubmit={onAppDeleted}/>
