@@ -79,7 +79,7 @@ export default function AppView()
 
     function appNameToURL(appName: string)
     {
-        return appName.toLowerCase().replace(" ", "-");
+        return appName.toLowerCase().replaceAll(" ", "-");
     }
 
     function onAppSelected(app: IConfiguredApplication)
