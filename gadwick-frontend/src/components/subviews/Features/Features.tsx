@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper } from '@material-ui/core';
+import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, IconButton, Tooltip } from '@material-ui/core';
 import serverAPI, { API, HTTP } from '../../../apis/api';
 import { IData } from '../../ExpandableTableRow'
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import FeatureConfigDialog from './FeatureConfigDialog';
+import LinkIcon from '@material-ui/icons/Link';
+import LinkOffIcon from '@material-ui/icons/LinkOff';
 
 export interface IFeatureRatings
 {
@@ -23,6 +25,14 @@ export interface IFeature extends IFeatureRatings
     id: string;
     name: string;
     description: string;
+    /** Third party app (e.g. Asana) that this feature is linked to */
+    thirdparty_provider: string;
+    /** ID of the board on a third party app this feature is linked to */
+    thirdparty_board: string;
+    /** card/ticket ID on a third party app that this feature is linked to */
+    thirdparty_id: string;
+    /** Link to ticket on third party app */
+    thirdparty_link: string;
 }
 
 export default function Features(props: { style?: CSSProperties, appID?: string })
@@ -82,6 +92,13 @@ export default function Features(props: { style?: CSSProperties, appID?: string 
         setDialogFeature(newFeature);
     }
 
+    function openExternalLink(evt: React.MouseEvent<HTMLButtonElement, MouseEvent>, link: string)
+    {
+        evt.preventDefault();
+        evt.stopPropagation();
+        window.open(link);
+    }
+
     function renderFeatureTable()
     {
         return <>
@@ -93,6 +110,7 @@ export default function Features(props: { style?: CSSProperties, appID?: string 
                         {/* <TableCell align="right">Status</TableCell> */}
                         <TableCell align="left">Description</TableCell>
                         <TableCell align="left">Pass Rate (%)</TableCell>
+                        <TableCell align="left">Ticket Link</TableCell>
                         <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
@@ -100,6 +118,16 @@ export default function Features(props: { style?: CSSProperties, appID?: string 
                 {(features.length > 0) && features.map((feature) => (
                     <TableRow onClick={() => setDialogFeature(feature)} key={feature.id}>
                         {rowMapping(feature).map((datum) => <TableCell key={datum.name} align="left" >{datum.value}</TableCell>)}
+                        
+                        <TableCell>
+                            <Tooltip title={feature.thirdparty_link ? `View this ticket on ${feature.thirdparty_provider}` : `This feature is not linked to any thirdparty apps.`}>
+                                <span>
+                                    <IconButton disabled={!feature.thirdparty_link} onClick={(evt) => openExternalLink(evt, feature.thirdparty_link)}>
+                                        { feature.thirdparty_link ? <LinkIcon/> : <LinkOffIcon/>}
+                                    </IconButton>
+                                </span>
+                            </Tooltip>
+                        </TableCell>
                         <TableCell>
                             <button className="danger" onClick={(evt: React.MouseEvent<HTMLButtonElement, MouseEvent>) => onDelete(evt, feature)}>
                                 <span role="img" aria-label="trash">🗑️</span>

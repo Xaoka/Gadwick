@@ -1,5 +1,19 @@
 # Gadwick
+
 A website for bringing QA and DevOps into one stack
+
+## Tech
+
+This project uses:
+
+* React
+* HTML/CSS
+* Auth0
+* Express
+* CRUD/REST APIs
+* NodeJS / ExpressJS
+* MYSQL
+* RDS (Amazon Relational Database)
 
 ## Principles
 
@@ -30,6 +44,18 @@ A website for bringing QA and DevOps into one stack
 * I want to be able to be a part of many projects
 * Reports / Report management
 * Test case history
+* Test Team management/scheduling?
+* BDD structure for test generation?
+* Link accounts so that when we update tickets in Gadwick they're reflected in Asana/JIRA/etc
+* Google plugin to allow you to manage test results while on a website? (e.g. navigate around and easily click pass/fail)
+* Macro/Recording of site navigation to generate tests?
+* Link apps to boards, to allow webhooks to create new features
+
+## Ideal Story
+
+* BA writes feature up in whatever software they use
+* QA Starts session and walks through product as prompted
+* PM Can see the result of features reflected in their tracking software
 
 ## Test Structure
 

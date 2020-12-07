@@ -34,7 +34,7 @@ router.get('/s/:client_secret', cors(corsOptions), function(req, res, next) {
 
 
 router.post('/', cors(corsOptions), function(req, res, next) {
-    insertInto(["name", "description", "app_id"], "Features", req, res, next);
+    insertInto(["name", "description", "app_id", "thirdparty_id", "thirdparty_provider", "thirdparty_board", "thirdparty_link"], "Features", req, res, next);
 })
 
 router.put('/:id', cors(corsOptions), function(req, res, next) {
