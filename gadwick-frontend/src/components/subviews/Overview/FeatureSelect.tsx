@@ -6,6 +6,9 @@ import getUserID from '../../../apis/user';
 import { IConfiguredApplication } from '../Applications/AppView';
 import { IFeature } from '../Features/Features';
 import { Providers, Stages } from './FeatureImport';
+import { appNameToURL } from '../../../utils/ToURL';
+import { useRouteMatch, useHistory } from 'react-router-dom';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
 /** TODO: Better name for this */
 export interface IImport
@@ -32,13 +35,16 @@ interface IFeatureSelect
 export default function FeatureSelect(props: IFeatureSelect)
 {
     const { user } = useAuth0();
+    const history = useHistory();
 
     const [importButtonDisabled, setImportButtonDisabled] = useState<boolean>(true);
+    const [isImporting, setIsImporting] = useState<boolean>(false);
+    const [isFinished, setIsFinished] = useState<boolean>(false);
     // Features imported from third party apps
     const [featuresSelected, setFeaturesSelected] = useState<{ [featureName: string]: IImportedFeature & { selected: boolean }}>({});
     // Target app selection, to avoid import duplication
     const [apps, setApps] = useState<IConfiguredApplication[]>([]);
-    const [appSelected, setAppSelected] = useState<string>("");
+    const [appSelected, setAppSelected] = useState<IConfiguredApplication|null>(null);
     const [featuresForApp, setFeaturesForApp] = useState<IFeature[]>([]);
     
 
@@ -52,7 +58,7 @@ export default function FeatureSelect(props: IFeatureSelect)
     async function createFeatures()
     {
         // TODO: Link the feature to the importing app
-        console.log(`APP: ${appSelected}`)
+        console.log(`APP: ${appSelected?.id}`)
         let requests = [];
         for (const feature of Object.keys(featuresSelected))
         {
@@ -60,7 +66,7 @@ export default function FeatureSelect(props: IFeatureSelect)
             {
                 const payload =
                 {
-                    app_id: appSelected,
+                    app_id: appSelected?.id,
                     name: feature,
                     description: "",
                     thirdparty_provider: props.provider,
@@ -71,9 +77,14 @@ export default function FeatureSelect(props: IFeatureSelect)
                 requests.push(serverAPI(API.Features, HTTP.CREATE, undefined, payload));
             }
         }
-        props.setStage(Stages.Importing);
+        console.log(`Importing`)
+        // props.setStage(Stages.Importing); 
+        setIsImporting(true);
         await Promise.all(requests);
-        props.setStage(Stages.Success);
+        setIsImporting(false);
+        setIsFinished(true);
+        console.log(`Imported`)
+        // props.setStage(Stages.Success);
     }
 
     useEffect(() => {
@@ -82,7 +93,7 @@ export default function FeatureSelect(props: IFeatureSelect)
             serverAPI<IConfiguredApplication[]>(API.Applications, HTTP.READ, id).then((apps) =>
             {
                 setApps(apps);
-                setAppSelected(apps[0].id);
+                setAppSelected(apps[0]);
             });
         });
     }, [])
@@ -92,12 +103,32 @@ export default function FeatureSelect(props: IFeatureSelect)
     }, [featuresSelected])
 
     useEffect(() => {
-        serverAPI<IFeature[]>(API.Features, HTTP.READ, appSelected).then(setFeaturesForApp);
+        if (!appSelected) { return; }
+        serverAPI<IFeature[]>(API.Features, HTTP.READ, appSelected!.id).then(setFeaturesForApp);
     }, [appSelected])
 
     function selectAll(boardName: string, checked: boolean)
     {
         
+    }
+    const chevron = <ChevronRightIcon style={{ right: 0, verticalAlign: "bottom" }} fontSize="large"/>;
+
+
+    if (isImporting)
+    {
+        return <div>
+            Please wait while we import the selected features from your {props.provider} account.
+        </div>
+    }
+    if (isFinished)
+    {
+        return <>
+            <div>
+                We have added {Object.keys(featuresSelected).filter((f) => featuresSelected[f].selected).length} features from your {props.provider} account.
+            </div>
+            <button onClick={() => history.push(`applications/${appNameToURL(appSelected?.name || "")}`)}>View App{chevron}</button>
+            <button onClick={() => props.setStage(Stages.Provider)}>Import More{chevron}</button>
+        </>
     }
 
     return <>
@@ -137,8 +168,8 @@ export default function FeatureSelect(props: IFeatureSelect)
             Import to application:
         </div>
         <div>
-            <select name="app" onChange={(evt) => setAppSelected(evt.target.value)}>
-                {apps.map((app) => <option value={app.id}>{app.name}</option>)}
+            <select name="app" onChange={(evt) => setAppSelected(apps[parseInt(evt.target.value)])}>
+                {apps.map((app) => <option value={apps.indexOf(app)}>{app.name}</option>)}
             </select>
         </div>
         <button onClick={() => props.setStage(Stages.Provider)}>Back</button>

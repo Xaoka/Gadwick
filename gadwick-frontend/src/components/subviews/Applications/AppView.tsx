@@ -11,6 +11,7 @@ import PrivateRoute from '../../PrivateRoute';
 import { useRouteMatch, useHistory, Switch } from 'react-router-dom';
 import AppDetails from './AppDetails';
 import BreadcrumbPath from '../../BreadcrumbPath';
+import { appNameToURL } from '../../../utils/ToURL';
 
 export interface IConfiguredApplication
 {
@@ -75,11 +76,6 @@ export default function AppView()
         return <div>
             Loading...
         </div>
-    }
-
-    function appNameToURL(appName: string)
-    {
-        return appName.toLowerCase().replaceAll(" ", "-");
     }
 
     function onAppSelected(app: IConfiguredApplication)

@@ -31,8 +31,8 @@ interface IFeatureImport
 
 export default function FeatureImport(props: IFeatureImport)
 {
-
     const [stage, setStage] = useState<Stages>(Stages.Provider)
+    const [appSelected, setAppSelected] = useState<IConfiguredApplication|null>(null)
     const [provider, setProvider] = useState<Providers>(Providers.None);
     const [importing, setImporting] = useState<boolean>(false);
     const [importedFeatures, setImportedFeatures] = useState<IImport>({});
@@ -214,16 +214,6 @@ export default function FeatureImport(props: IFeatureImport)
                         {/** TODO: Should we make them select boards first? */}
                         <FeatureSelect importedFeatures={importedFeatures} provider={provider} setStage={setStage}/>
                     </>
-                : null }
-                {stage == Stages.Importing ?
-                    <div>
-                    Please wait while we import the selected features from your {provider} account.
-                    </div>
-                : null }
-                {stage == Stages.Success ?
-                    <div>
-                    We have added {/**Object.keys(featuresSelected).filter((f) => featuresSelected[f] === true).length*/} features from your {provider} account.
-                    </div>
                 : null }
             </div>
 
