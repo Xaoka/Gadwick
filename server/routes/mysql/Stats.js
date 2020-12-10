@@ -2,7 +2,7 @@ var express = require('express');
 var cors = require('cors')
 var corsOptions = require('../cors')
 var router = express.Router();
-const { awaitQuery } = require('./mysql');
+const { awaitQuery } = require('./commands/mysql');
 
 router.get('/', cors(corsOptions), async function(req, res, next) {
     const featureCount = (await awaitQuery(`SELECT COUNT(*) featureCount FROM Features`))[0].featureCount;

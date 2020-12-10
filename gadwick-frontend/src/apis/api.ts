@@ -3,12 +3,15 @@ import Axios from 'axios';
 export enum API
 {
     Features = "features",
+    PriorityFeatures = "features/priority",
     TestResults = "results",
     VersionRates  = "results/versions",
     Stats = "stats",
     Applications = "applications",
     Users = "users",
-    UsersByAuth = "users/auth"
+    UsersByAuth = "users/auth",
+    Sessions = "sessions",
+    SessionsByAuth = "sessions/auth"
 }
 export enum HTTP { CREATE, READ, UPDATE, DELETE }
 

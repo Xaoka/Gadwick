@@ -10,7 +10,7 @@ ReactDOM.render(
     <Auth0Provider
     domain="gadwick.eu.auth0.com"
     clientId="eoun44L6fDIskjM3mfwTLsLrq21WvJZd"
-    redirectUri={`${window.location.origin}/dashboard`}
+    redirectUri={`${window.location.origin}/dashboard/overview`}
     >
       <App />
     </Auth0Provider>

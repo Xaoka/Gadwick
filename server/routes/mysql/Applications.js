@@ -2,8 +2,8 @@ var express = require('express');
 var cors = require('cors')
 var corsOptions = require('../cors')
 var router = express.Router();
-const { awaitQuery } = require('./mysql');
-const { insertInto } = require('./insert');
+const { awaitQuery } = require('./commands/mysql');
+const { insertInto } = require('./commands/insert');
 const { v4: uuidv4 } = require('uuid');
 
 router.get('/:user_id', cors(corsOptions), async function(req, res, next) {
@@ -14,7 +14,7 @@ router.get('/:user_id', cors(corsOptions), async function(req, res, next) {
 
 router.post('/', cors(corsOptions), async function(req, res, next) {
     req.body.client_secret = uuidv4();
-    insertInto(["name", "user_id", "client_secret", "description"], "Applications", req, res, next);
+    insertInto(["name", "user_id", "client_secret", "description", "feature_ids"], "Applications", req, res, next);
 });
 router.delete('/:app_id', cors(corsOptions), async function(req, res, next) {
     const id = req.params.app_id;

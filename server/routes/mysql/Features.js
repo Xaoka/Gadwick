@@ -2,8 +2,8 @@ var express = require('express');
 var cors = require('cors')
 var corsOptions = require('../cors')
 var router = express.Router();
-const { makeQuery } = require('./mysql');
-const { insertInto } = require('./insert');
+const { makeQuery, awaitQuery } = require('./commands/mysql');
+const { insertInto } = require('./commands/insert');
 
 router.get('/', cors(corsOptions), function(req, res, next) {
     makeQuery("SELECT * FROM Features", function (err, result, fields) {
@@ -13,6 +13,14 @@ router.get('/', cors(corsOptions), function(req, res, next) {
     });
 });
 
+router.get('/priority/:user_id', cors(corsOptions), async function(req, res, next) {
+    // TODO: This needs to filter where there aren't any automated results
+    const user_id = req.params.user_id;
+    const response = await awaitQuery(`SELECT * FROM Features F LEFT JOIN (SELECT id app_id, user_id FROM Applications WHERE user_id = "${user_id}") AS Apps ON F.app_id = Apps.app_id ORDER BY ((F.use_frequency * F.severity) + (F.fix_priority * F.distinctness) + (F.time_cost * F.ease) + (F.problem_frequency * F.similar_problem_frequency)) DESC LIMIT 10 `);
+    
+    res.send(response);
+});
+// TODO: Make the endpoint path references consistent - this is by app, others are feature ID
 router.get('/:app_id', cors(corsOptions), function(req, res, next) {
     const id = req.params.app_id;
     makeQuery(`SELECT * FROM Features WHERE app_id = ${id}`, function (err, result, fields) {

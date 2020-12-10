@@ -2,8 +2,8 @@ var express = require('express');
 var cors = require('cors')
 var corsOptions = require('../cors')
 var router = express.Router();
-const { makeQuery } = require('./mysql');
-const { insertInto } = require('./insert');
+const { makeQuery } = require('./commands/mysql');
+const { insertInto } = require('./commands/insert');
 
 router.get('/', cors(corsOptions), function(req, res, next) {
     makeQuery("SELECT * FROM Results LEFT JOIN Features ON Results.feature_id = Features.id", function (err, result, fields) {
