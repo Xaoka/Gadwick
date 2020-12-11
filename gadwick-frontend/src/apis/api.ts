@@ -3,6 +3,7 @@ import Axios from 'axios';
 export enum API
 {
     Features = "features",
+    AppFeatures = "features/app",
     PriorityFeatures = "features/priority",
     TestResults = "results",
     VersionRates  = "results/versions",

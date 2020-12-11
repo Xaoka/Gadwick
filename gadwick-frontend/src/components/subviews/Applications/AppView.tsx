@@ -99,7 +99,7 @@ export default function AppView()
                     {configuredApplications.map((app) =>
                         <InfoCard image={MediaType.Application} title={app.name} summary="My app description goes here" key={app.name} onClick={() => onAppSelected(app)}/>
                     )}
-                    <Card style={{ width: 200, height: 230, display: "inline-block", margin: 10}}>
+                    <Card style={{ width: 200, height: 230, display: "inline-block", margin: 10, boxShadow: "grey 3px 3px 11px -4px"}}>
                         <IconButton style={{ width: "100%", height: "100%" }} onClick={() => setNewDialogOpen(true)}>
                             <AddIcon fontSize="large"/>
                         </IconButton>

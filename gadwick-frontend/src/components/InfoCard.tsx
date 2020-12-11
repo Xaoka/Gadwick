@@ -5,7 +5,8 @@ const useStyles = makeStyles({
 root: {
     maxWidth: 345,
     display: "inline-block",
-    margin: 10
+    margin: 10,
+    boxShadow: "grey 3px 3px 11px -4px"
 },
 media: {
     height: 140,

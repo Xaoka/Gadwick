@@ -6,7 +6,11 @@ const { makeQuery, awaitQuery } = require('./commands/mysql');
 const { insertInto } = require('./commands/insert');
 
 router.get('/', cors(corsOptions), function(req, res, next) {
-    makeQuery("SELECT * FROM Features", function (err, result, fields) {
+    const ids = (req.query.id || req.query.ids).split(",");
+    console.log(ids);
+    const idQuery = ids ? `WHERE ${ids.map((id) => `id = "${id}"`).join(" OR ")}` : "";
+
+    makeQuery(`SELECT * FROM Features ${idQuery}`, function (err, result, fields) {
         if (err) throw err;
         console.log(result);
         res.send(result);
@@ -20,8 +24,8 @@ router.get('/priority/:user_id', cors(corsOptions), async function(req, res, nex
     
     res.send(response);
 });
-// TODO: Make the endpoint path references consistent - this is by app, others are feature ID
-router.get('/:app_id', cors(corsOptions), function(req, res, next) {
+
+router.get('/app/:app_id', cors(corsOptions), function(req, res, next) {
     const id = req.params.app_id;
     makeQuery(`SELECT * FROM Features WHERE app_id = ${id}`, function (err, result, fields) {
         if (err) throw err;

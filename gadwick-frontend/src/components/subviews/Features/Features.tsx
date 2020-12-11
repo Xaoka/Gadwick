@@ -71,7 +71,7 @@ export default function Features(props: { style?: CSSProperties, appID?: string 
 
     function updateList()
     {
-        serverAPI<IFeature[]>(API.Features, HTTP.READ, props.appID).then((data) =>
+        serverAPI<IFeature[]>(API.AppFeatures, HTTP.READ, props.appID).then((data) =>
         {
             setFeatures(data);
             console.dir(data)
