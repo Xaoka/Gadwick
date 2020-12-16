@@ -6,6 +6,8 @@ import { IFeature } from '../Features/Features';
 import serverAPI, { API, HTTP } from '../../../apis/api';
 import { useAuth0 } from '@auth0/auth0-react';
 import getUserID from '../../../apis/user';
+import { useHistory, useRouteMatch } from 'react-router-dom';
+import FeatureConfigDialog from '../Features/FeatureConfigDialog';
 
 const optionCSS: CSSProperties =
 {
@@ -23,10 +25,13 @@ const optionCSS: CSSProperties =
 export default function QuickSetup()
 {
     const { user } = useAuth0();
+    // let { path, url } = useRouteMatch();
+    // const history = useHistory();
     
     const [importDialogOpen, setImportDialogOpen] = useState(false)
     const [featureDialogOpen, setFeatureDialogOpen] = useState(false)
     const [priorityFeatures, setPriorityFeatures] = useState<IFeature[]>([])
+    const [quickEditFeature, setQuickEditFeature] = useState<IFeature|null>(null)
 
     const chevron = <ChevronRightIcon style={{ right: 0, verticalAlign: "bottom" }} fontSize="large"/>;
 
@@ -42,7 +47,10 @@ export default function QuickSetup()
     {
         const style: CSSProperties =
         {
-            float: "right",
+            // position: "fixed",
+            // right: 5,
+            // bottom: 5,
+            verticalAlign: "middle",
             borderRadius: 999,
             borderStyle: "solid",
             width: "1.5em",
@@ -90,13 +98,14 @@ export default function QuickSetup()
         {priorityFeatures.map((f) =>
         {
             const score = ((f.use_frequency * f.severity) + (f.fix_priority * f.distinctness) + (f.time_cost * f.ease) + (f.problem_frequency * f.similar_problem_frequency));
-            return <div style={{ margin: 10 }}>
+            return <div className="list-item" onClick={() => setQuickEditFeature(f)}>
                 {f.name}
                 <span style={scoreStyling(score)}>
                     {score}
                 </span>
             </div>
         })}
+        <FeatureConfigDialog feature={quickEditFeature} onClose={() => setQuickEditFeature(null)}/>
         <FeatureImport open={importDialogOpen} onClose={() => setImportDialogOpen(false)}/>
         <TestResultImport open={featureDialogOpen} onClose={() => setFeatureDialogOpen(false)}/>
     </>

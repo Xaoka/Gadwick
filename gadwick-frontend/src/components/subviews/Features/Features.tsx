@@ -9,6 +9,7 @@ import LinkOffIcon from '@material-ui/icons/LinkOff';
 
 export interface IFeatureRatings
 {
+    app_id?: string;
     passRate: number;
     distinctness: number;
     ease: number;
@@ -33,6 +34,8 @@ export interface IFeature extends IFeatureRatings
     thirdparty_id: string;
     /** Link to ticket on third party app */
     thirdparty_link: string;
+    /** Test / Repro steps */
+    steps: string[];
 }
 
 export default function Features(props: { style?: CSSProperties, appID?: string })
@@ -73,7 +76,7 @@ export default function Features(props: { style?: CSSProperties, appID?: string 
     {
         serverAPI<IFeature[]>(API.AppFeatures, HTTP.READ, props.appID).then((data) =>
         {
-            setFeatures(data);
+            setFeatures(data.map((f) => { return { ...f, steps: JSON.parse(f.steps as any) } }));
             console.dir(data)
         });
     }
@@ -143,6 +146,7 @@ export default function Features(props: { style?: CSSProperties, appID?: string 
             </TableContainer>
         </>
     }
+
     return <>
         <span style={props.style}>
             <h3>Features</h3>

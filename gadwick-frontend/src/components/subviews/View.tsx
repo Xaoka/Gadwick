@@ -41,12 +41,12 @@ export default function View(props: IView)
         setActiveIndex(index);
     }
     
-    return <span style={{ display: "flex", height: "100%", flexDirection: "row" }}>
+    return <span style={{ display: "flex", height: "100%", flexDirection: "row", overflow: "hidden" }}>
         <Sidebar options={ props.pages.map((page) => { return { icon: page.icon, callback: onPageChanged, buttonID: page.buttonID }}) } scale={props.sidebarScale} selected={activeIndex}/>
-        <div style={{flex: 5, paddingLeft: 20, height: "100%", overflowX: "scroll"}}>
-        <Switch>
-            {props.pages.map((page) => <PrivateRoute path={`${path}/${page.pageURL}`} key={page.pageURL}>{page.subView}</PrivateRoute>)}
-        </Switch>
+        <div style={{flex: 5, paddingLeft: 20, height: "100%"}}>
+            <Switch>
+                {props.pages.map((page) => <PrivateRoute path={`${path}/${page.pageURL}`} key={page.pageURL}>{page.subView}</PrivateRoute>)}
+            </Switch>
         </div>
     </span>
 }

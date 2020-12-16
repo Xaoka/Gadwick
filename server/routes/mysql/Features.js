@@ -20,7 +20,7 @@ router.get('/', cors(corsOptions), function(req, res, next) {
 router.get('/priority/:user_id', cors(corsOptions), async function(req, res, next) {
     // TODO: This needs to filter where there aren't any automated results
     const user_id = req.params.user_id;
-    const response = await awaitQuery(`SELECT * FROM Features F LEFT JOIN (SELECT id app_id, user_id FROM Applications WHERE user_id = "${user_id}") AS Apps ON F.app_id = Apps.app_id ORDER BY ((F.use_frequency * F.severity) + (F.fix_priority * F.distinctness) + (F.time_cost * F.ease) + (F.problem_frequency * F.similar_problem_frequency)) DESC LIMIT 10 `);
+    const response = await awaitQuery(`SELECT * FROM Features F LEFT JOIN (SELECT id app_id, user_id FROM Applications WHERE user_id = "${user_id}") AS Apps ON F.app_id = Apps.app_id WHERE F.id NOT IN (SELECT feature_id id FROM Results WHERE feature_id IS NOT NULL GROUP BY feature_id) ORDER BY F.priority DESC LIMIT 10 `);
     
     res.send(response);
 });
@@ -52,7 +52,7 @@ router.post('/', cors(corsOptions), function(req, res, next) {
 router.put('/:id', cors(corsOptions), function(req, res, next) {
     const id = req.params.id;
     const userData = req.body;
-    const optionalFields = ["name", "description", "use_frequency", "severity", "distinctness", "fix_priority", "ease", "time_cost", "similar_problem_frequency", "problem_frequency"];
+    const optionalFields = ["name", "description", "use_frequency", "severity", "distinctness", "fix_priority", "ease", "time_cost", "similar_problem_frequency", "problem_frequency", "steps"];
     const sqlFields = [];
     for (const field of optionalFields)
     {
@@ -61,6 +61,7 @@ router.put('/:id', cors(corsOptions), function(req, res, next) {
             sqlFields.push(`${field} = '${userData[field]}'`)
         }
     }
+    console.dir(sqlFields)
     if (sqlFields.length === 0) { res.send({ error: "No fields set" }); return; }
     makeQuery(`UPDATE Features SET ${sqlFields.join(", ")} WHERE id = ${id}`, function (err, result, fields) {
         if (err) throw err;

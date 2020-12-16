@@ -8,6 +8,7 @@ export enum API
     TestResults = "results",
     VersionRates  = "results/versions",
     Stats = "stats",
+    AutomationStats = "stats/automation",
     Applications = "applications",
     Users = "users",
     UsersByAuth = "users/auth",

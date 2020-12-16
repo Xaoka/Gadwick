@@ -5,8 +5,15 @@ import CombinedRating from './CombinedRating';
 import { IFeature, IFeatureRatings } from './Features';
 import SimpleRating from './SimpleRating';
 import { TextField } from '@material-ui/core';
+import Steps from './Steps';
 
-export default function FeatureConfig(props: { feature: IFeature, style?: CSSProperties })
+interface IFeatureConfig
+{
+    feature: IFeature;
+    style?: CSSProperties;
+}
+
+export default function FeatureConfig(props: IFeatureConfig)
 {
     const [riskRating, setRiskRating] = useState(0);
     const [valueRating, setValueRating] = useState(0);
@@ -51,10 +58,10 @@ export default function FeatureConfig(props: { feature: IFeature, style?: CSSPro
             payload[secondaryKey] = secondaryRating;
             serverAPI<IFeature[]>(API.Features, HTTP.UPDATE, props.feature.id, payload)
         }
-        return <CombinedRating primaryRating={{ title: primaryTitle, initialValue: props.feature[primaryKey] }} secondaryRating={{ title: secondaryTitle, initialValue: props.feature[secondaryKey] }} resultRatingTitle={resultTitle} onResultChanged={onResultChanged}/>
+        return <CombinedRating primaryRating={{ title: primaryTitle, initialValue: props.feature[primaryKey] as any }} secondaryRating={{ title: secondaryTitle, initialValue: props.feature[secondaryKey] as any }} resultRatingTitle={resultTitle} onResultChanged={onResultChanged}/>
     }
 
-    function renderTextField(title: string, defaultValue: string, key: string)
+    function renderTextField(title: string, defaultValue: string, key: string, width: string)
     {
         function onTextChanged(evt: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>)
         {
@@ -62,13 +69,21 @@ export default function FeatureConfig(props: { feature: IFeature, style?: CSSPro
             payload[key] = evt.target.value;
             serverAPI<IFeature[]>(API.Features, HTTP.UPDATE, props.feature.id, payload)
         }
-        return <TextField id="outlined-basic" label={title} variant="outlined" defaultValue={defaultValue} style={{ width: "40%", paddingRight: 10 }} onBlur={(evt) => onTextChanged(evt)}/>
+        return <TextField id="outlined-basic" label={title} variant="outlined" defaultValue={defaultValue} style={{ width, paddingBottom: 10, paddingTop: 10 }} onBlur={(evt) => onTextChanged(evt)}/>
+    }
+
+    function onStepsChanged(steps: string[])
+    {
+        serverAPI<IFeature[]>(API.Features, HTTP.UPDATE, props.feature.id, { steps: JSON.stringify(steps) })
     }
 
     return <span style={props.style}>
-        {renderTextField("Feature Name", props.feature.name, "name")}
-        {renderTextField("Description", props.feature.description, "description")}
-        <h4>General<div className="info">How important is this feature to your product</div></h4>
+        <h4>General<div className="info">About this feature</div></h4>
+        {renderTextField("Feature Name", props.feature.name, "name", "40%")}
+        {renderTextField("Description", props.feature.description, "description", "90%")}
+        <h4>Steps<div className="info">Steps to test this feature</div></h4>
+        <Steps steps={props.feature.steps || [""]} onChanged={onStepsChanged}/>
+        <h4>Importance<div className="info">How core is this feature to your product</div></h4>
         {renderCombinedRating("Frequency of use", "use_frequency", "Severity", "severity", "Risk", setRiskRating)}
         {renderCombinedRating("Distinctness", "distinctness", "Fix Priority", "fix_priority", "Value", setValueRating)}
         <h4>Automation<div className="info">Is it worth our time to automate</div></h4>

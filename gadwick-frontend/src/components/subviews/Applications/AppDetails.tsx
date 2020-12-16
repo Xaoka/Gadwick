@@ -1,6 +1,6 @@
 import React from 'react';
 import Features from '../Features/Features';
-import StatBox from '../Overview/StatBox';
+import StatBox from '../Overview/Stats/StatBox';
 import { IConfiguredApplication } from './AppView';
 import CategoryIcon from '@material-ui/icons/Category';
 import { IconButton } from '@material-ui/core';

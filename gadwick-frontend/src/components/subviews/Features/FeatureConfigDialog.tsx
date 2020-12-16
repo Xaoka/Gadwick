@@ -14,11 +14,10 @@ interface IFeatureConfigDialog
 
 export default function FeatureConfigDialog(props: IFeatureConfigDialog)
 {
-    return <Dialog open={props.feature !== null} maxWidth="md" onClose={props.onClose} id="feature_config_dialog">
-            <DialogTitle style={{ padding: 40, paddingBottom: 0 }}>
-                <h3>Feature Configuration</h3>
-                <IconButton style={{float: "right"}} onClick={props.onClose}><CloseIcon/></IconButton>
+    return <Dialog open={props.feature !== null} maxWidth="md" onClose={props.onClose} id="feature_config_dialog" style={{overflow: "hidden"}}>
+            <DialogTitle>
+                <h3>Feature Configuration<IconButton style={{float: "right"}} onClick={props.onClose}><CloseIcon/></IconButton></h3>
             </DialogTitle>
-            {props.feature ? <FeatureConfig feature={props.feature} style={{ padding: 40 }}/> : <Skeleton></Skeleton>}
+            {props.feature ? <FeatureConfig feature={props.feature} style={{ padding: 40, paddingTop: 0, overflow: "scroll" }}/> : <Skeleton></Skeleton>}
         </Dialog>
 }
