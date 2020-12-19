@@ -8,6 +8,7 @@ interface IStatBox
     label: string;
     value: number;
     style?: CSSProperties;
+    onClick?: () => void;
 }
 
 export default function StatBox(props: IStatBox)
@@ -19,7 +20,7 @@ export default function StatBox(props: IStatBox)
         else { return `${(value / 1000000).toFixed(1)}m` }
     }
 
-    return <div style={{ borderRadius: 15, borderColor: "transparent", backgroundColor: "#ebf1ff", width: 150, height: 150, margin: 10, ...props.style }}>
+    return <div className="stat-box" style={props.style} onClick={props.onClick}>
         <div style={{ padding: 20, paddingLeft: 20, paddingRight: 20, alignContent: "center" }}>
             <props.icon style={{ borderRadius: 100, borderColor: "transparent", backgroundColor: "#b2c4ed", padding: 10, textAlign: "center", marginLeft: 35 }} fontSize="small"/>
             <h3 style={{ margin: "auto", textAlign: "center", paddingLeft: 0 }}>{formatValue(props.value)}</h3>

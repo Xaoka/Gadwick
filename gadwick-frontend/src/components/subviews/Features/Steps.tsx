@@ -37,7 +37,14 @@ export default function Steps(props: ISteps)
         }
         else
         {
-            return <IconButton onClick={() => { const newSteps = [...steps]; newSteps.splice(fieldIndex, 1); setSteps(newSteps); }}>
+            const deleteStep = () =>
+            {
+                console.log(`Deleting ${fieldIndex}`)
+                const newSteps = [...steps];
+                newSteps.splice(fieldIndex, 1);
+                setSteps(newSteps);
+            }
+            return <IconButton onClick={deleteStep}>
                 <CloseIcon style={{ color: "grey", fontSize: "0.5em" }}/>
             </IconButton>
         }
@@ -51,7 +58,7 @@ export default function Steps(props: ISteps)
                 {index + 1}.
             </span>
             {/* <InputLabel htmlFor="step-0">Step 0</InputLabel> */}
-            <Input id={`step-${index}`} defaultValue={text} style={{ width: "60%", paddingBottom: 10, paddingTop: 10 }}
+            <Input id={`step-${index}`} name={text} value={text} style={{ width: "60%", paddingBottom: 10, paddingTop: 10 }}
                 endAdornment={adornment(lastStep, index)} onKeyDown={onKeyDown} autoFocus={lastStep}
                 onChange={(v) => { const newSteps = [...steps]; newSteps[index] = v.target.value; setSteps(newSteps); }}/>
         </div>

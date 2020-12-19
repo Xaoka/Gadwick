@@ -5,7 +5,8 @@ import serverAPI, { API, HTTP } from '../../../apis/api';
 import getUserID from '../../../apis/user';
 import { IConfiguredApplication } from '../Applications/AppView';
 import { IFeature } from '../Features/Features';
-import { Providers, Stages } from './FeatureImport';
+import { Stages } from './FeatureImport';
+import { ThirdPartyProviders } from '../../../apis/thirdParty/providers';
 import { appNameToURL } from '../../../utils/ToURL';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -27,7 +28,7 @@ interface IImportedFeature
 
 interface IFeatureSelect
 {
-    provider: Providers;
+    provider: ThirdPartyProviders;
     importedFeatures: IImport;
     setStage: (stage: Stages) => void;
 }

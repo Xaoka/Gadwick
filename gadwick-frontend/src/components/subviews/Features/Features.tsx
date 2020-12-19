@@ -10,6 +10,7 @@ import LinkOffIcon from '@material-ui/icons/LinkOff';
 export interface IFeatureRatings
 {
     app_id?: string;
+    app_name?: string;
     passRate: number;
     distinctness: number;
     ease: number;
@@ -36,6 +37,8 @@ export interface IFeature extends IFeatureRatings
     thirdparty_link: string;
     /** Test / Repro steps */
     steps: string[];
+    /** Calculated automation priority score */
+    priority: number;
 }
 
 export default function Features(props: { style?: CSSProperties, appID?: string })

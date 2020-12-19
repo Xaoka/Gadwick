@@ -5,6 +5,7 @@ import InfoCard, { MediaType } from '../../InfoCard';
 import PrivateRoute from '../../PrivateRoute';
 import Setup from './Setup';
 import RobustTests from './RobustTests';
+import SubView from '../SubView';
 
 export default function Tutorials()
 {
@@ -16,8 +17,7 @@ export default function Tutorials()
         history.push(`${url}/${urlExt}`)
     }
 
-    return <>
-        <h1>Tutorials</h1>
+    return <SubView title="Tutorials">
         <Switch>
             <PrivateRoute path={`${path}/setup`}>
                 <BreadcrumbPath baseURL={url} stages={["Browse", "Setting up Gadwick"]}/>
@@ -40,5 +40,5 @@ export default function Tutorials()
                 </div>
             </PrivateRoute>
         </Switch>
-    </>
+    </SubView>
 }

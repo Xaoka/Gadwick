@@ -19,22 +19,39 @@ if (err) {
 
 function makeQuery(query, callback)
 {
-    connection.query(query, callback);
+    try
+    {
+        connection.query(query, callback);
+    }
+    catch (e)
+    {
+        console.log(`Problem with your query:`)
+        console.log("\x1b[32m%s\x1b[0m", query);
+        console.log(e);
+    }
 }
 
 function awaitQuery(query)
 {
     return new Promise((resolve, reject) =>
     {
-        connection.query(query, (error, results, fields) =>
+        try
         {
-            if (error)
+            connection.query(query, (error, results, fields) =>
             {
-                console.log(`\x1b[31m%s\x1b[0m`,`Problem resolving query:\n${query}\n\n`);
-                reject(error)
-            }
-            resolve(results);
-        })
+                if (error)
+                {
+                    console.log(`\x1b[31m%s\x1b[0m`,`Problem resolving query:\n${query}\n\n`);
+                    reject(error)
+                }
+                resolve(results);
+            })
+        }
+        catch (e)
+        {
+            console.error(e);
+            resolve({ error: "Database Connection Failure"})
+        }
     })
 }
 

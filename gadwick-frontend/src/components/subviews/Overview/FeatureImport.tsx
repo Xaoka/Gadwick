@@ -8,20 +8,11 @@ import getUserID from '../../../apis/user';
 import { useAuth0 } from '@auth0/auth0-react';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import FeatureSelect, { IImport } from './FeatureSelect';
-
-
-const trelloAPIKey = `482a04295a7abedf6df55c7538921b0f`
+import TrelloAPI from '../../../apis/thirdParty/trello';
+import AsanaAPI from '../../../apis/thirdParty/asana';
+import { ThirdPartyProviders } from '../../../apis/thirdParty/providers';
 
 export enum Stages { Provider, Connect, Authorizing, Import, Importing, Success }
-export enum Providers
-{
-    Trello = "Trello",
-    Asana = "Asana",
-    JIRA = "JIRA",
-    GitLab = "GitLab",
-    CucumberStudio = "Cucumber Studio",
-    None = "None"
-}
 
 interface IFeatureImport
 {
@@ -33,10 +24,10 @@ export default function FeatureImport(props: IFeatureImport)
 {
     const [stage, setStage] = useState<Stages>(Stages.Provider)
     const [appSelected, setAppSelected] = useState<IConfiguredApplication|null>(null)
-    const [provider, setProvider] = useState<Providers>(Providers.None);
+    const [provider, setProvider] = useState<ThirdPartyProviders>(ThirdPartyProviders.None);
     const [importing, setImporting] = useState<boolean>(false);
     const [importedFeatures, setImportedFeatures] = useState<IImport>({});
-    function onSelectProvider(prov: Providers)
+    function onSelectProvider(prov: ThirdPartyProviders)
     {
         setProvider(prov);
         setStage(Stages.Connect);
@@ -62,14 +53,12 @@ export default function FeatureImport(props: IFeatureImport)
         setImporting(true);
         let features: IImport = {};
         // Do an API call to fetch
-        if (provider == Providers.Trello)
+        if (provider == ThirdPartyProviders.Trello)
         {
-            // TODO: Once deployed, add webhooks: https://developer.atlassian.com/cloud/trello/guides/rest-api/webhooks/
-            const token = `ce5094cddd4bfd789d18616d7a18977e33f1e7fe59c59525857270347fb6c5f0`;
-            const boards = (await Axios.get(`https://api.trello.com/1/members/me/boards?key=${trelloAPIKey}&token=${token}`)).data;
+            const boards = await TrelloAPI.getBoards();
             for (const board of boards)
             {
-                const cards = (await Axios.get(`https://api.trello.com/1/boards/${board.id}/cards?key=${trelloAPIKey}&token=${token}`)).data;
+                const cards = await TrelloAPI.getCards(board.id);
                 // console.log(cards.map((card: any) => card.name));
                 for (const card of cards)
                 {
@@ -80,21 +69,18 @@ export default function FeatureImport(props: IFeatureImport)
                         board: board.name,
                         boardID: board.id,
                         ticketID: card.id,
-                        link: card.shortUrl
+                        link: card.link
                     }
                     features[board.name].push(feature);
                 }
             }
         }
-        else if (provider == Providers.Asana)
+        else if (provider == ThirdPartyProviders.Asana)
         {
-            // OAuth: https://developers.asana.com/docs/oauth
-            const token = `1/1175586585180772:bafe862dc1cb6b48a39a2d3a9434a0e6`;
-            const config = { headers: { "Authorization": `Bearer ${token}`} };
-            const projects = (await Axios.get(`https://app.asana.com/api/1.0/projects`, config)).data.data;
+            const projects = await AsanaAPI.getBoards();
             for (const project of projects)
             {
-                const cards = (await Axios.get(`https://app.asana.com/api/1.0/tasks?project=${project.gid}`, config)).data.data;
+                const cards = await AsanaAPI.getCards(project.id);
                 for (const card of cards)
                 {
                     features[project.name] = features[project.name] || [];
@@ -102,15 +88,15 @@ export default function FeatureImport(props: IFeatureImport)
                     {
                         name: card.name,
                         board: project.name,
-                        boardID: project.gid,
-                        ticketID: card.gid,
-                        link: "TODO: Link"
+                        boardID: project.id,
+                        ticketID: card.id,
+                        link: card.link
                     }
                     features[project.name].push(feature);
                 }
             }
         }
-        else if (provider == Providers.CucumberStudio)
+        else if (provider == ThirdPartyProviders.CucumberStudio)
         {
             // TODO: OAuth / credentials fetching - uid + client + apiID is way too much
             const config =
@@ -157,7 +143,7 @@ export default function FeatureImport(props: IFeatureImport)
             setStage(Stages.Import);
             return;
         }
-        if (provider == Providers.Trello)
+        if (provider == ThirdPartyProviders.Trello)
         {
             // Does not work with localhost?
             (window as any).Trello.authorize({
@@ -184,10 +170,10 @@ export default function FeatureImport(props: IFeatureImport)
                         <div>
                             Where would you like to import features from?
                         </div>
-                        <button onClick={() => onSelectProvider(Providers.Trello)}>Trello{chevron}</button>
-                        <button onClick={() => onSelectProvider(Providers.JIRA)} disabled={true}>JIRA{chevron}</button>
-                        <button onClick={() => onSelectProvider(Providers.Asana)}>Asana{chevron}</button>
-                        <button onClick={() => onSelectProvider(Providers.CucumberStudio)}>Cucumber Studio{chevron}</button>
+                        <button onClick={() => onSelectProvider(ThirdPartyProviders.Trello)}>Trello{chevron}</button>
+                        <button onClick={() => onSelectProvider(ThirdPartyProviders.JIRA)} disabled={true}>JIRA{chevron}</button>
+                        <button onClick={() => onSelectProvider(ThirdPartyProviders.Asana)}>Asana{chevron}</button>
+                        <button onClick={() => onSelectProvider(ThirdPartyProviders.CucumberStudio)}>Cucumber Studio{chevron}</button>
                     </>
                 : null }
                 {stage == Stages.Connect ?

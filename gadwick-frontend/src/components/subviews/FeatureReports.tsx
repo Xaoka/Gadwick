@@ -3,11 +3,12 @@ import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import serverAPI, { API, HTTP } from '../../apis/api';
+import SubView from './SubView';
 
-interface ITestResult
+export interface ITestResult
 {
     feature_id: string;
-    passed: boolean;
+    passed: string;
     id: string;
     version: string;
     name: string;
@@ -24,8 +25,7 @@ export default function FeatureReports(props: { /*feature: IFeature,*/ style?: C
         serverAPI<ITestResult[]>(API.TestResults, HTTP.READ).then(setResults);
     }, [])
 
-    return <span style={props.style}>
-        <h1>Test Reports</h1>
+    return <SubView title="Test Reports">
         <h2>Version stability</h2>
         <TableContainer component={Paper}>
         <Table aria-label="simple table">
@@ -49,5 +49,5 @@ export default function FeatureReports(props: { /*feature: IFeature,*/ style?: C
             </TableBody>
         </Table>
         </TableContainer>
-    </span>
+    </SubView>
 }

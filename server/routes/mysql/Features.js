@@ -4,13 +4,14 @@ var corsOptions = require('../cors')
 var router = express.Router();
 const { makeQuery, awaitQuery } = require('./commands/mysql');
 const { insertInto } = require('./commands/insert');
+const { deleteEntry } = require('./commands/delete');
 
 router.get('/', cors(corsOptions), function(req, res, next) {
     const ids = (req.query.id || req.query.ids).split(",");
     console.log(ids);
     const idQuery = ids ? `WHERE ${ids.map((id) => `id = "${id}"`).join(" OR ")}` : "";
 
-    makeQuery(`SELECT * FROM Features ${idQuery}`, function (err, result, fields) {
+    makeQuery(`SELECT * FROM Features LEFT JOIN (SELECT id app_id, name app_name FROM Applications) Apps ON Features.app_id = Apps.app_id ${idQuery}`, function (err, result, fields) {
         if (err) throw err;
         console.log(result);
         res.send(result);
@@ -46,7 +47,7 @@ router.get('/s/:client_secret', cors(corsOptions), function(req, res, next) {
 
 
 router.post('/', cors(corsOptions), function(req, res, next) {
-    insertInto(["name", "description", "app_id", "thirdparty_id", "thirdparty_provider", "thirdparty_board", "thirdparty_link"], "Features", req, res, next);
+    insertInto(["name", "description", "app_id"], ["thirdparty_id", "thirdparty_provider", "thirdparty_board", "thirdparty_link"], "Features", req, res, next);
 })
 
 router.put('/:id', cors(corsOptions), function(req, res, next) {
@@ -63,20 +64,18 @@ router.put('/:id', cors(corsOptions), function(req, res, next) {
     }
     console.dir(sqlFields)
     if (sqlFields.length === 0) { res.send({ error: "No fields set" }); return; }
-    makeQuery(`UPDATE Features SET ${sqlFields.join(", ")} WHERE id = ${id}`, function (err, result, fields) {
+    makeQuery(`UPDATE Features SET ${sqlFields.join(", ")} WHERE id = "${id}"`, function (err, result, fields) {
         if (err) throw err;
         console.log(result);
         res.send(result);
     });
 })
 
+// TODO: what should happen to sessions and results here?
 router.delete('/:id', cors(corsOptions), function(req, res, next) {
     const id = req.params.id;
-    makeQuery(`DELETE FROM Features WHERE id = ${id}`, function (err, result, fields) {
-        if (err) throw err;
-        console.log(result);
-        res.send(result);
-    });
+    deleteEntry("Features", id);
+    deleteEntry("Results", id, "feature_id");
 })
 
 module.exports = router;

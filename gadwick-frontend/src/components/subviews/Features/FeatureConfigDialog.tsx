@@ -18,6 +18,6 @@ export default function FeatureConfigDialog(props: IFeatureConfigDialog)
             <DialogTitle>
                 <h3>Feature Configuration<IconButton style={{float: "right"}} onClick={props.onClose}><CloseIcon/></IconButton></h3>
             </DialogTitle>
-            {props.feature ? <FeatureConfig feature={props.feature} style={{ padding: 40, paddingTop: 0, overflow: "scroll" }}/> : <Skeleton></Skeleton>}
+            {props.feature ? <FeatureConfig feature={props.feature} style={{ padding: 40, paddingTop: 0, overflow: "scroll" }} onDeleted={props.onClose}/> : <Skeleton></Skeleton>}
         </Dialog>
 }

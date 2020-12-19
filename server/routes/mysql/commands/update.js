@@ -10,7 +10,7 @@ async function update(userData, optionalFields, tableName, entryID)
             sqlFields.push(`${field} = '${userData[field]}'`)
         }
     }
-    if (sqlFields.length === 0) { res.send({ error: "No fields set" }); return; }
+    if (sqlFields.length === 0) { return { error: "No fields set" }; }
     const response = await awaitQuery(`UPDATE ${tableName} SET ${sqlFields.join(", ")} WHERE id = '${entryID}'`)
     return response;
 }

@@ -4,13 +4,15 @@ import serverAPI, { API, HTTP } from '../../../apis/api';
 import CombinedRating from './CombinedRating';
 import { IFeature, IFeatureRatings } from './Features';
 import SimpleRating from './SimpleRating';
-import { TextField } from '@material-ui/core';
+import { Dialog, TextField } from '@material-ui/core';
 import Steps from './Steps';
+import DeleteDialog from '../../DeleteDialog';
 
 interface IFeatureConfig
 {
     feature: IFeature;
     style?: CSSProperties;
+    onDeleted: () => void;
 }
 
 export default function FeatureConfig(props: IFeatureConfig)
@@ -20,6 +22,7 @@ export default function FeatureConfig(props: IFeatureConfig)
     const [efficiencyRating, setEfficiencyRating] = useState(0);
     const [volatilityRating, setVolatilityRating] = useState(0);
     const [priorityRating, setPriorityRating] = useState(0);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     // const [lastSavedScore, setLastSavedScore] = useState(0);
 
     function calculateRisk()
@@ -77,8 +80,17 @@ export default function FeatureConfig(props: IFeatureConfig)
         serverAPI<IFeature[]>(API.Features, HTTP.UPDATE, props.feature.id, { steps: JSON.stringify(steps) })
     }
 
-    return <span style={props.style}>
+    function deleteFeature()
+    {
+        serverAPI<IFeature[]>(API.Features, HTTP.DELETE, props.feature.id);
+        setDeleteDialogOpen(false);
+        props.onDeleted();
+    }
+
+    return <>
+        <span style={props.style}>
         <h4>General<div className="info">About this feature</div></h4>
+        <p>Application: {props.feature.app_name}</p>
         {renderTextField("Feature Name", props.feature.name, "name", "40%")}
         {renderTextField("Description", props.feature.description, "description", "90%")}
         <h4>Steps<div className="info">Steps to test this feature</div></h4>
@@ -100,5 +112,8 @@ export default function FeatureConfig(props: IFeatureConfig)
             <SimpleRating key="primary" title={"Priority Score"} initialValue={priorityRating} disabled={true}/>
             {/* <button style={{ float: "right" }} onClick={saveFeature}>Save Changes</button> */}
         </div>
+        <button style={{ float: "right" }} className="danger" onClick={() => setDeleteDialogOpen(true)}>Delete</button>
     </span>
+    <DeleteDialog targetType="Feature" deleteTargetText="any results associated with it" open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)} onSubmit={deleteFeature}/>
+    </>
 }

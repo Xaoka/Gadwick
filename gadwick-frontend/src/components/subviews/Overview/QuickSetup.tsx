@@ -35,13 +35,15 @@ export default function QuickSetup()
 
     const chevron = <ChevronRightIcon style={{ right: 0, verticalAlign: "bottom" }} fontSize="large"/>;
 
-    useEffect(() =>
+    useEffect(refreshFeatures, [])
+
+    function refreshFeatures()
     {
         getUserID(user.sub).then((user_id) =>
         {
             serverAPI<IFeature[]>(API.PriorityFeatures, HTTP.READ, user_id).then(setPriorityFeatures);
         });
-    }, [])
+    }
 
     function scoreStyling(score: number): CSSProperties
     {
@@ -97,15 +99,14 @@ export default function QuickSetup()
         <h4>Test Automation Priority</h4>
         {priorityFeatures.map((f) =>
         {
-            const score = ((f.use_frequency * f.severity) + (f.fix_priority * f.distinctness) + (f.time_cost * f.ease) + (f.problem_frequency * f.similar_problem_frequency));
-            return <div className="list-item" onClick={() => setQuickEditFeature(f)}>
+            return <div id={f.id} className="list-item" onClick={() => setQuickEditFeature(f)}>
                 {f.name}
-                <span style={scoreStyling(score)}>
-                    {score}
+                <span style={scoreStyling(f.priority)}>
+                    {f.priority}
                 </span>
             </div>
         })}
-        <FeatureConfigDialog feature={quickEditFeature} onClose={() => setQuickEditFeature(null)}/>
+        <FeatureConfigDialog feature={quickEditFeature} onClose={() => { setQuickEditFeature(null); refreshFeatures(); }}/>
         <FeatureImport open={importDialogOpen} onClose={() => setImportDialogOpen(false)}/>
         <TestResultImport open={featureDialogOpen} onClose={() => setFeatureDialogOpen(false)}/>
     </>

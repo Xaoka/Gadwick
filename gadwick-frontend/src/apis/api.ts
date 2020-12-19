@@ -6,6 +6,7 @@ export enum API
     AppFeatures = "features/app",
     PriorityFeatures = "features/priority",
     TestResults = "results",
+    SessionResults = "results/session",
     VersionRates  = "results/versions",
     Stats = "stats",
     AutomationStats = "stats/automation",

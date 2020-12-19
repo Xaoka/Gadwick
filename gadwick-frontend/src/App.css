@@ -39,7 +39,7 @@ h3
 {
   font-weight: bold;
   font-size: 28px;
-  width: 90%;
+  /* width: 90%; */
   /* border-bottom: var(--theme-primary) 2px solid; */
   color: var(--theme-primary);
   margin-bottom: 2.5vh;
@@ -49,7 +49,7 @@ h4
 {
   font-weight: bold;
   font-size: 18px;
-  width: 90%;
+  width: 100%;
   border-bottom: var(--theme-primary) 2px solid;
   color: var(--theme-primary);
   margin-bottom: 2vh;
@@ -85,6 +85,34 @@ button:disabled
 {
   color: darkred;
   background-color: rgb(241, 156, 156);
+}
+.danger > #icon
+{
+  color: darkred;
+}
+.success
+{
+  color: rgb(0, 139, 46);
+  background-color: rgb(156, 241, 184);
+}
+.danger > #icon
+{
+  color: rgb(0, 139, 46);
+}
+.inactive
+{
+  color:  rgb(49, 49, 49);
+  background-color: rgb(228, 228, 228);
+}
+.warning
+{
+  color: rgb(139, 130, 0);
+  background-color: rgb(241, 218, 156);
+}
+.major-warning
+{
+  color: rgb(139, 63, 0);
+  background-color: rgb(241, 190, 156);
 }
 
 .sidebar
@@ -145,4 +173,20 @@ select
 .list-item:hover
 {
   background-color: rgb(233, 233, 233);
+}
+
+.stat-box
+{
+  border-radius: 15px;
+  border-color: transparent;
+  background-color: #ebf1ff;
+  width: 150px;
+  height: 150px;
+  margin: 5px
+}
+.stat-box:hover
+{
+  transition: linear;
+  transition-duration: 0.25s;
+  background-color: #dde4f3;
 }

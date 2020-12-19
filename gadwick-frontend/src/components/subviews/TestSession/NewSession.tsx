@@ -50,7 +50,7 @@ export default function NewSession(props: INewSession)
         // TODO: make userID a hook?! Or cache?
         getUserID(user.sub).then(async (user_id) =>
         {
-            const features = await serverAPI<IFeature[]>(API.Features, HTTP.READ, app.id);
+            const features = await serverAPI<IFeature[]>(API.AppFeatures, HTTP.READ, app.id);
             const feature_ids = JSON.stringify(features.map((f) => f.id));
             const response = await serverAPI<ISession>(API.Sessions, HTTP.CREATE, undefined, { user_id, app_version: "0.0.0", app_id: app.id, feature_ids });
             history.push(`${props.sessionURL}/${response.id}`);

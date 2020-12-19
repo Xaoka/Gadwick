@@ -11,7 +11,7 @@ router.get('/auth/:user_id', cors(corsOptions), async function(req, res, next) {
     res.send(applications)
 });
 router.post('/', cors(corsOptions), async function(req, res, next) {
-    insertInto(["name", "auth_id", "auth_service"], "Users", req, res, next);
+    insertInto(["name", "auth_id", "auth_service"], [], "Users", req, res, next);
 });
 
 module.exports = router;
