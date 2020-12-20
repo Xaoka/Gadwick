@@ -9,7 +9,7 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import serverAPI, { API, HTTP } from '../../../apis/api';
 import { FlexibleXYPlot, VerticalBarSeries, XAxis, YAxis } from 'react-vis';
 import AutomationPieChart from '../Overview/Stats/AutomationPieChart';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import UserRoles from './UserRoles';
 
 interface IAppDetails
 {
@@ -69,26 +69,7 @@ export default function AppDetails(props: IAppDetails)
                     </IconButton>
                 </Tooltip>
             </div>
-            <h3>Users</h3>
-            <p>You can add users to this Application and manage what they have access to.</p>
-            <Table aria-label="simple table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell>User</TableCell>
-                        <TableCell>Role</TableCell>
-                        <TableCell></TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    <TableRow>
-                        <TableCell>You</TableCell>
-                        <TableCell>Admin</TableCell>
-                        <TableCell>
-                            <IconButton><DeleteForeverIcon className="danger"/></IconButton>
-                        </TableCell>
-                    </TableRow>
-                </TableBody>
-            </Table>
+            <UserRoles app={props.app}/>
             <Features appID={props.app.id}/>
         </div>
         

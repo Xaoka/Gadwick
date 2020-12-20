@@ -13,6 +13,8 @@ export enum API
     Applications = "applications",
     Users = "users",
     UsersByAuth = "users/auth",
+    UserRoles = "roles",
+    Invites = "roles/invites",
     Sessions = "sessions",
     SessionsByAuth = "sessions/auth"
 }

@@ -9,7 +9,7 @@ interface IDeleteDialog
     onSubmit: () => void;
     open: boolean;
     targetType: string;
-    /** Text describing what will be deleted */
+    /** Text describing what will be deleted ("Will delete [text] Are you sure?")*/
     deleteTargetText: string;
 }
 

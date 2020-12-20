@@ -63,8 +63,8 @@ router.put('/:id', cors(corsOptions), function(req, res, next) {
 // TODO: what should happen to sessions and results here?
 router.delete('/:id', cors(corsOptions), function(req, res, next) {
     const id = req.params.id;
-    deleteEntry("Features", id);
-    deleteEntry("Results", id, "feature_id");
+    deleteEntry("Features", id, req, res, next);
+    deleteEntry("Results", id, req, res, next, "feature_id");
 })
 
 module.exports = router;

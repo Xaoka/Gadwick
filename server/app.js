@@ -12,6 +12,7 @@ var applicationsRouter = require('./routes/mysql/Applications');
 var statsRouter = require('./routes/mysql/Stats');
 var usersRouter = require('./routes/mysql/Users');
 var sessionsRouter = require('./routes/mysql/Sessions');
+var rolesRouter = require('./routes/mysql/Roles');
 
 var cors = require('cors')
 var app = express();
@@ -34,6 +35,7 @@ app.use('/results', resultsRouter);
 app.use('/applications', applicationsRouter);
 app.use('/users', usersRouter);
 app.use('/sessions', sessionsRouter);
+app.use('/roles', rolesRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

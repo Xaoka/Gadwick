@@ -141,11 +141,11 @@ export default function Features(props: { style?: CSSProperties, appID?: string 
                             <FeaturePriority priority={feature.priority}/>
                         </TableCell>
                         <TableCell>
-                            <IconButton><DeleteForeverIcon className="danger"/></IconButton>
+                            {/** TODO: Make this use a delete dialog! */}
+                            <IconButton onClick={(evt) => onDelete(evt, feature)}>
+                                <DeleteForeverIcon className="danger"/>
+                            </IconButton>
                         </TableCell>
-                    {/* <ExpandableTableRow key={feature.name} data={rowMapping(feature)} featureData={feature} onDelete={onDelete}>
-                        <FeatureConfig feature={feature} />
-                    </ExpandableTableRow> */}
                     </TableRow>
                 ))}
                 </TableBody>
