@@ -8,6 +8,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import getUserID from '../../../apis/user';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import FeatureConfigDialog from '../Features/FeatureConfigDialog';
+import FeaturePriority from '../Features/FeaturePriority';
 
 const optionCSS: CSSProperties =
 {
@@ -45,46 +46,6 @@ export default function QuickSetup()
         });
     }
 
-    function scoreStyling(score: number): CSSProperties
-    {
-        const style: CSSProperties =
-        {
-            // position: "fixed",
-            // right: 5,
-            // bottom: 5,
-            verticalAlign: "middle",
-            borderRadius: 999,
-            borderStyle: "solid",
-            width: "1.5em",
-            height: "1.5em",
-            textAlign: "center",
-            fontWeight: "bold",
-            color: "black"
-        };
-        if (score > 55)
-        {
-            style.backgroundColor = "#f2908d";
-            style.borderColor = "darkred";
-        }
-        else if (score > 45)
-        {
-            style.backgroundColor = "#f5d0a9";
-            style.borderColor = "#b55d00";
-        }
-        else if (score > 25)
-        {
-            style.backgroundColor = "#f3f5d5";
-            style.borderColor = "#d4bb00";
-        }
-        else
-        {
-            style.backgroundColor = "#ededed";
-            style.borderColor = "#616161";
-        }
-        style.color = style.borderColor;
-        return style;
-    }
-
     return <>
         <h2>Features</h2>
         {/* <h4>Quick Setup</h4> */}
@@ -100,10 +61,11 @@ export default function QuickSetup()
         {priorityFeatures.map((f) =>
         {
             return <div id={f.id} className="list-item" onClick={() => setQuickEditFeature(f)}>
-                {f.name}
-                <span style={scoreStyling(f.priority)}>
-                    {f.priority}
+                <span>
+                    {f.name}
+                    <div className="info">{f.app_name}</div>
                 </span>
+                <FeaturePriority priority={f.priority}/>
             </div>
         })}
         <FeatureConfigDialog feature={quickEditFeature} onClose={() => { setQuickEditFeature(null); refreshFeatures(); }}/>

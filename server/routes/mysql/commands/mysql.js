@@ -17,6 +17,8 @@ if (err) {
     connection.query(`USE gadwick`)
 });
 
+// TODO: !! Use post and actual sanitization rather than our own injection thing:
+// https://stackoverflow.com/questions/15778572/preventing-sql-injection-in-node-js
 function makeQuery(query, callback)
 {
     try

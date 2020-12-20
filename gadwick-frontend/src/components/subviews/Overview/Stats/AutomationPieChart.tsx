@@ -11,12 +11,17 @@ interface IAutomationStats
     not_configured: number;
 }
 
-export default function AutomationPieChart()
+interface IAutomationPieChart
+{
+    appID?: string;
+    scale?: number;
+}
+
+export default function AutomationPieChart(props: IAutomationPieChart)
 {
     const [stats, setStats] = useState<IAutomationStats>({ automated: 0, important: 0, possible: 0, not_worth: 0, not_configured: 0 });
     useEffect(() => {
-        
-        serverAPI<IAutomationStats>(API.AutomationStats, HTTP.READ).then(setStats);
+        serverAPI<IAutomationStats>(API.AutomationStats, HTTP.READ, props.appID).then(setStats);
     }, [])
 
     // TODO: Account for 0-count segments that would overlap
@@ -25,7 +30,7 @@ export default function AutomationPieChart()
         {
             value: stats.automated,
             name: "Automated features",
-            color: "#34eb3a"
+            color: "#59eb5e"
         },
         {
             value: stats.important,
@@ -73,11 +78,12 @@ export default function AutomationPieChart()
         </>);
     };
 
-    return <PieChart width={650} height={300}>
+    const scale = props.scale || 1;
+    return <PieChart width={300 + (350 * scale)} height={150 + (200 * scale)}>
         {/** TODO: Modify label line to avoid overlaps */}
-        <Pie dataKey="value" isAnimationActive={false} data={data} cx={325} cy={150} outerRadius={110} fill="#8884d8" label={renderCustomizedLabel} paddingAngle={0}>
+        <Pie dataKey="value" isAnimationActive={false} data={data} cx={100 + (225 * scale)} cy={150 * scale} outerRadius={110 * scale} fill="#8884d8" label={renderCustomizedLabel} paddingAngle={0}>
             {
-                data.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)
+                data.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} fontSize={10 + (6 * scale)}/>)
             }
         </Pie>
     </PieChart>

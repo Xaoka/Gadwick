@@ -6,6 +6,8 @@ import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import FeatureConfigDialog from './FeatureConfigDialog';
 import LinkIcon from '@material-ui/icons/Link';
 import LinkOffIcon from '@material-ui/icons/LinkOff';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import FeaturePriority from './FeaturePriority';
 
 export interface IFeatureRatings
 {
@@ -117,6 +119,7 @@ export default function Features(props: { style?: CSSProperties, appID?: string 
                         <TableCell align="left">Description</TableCell>
                         <TableCell align="left">Pass Rate (%)</TableCell>
                         <TableCell align="left">Ticket Link</TableCell>
+                        <TableCell align="left">Priority</TableCell>
                         <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
@@ -135,9 +138,10 @@ export default function Features(props: { style?: CSSProperties, appID?: string 
                             </Tooltip>
                         </TableCell>
                         <TableCell>
-                            <button className="danger" onClick={(evt: React.MouseEvent<HTMLButtonElement, MouseEvent>) => onDelete(evt, feature)}>
-                                <span role="img" aria-label="trash">🗑️</span>
-                            </button>
+                            <FeaturePriority priority={feature.priority}/>
+                        </TableCell>
+                        <TableCell>
+                            <IconButton><DeleteForeverIcon className="danger"/></IconButton>
                         </TableCell>
                     {/* <ExpandableTableRow key={feature.name} data={rowMapping(feature)} featureData={feature} onDelete={onDelete}>
                         <FeatureConfig feature={feature} />
@@ -152,8 +156,10 @@ export default function Features(props: { style?: CSSProperties, appID?: string 
 
     return <>
         <span style={props.style}>
-            <h3>Features</h3>
-            <button style={{ color: "green", float: "right" }} onClick={createNew}>New Feature</button>
+            <h3>
+                Features
+                <button style={{ color: "green", float: "right" }} onClick={createNew}>New Feature</button>
+            </h3>
             {renderFeatureTable()}
         </span>
         <FeatureConfigDialog feature={dialogFeature} onClose={() =>
