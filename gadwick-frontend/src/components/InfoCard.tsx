@@ -1,4 +1,4 @@
-import { Card, CardActionArea, CardMedia, CardContent, Typography, makeStyles } from '@material-ui/core';
+import { Card, CardActionArea, CardMedia, CardContent, Typography, makeStyles, Button, CardActions } from '@material-ui/core';
 import React from 'react';
 
 const useStyles = makeStyles({
@@ -21,6 +21,13 @@ interface IInfoCard
     summary: string;
     image: MediaType;
     onClick?: () => void;
+    actions?: ICardActions[]
+}
+
+export interface ICardActions
+{
+  text: string;
+  onClick: () => void;
 }
 
 export default function InfoCard(props: IInfoCard)
@@ -57,13 +64,11 @@ export default function InfoCard(props: IInfoCard)
           </Typography>
         </CardContent>
       </CardActionArea>
-      {/* <CardActions>
-        <Button size="small" color="primary">
-          Share
-        </Button>
-        <Button size="small" color="primary">
-          Learn More
-        </Button>
-      </CardActions> */}
+      {props.actions && <CardActions>
+        {props.actions.map((action) =>
+          <Button size="small" color="primary" onClick={action.onClick}>
+            {action.text}
+          </Button>)}
+      </CardActions>}
     </Card>
 }

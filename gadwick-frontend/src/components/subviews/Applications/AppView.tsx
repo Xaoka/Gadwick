@@ -5,6 +5,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import getUserID from '../../../apis/user';
 import NewApplicationDialog from './NewApplicationDialog';
 import DeleteDialog from '../../DeleteDialog';
+import AcceptInviteDialog from './AcceptInviteDialog';
 import InfoCard, { MediaType } from '../../InfoCard';
 import AddIcon from '@material-ui/icons/Add';
 import PrivateRoute from '../../PrivateRoute';
@@ -13,6 +14,8 @@ import AppDetails from './AppDetails';
 import BreadcrumbPath from '../../BreadcrumbPath';
 import { appNameToURL } from '../../../utils/ToURL';
 import SubView from '../SubView';
+import { IAppUser } from './UserTable';
+import { Roles } from './UserRoles';
 
 export interface IConfiguredApplication
 {
@@ -24,13 +27,30 @@ export interface IConfiguredApplication
     description: string;
 }
 
+export interface IAppInvite extends IConfiguredApplication
+{
+    role: Roles;
+    invite_email: string;
+    invite_status: "Invited"|"Accepted";
+    app_id: string;
+    user_id: string;
+}
+
+export interface IUserApps
+{
+    applications: IConfiguredApplication[];
+    shared: IAppInvite[];
+    invites: IAppInvite[];
+}
+
 export default function AppView()
 {
     const { user } = useAuth0();
     let { path, url } = useRouteMatch();
     const history = useHistory();
-    const [configuredApplications, setConfiguredApplications] = useState<IConfiguredApplication[]>([]);
+    const [configuredApplications, setConfiguredApplications] = useState<IUserApps>({ applications: [], invites: [], shared: [] });
     const [newDialogOpen, setNewDialogOpen] = useState<boolean>(false);
+    const [invite, setInvite] = useState<IAppInvite|null>(null);
     const [appToDelete, setAppToDelete] = useState<IConfiguredApplication|null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     
@@ -41,7 +61,7 @@ export default function AppView()
         setIsLoading(true);
         getUserID(user.sub).then((user_id) =>
         {
-            serverAPI<IConfiguredApplication[]>(API.Applications, HTTP.READ, user_id).then((apps) =>
+            serverAPI<IUserApps>(API.Applications, HTTP.READ, user_id).then((apps) =>
             {
                 setConfiguredApplications(apps)
                 setIsLoading(false);
@@ -57,10 +77,23 @@ export default function AppView()
         const formData = event.target as any; // TODO: Figure out why react doesn't know the typing
         setIsLoading(true);
         const user_id = await getUserID(user.sub);
-        await serverAPI<IConfiguredApplication[]>(API.Applications, HTTP.CREATE, undefined, { user_id, name: formData[0].value })
-        const newApps = await serverAPI<IConfiguredApplication[]>(API.Applications, HTTP.READ, user_id)
+        await serverAPI(API.Applications, HTTP.CREATE, undefined, { user_id, name: formData[0].value })
+        const newApps = await serverAPI<IUserApps>(API.Applications, HTTP.READ, user_id)
         setIsLoading(false);
         setConfiguredApplications(newApps);
+    }
+
+    async function onInviteAccepted()
+    {
+        await serverAPI(API.Invites, HTTP.UPDATE, invite?.id, { invite_status: "Accepted" });
+        loadApplications();
+        setInvite(null);
+    }
+    async function onInviteDeclined()
+    {
+        await serverAPI(API.Invites, HTTP.DELETE, invite?.id);
+        loadApplications();
+        setInvite(null);
     }
 
     async function onAppDeleted()
@@ -86,25 +119,40 @@ export default function AppView()
 
     return <SubView title="Applications">
         <Switch>
-            {configuredApplications.map((app) =>
+            {/** TODO: Links for all apps */}
+            {configuredApplications.applications.map((app) =>
                 <PrivateRoute path={`${path}/${appNameToURL(app.name)}`}>
-                    <BreadcrumbPath baseURL={url} stages={["My Apps", app.name]}/>
+                    <BreadcrumbPath baseURL={url} stages={["Applications", app.name]}/>
                     <AppDetails app={app}/>
                 </PrivateRoute>
             )}
             <PrivateRoute path="/">
-                <BreadcrumbPath baseURL={url} stages={["My Apps"]}/>
-                {configuredApplications.map((app) =>
+                <BreadcrumbPath baseURL={url} stages={["Applications"]}/>
+                <h2>My Apps</h2>
+                {configuredApplications.applications.map((app) =>
                     <InfoCard image={MediaType.Application} title={app.name} summary="My app description goes here" key={app.name} onClick={() => onAppSelected(app)}/>
                 )}
-                <Card style={{ width: 200, height: 230, display: "inline-block", margin: 10, boxShadow: "grey 3px 3px 11px -4px"}}>
+                <Card style={{ width: 220, height: 250, display: "inline-block", margin: 10, boxShadow: "grey 3px 3px 11px -4px"}}>
                     <IconButton style={{ width: "100%", height: "100%" }} onClick={() => setNewDialogOpen(true)}>
                         <AddIcon fontSize="large"/>
                     </IconButton>
                 </Card>
+                {configuredApplications.shared.length>0 && <>
+                    <h2>Shared with me</h2>
+                    {configuredApplications.shared.map((app) =>
+                        <InfoCard image={MediaType.Application} title={app.name} summary="My app description goes here" key={app.name} onClick={() => onAppSelected(app)}/>
+                    )}
+                </>}
+                {configuredApplications.invites.length>0 && <>
+                    <h2>Invites</h2>
+                    {configuredApplications.invites.map((app) =>
+                        <InfoCard image={MediaType.Application} title={app.name} summary="My app description goes here" key={app.name} onClick={() => setInvite(app)}/>
+                    )}
+                </>}
             </PrivateRoute>
         </Switch>
         <NewApplicationDialog open={newDialogOpen} onClose={() => setNewDialogOpen(false)} onSubmit={onSubmit}/>
+        <AcceptInviteDialog open={invite!==null} onClose={() => setInvite(null)} onAccept={onInviteAccepted} onDecline={onInviteDeclined} invite={invite||undefined}/>
         <DeleteDialog open={appToDelete!==null} onClose={() => setAppToDelete(null)} onSubmit={onAppDeleted} targetType="Application" deleteTargetText="all features and test results associated with it"/>
     </SubView>
 }

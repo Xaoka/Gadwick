@@ -5,6 +5,7 @@ var router = express.Router();
 const { awaitQuery } = require('./commands/mysql');
 const { insertInto } = require('./commands/insert');
 const { deleteEntry } = require('./commands/delete');
+const { update } = require('./commands/update');
 
 router.post('/', cors(corsOptions), async function(req, res, next) {
     insertInto(["app_id", "user_id", "role"], [], "AppUsers", req, res, next);
@@ -26,7 +27,16 @@ router.post('/invites', cors(corsOptions), async function(req, res, next) {
     insertInto(["app_id", "invite_email", "role"], [], "AppUsers", req, res, next);
 });
 
+router.put('/invites/:invite_id', cors(corsOptions), async function(req, res, next) {
+    const response = update(req.body, ["invite_status"], "AppUsers", req.params.invite_id);
+    res.send(response);
+});
+
 router.delete('/:id', cors(corsOptions), async function(req, res, next) {
+    const id = req.params.id;
+    deleteEntry("AppUsers", id, req, res, next);
+});
+router.delete('/invites/:id', cors(corsOptions), async function(req, res, next) {
     const id = req.params.id;
     deleteEntry("AppUsers", id, req, res, next);
 });
