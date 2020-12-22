@@ -29,7 +29,7 @@ router.get('/priority/:user_id', cors(corsOptions), async function(req, res, nex
 
 router.get('/app/:app_id', cors(corsOptions), function(req, res, next) {
     const id = req.params.app_id;
-    makeQuery(`SELECT * FROM Features WHERE app_id = ${id}`, function (err, result, fields) {
+    makeQuery(`SELECT * FROM Features WHERE app_id = "${id}"`, function (err, result, fields) {
         if (err) throw err;
         console.log(result);
         res.send(result);

@@ -6,7 +6,7 @@ import serverAPI, { API, HTTP } from '../../../apis/api';
 import getUserID from '../../../apis/user';
 import BreadcrumbPath from '../../BreadcrumbPath';
 import InfoCard, { MediaType } from '../../InfoCard';
-import { IConfiguredApplication } from '../Applications/AppView';
+import { IConfiguredApplication, IUserApps } from '../Applications/AppView';
 import { IFeature } from '../Features/Features';
 import { ISession } from './Overview';
 
@@ -23,14 +23,15 @@ export default function NewSession(props: INewSession)
     let { path, url } = useRouteMatch();
     const history = useHistory();
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [configuredApplications, setConfiguredApplications] = useState<IConfiguredApplication[]>([]);
+    const [configuredApplications, setConfiguredApplications] = useState<IUserApps>({ applications: [], invites: [], shared: [] });
     const [state, setState] = useState<State>(State.App)
     
     useEffect(() => {
         setIsLoading(true);
         getUserID(user.sub).then((user_id) =>
         {
-            serverAPI<IConfiguredApplication[]>(API.Applications, HTTP.READ, user_id).then((apps) =>
+            if (!user_id) { return; }
+            serverAPI<IUserApps>(API.Applications, HTTP.READ, user_id).then((apps) =>
             {
                 setConfiguredApplications(apps)
                 setIsLoading(false);
@@ -73,10 +74,13 @@ export default function NewSession(props: INewSession)
         {state == State.App && <>
             <p>Choose which app you would like to test:</p>
             {isLoading && renderSkeletons()}
-            {!isLoading && configuredApplications.map((app) =>
+            {!isLoading && configuredApplications.applications.map((app) =>
                 <InfoCard image={MediaType.Application} title={app.name} summary="My app description goes here" key={app.name} onClick={() => onAppSelected(app)}/>
             )}
-            {!isLoading && configuredApplications.length === 0 && <p>You have no apps configured, you'll need to make one first.</p>}
+            {!isLoading && configuredApplications.shared.map((app) =>
+                <InfoCard image={MediaType.Application} title={app.name} summary="My app description goes here" key={app.name} onClick={() => onAppSelected(app)}/>
+            )}
+            {!isLoading && configuredApplications.applications.length === 0 && configuredApplications.shared.length === 0 && <p>You have no apps configured, you'll need to make one first.</p>}
         </>}
     </>
 }

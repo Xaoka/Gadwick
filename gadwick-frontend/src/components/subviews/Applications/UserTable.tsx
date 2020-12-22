@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dialog, DialogTitle, IconButton, SvgIconTypeMap, Table, TableBody, TableCell, TableHead, TableRow, TextField, Tooltip } from '@material-ui/core';
+import { IconButton, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 import { Roles } from './UserRoles';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 
@@ -9,6 +9,7 @@ export interface IAppUser
     role: Roles;
     name: string;
     app_id: string;
+    user_id: string;
     invite_email: string;
     invite_status: "Invited"|"Accepted";
 }
@@ -16,6 +17,7 @@ export interface IAppUser
 interface IUserTable
 {
     appUsers: IAppUser[];
+    permissionLevel: Roles;
     showUsername?: boolean;
     onAppUserDeleted?: (user: IAppUser) => void;
 }
@@ -28,6 +30,11 @@ export default function UserTable(props: IUserTable)
         {
             props.onAppUserDeleted(user);
         }
+    }
+
+    function permissionToDelete(user: IAppUser)
+    {
+        return (user.role !== Roles.Admin) && (props.permissionLevel === Roles.Admin || props.permissionLevel === Roles.Maintainer);
     }
 
     return <Table aria-label="simple table">
@@ -46,9 +53,9 @@ export default function UserTable(props: IUserTable)
                         <TableCell>{user.invite_email}</TableCell>
                         <TableCell>{user.role}</TableCell>
                         <TableCell>
-                            <IconButton onClick={() => onDelete(user)}>
+                            {permissionToDelete(user) && <IconButton onClick={() => onDelete(user)}>
                                 <DeleteForeverIcon className="danger"/>
-                            </IconButton>
+                            </IconButton>}
                         </TableCell>
                     </TableRow>
                 )}

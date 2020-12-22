@@ -25,6 +25,7 @@ export interface IConfiguredApplication
     stability: number;
     client_secret: string;
     description: string;
+    user_id: string;
 }
 
 export interface IAppInvite extends IConfiguredApplication
@@ -33,7 +34,6 @@ export interface IAppInvite extends IConfiguredApplication
     invite_email: string;
     invite_status: "Invited"|"Accepted";
     app_id: string;
-    user_id: string;
 }
 
 export interface IUserApps
@@ -61,6 +61,7 @@ export default function AppView()
         setIsLoading(true);
         getUserID(user.sub).then((user_id) =>
         {
+            if (!user_id) { return; }
             serverAPI<IUserApps>(API.Applications, HTTP.READ, user_id).then((apps) =>
             {
                 setConfiguredApplications(apps)
@@ -77,6 +78,7 @@ export default function AppView()
         const formData = event.target as any; // TODO: Figure out why react doesn't know the typing
         setIsLoading(true);
         const user_id = await getUserID(user.sub);
+        if (!user_id) { return; }
         await serverAPI(API.Applications, HTTP.CREATE, undefined, { user_id, name: formData[0].value })
         const newApps = await serverAPI<IUserApps>(API.Applications, HTTP.READ, user_id)
         setIsLoading(false);
@@ -118,15 +120,19 @@ export default function AppView()
         history.push(`${url}/${appNameToURL(app.name)}`)
     }
 
+    function appRoute(app: IConfiguredApplication)
+    {
+        return <PrivateRoute path={`${path}/${appNameToURL(app.name)}`}>
+            <BreadcrumbPath baseURL={url} stages={["Applications", app.name]}/>
+            <AppDetails app={app}/>
+        </PrivateRoute>
+    }
+
     return <SubView title="Applications">
         <Switch>
             {/** TODO: Links for all apps */}
-            {configuredApplications.applications.map((app) =>
-                <PrivateRoute path={`${path}/${appNameToURL(app.name)}`}>
-                    <BreadcrumbPath baseURL={url} stages={["Applications", app.name]}/>
-                    <AppDetails app={app}/>
-                </PrivateRoute>
-            )}
+            {configuredApplications.applications.map(appRoute)}
+            {configuredApplications.shared.map(appRoute)}
             <PrivateRoute path="/">
                 <BreadcrumbPath baseURL={url} stages={["Applications"]}/>
                 <h2>My Apps</h2>

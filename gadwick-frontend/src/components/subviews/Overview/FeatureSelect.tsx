@@ -91,6 +91,7 @@ export default function FeatureSelect(props: IFeatureSelect)
     useEffect(() => {
         getUserID(user.sub).then((id) =>
         {
+            if (!id) { return; }
             serverAPI<IConfiguredApplication[]>(API.Applications, HTTP.READ, id).then((apps) =>
             {
                 setApps(apps);

@@ -13,13 +13,13 @@ router.post('/', cors(corsOptions), async function(req, res, next) {
 
 router.get('/app/:app_id', cors(corsOptions), async function(req, res, next) {
     const id = req.params.app_id;
-    const roles = (await awaitQuery(`SELECT * FROM AppUsers WHERE app_id = '${id}' AND invite_status = "Accepted"`));
+    const roles = (await awaitQuery(`SELECT * FROM AppUsers LEFT JOIN (SELECT id user_id, name FROM Users) U ON AppUsers.user_id = U.user_id WHERE app_id = '${id}' AND invite_status = "Accepted" AND U.user_id IS NOT NULL`));
     res.send(roles)
 });
 
 router.get('/invites/:app_id', cors(corsOptions), async function(req, res, next) {
     const id = req.params.app_id;
-    const invites = (await awaitQuery(`SELECT * FROM AppUsers LEFT JOIN (SELECT id user_id, name FROM Users) U ON AppUsers.user_id = U.user_id WHERE app_id = '${id}' AND invite_status = "Invited"`));
+    const invites = (await awaitQuery(`SELECT * FROM AppUsers WHERE app_id = '${id}' AND invite_status = "Invited"`));
     res.send(invites)
 });
 

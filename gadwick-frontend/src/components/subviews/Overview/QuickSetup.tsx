@@ -43,6 +43,7 @@ export default function QuickSetup()
     {
         getUserID(user.sub).then((user_id) =>
         {
+            if (!user_id) { return; }
             serverAPI<IFeature[]>(API.PriorityFeatures, HTTP.READ, user_id).then(setPriorityFeatures);
         });
     }

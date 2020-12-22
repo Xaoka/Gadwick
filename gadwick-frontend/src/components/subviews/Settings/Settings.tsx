@@ -2,14 +2,8 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { TextField } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import serverAPI, { API, HTTP } from '../../../apis/api';
-import getUserID from '../../../apis/user';
+import getUserID, { IUser } from '../../../apis/user';
 import SubView from '../SubView';
-
-interface IUser
-{
-    id: string;
-    name: string;
-}
 
 export default function Settings()
 {
@@ -17,8 +11,9 @@ export default function Settings()
     const [gadwickUser, setGadwickUser] = useState<IUser|null>(null);
 
     useEffect(() => {
-        getUserID(user.sub).then((id?: string) =>
+        getUserID(user.sub).then((id: string|null) =>
         {
+            if (!id) { return; }
             serverAPI<IUser>(API.Users, HTTP.READ, id).then(setGadwickUser);
         });
     }, [])

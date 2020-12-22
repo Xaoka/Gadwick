@@ -48,6 +48,7 @@ export default function Overview()
     useEffect(() => {
         getUserID(user.sub).then((user_id) =>
         {
+            if (!user_id) { return; }
             serverAPI<ISession[]>(API.SessionsByAuth, HTTP.READ, user_id).then(setSessions);
         });
     }, [])

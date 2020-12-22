@@ -35,6 +35,7 @@ export default function ProfileGraphs()
     }, [])
 
     useEffect(() => {
+        if (userID.length === 0) { return; }
         serverAPI<IStats>(API.Stats, HTTP.READ, userID).then(setStats);
     }, [userID])
 
