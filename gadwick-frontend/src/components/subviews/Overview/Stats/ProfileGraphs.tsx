@@ -6,12 +6,15 @@ import AutomationPieChart from './AutomationPieChart';
 import StatBox from './StatBox';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import BugReportIcon from '@material-ui/icons/BugReport';
-import PeopleIcon from '@material-ui/icons/People';
-import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
+import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
 import { useRouteMatch, useHistory } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
+import getUserID from '../../../../apis/user';
+import AppsIcon from '@material-ui/icons/Apps';
 
 interface IStats
 {
+    appCount: number;
     featureCount: number;
     failedCount: number;
     untestedCount: number;
@@ -19,13 +22,17 @@ interface IStats
 
 export default function ProfileGraphs()
 {
+    const { user } = useAuth0();
     let { path, url } = useRouteMatch();
     const history = useHistory();
     
-    const [stats, setStats] = useState<IStats>({ featureCount: 0, failedCount: 0,untestedCount: 0 });
+    const [stats, setStats] = useState<IStats>({ appCount: 0, featureCount: 0, failedCount: 0, untestedCount: 0 });
     useEffect(() =>
     {
-        serverAPI<IStats>(API.Stats, HTTP.READ).then(setStats);
+        getUserID(user.sub).then((id?: string) =>
+        {
+            serverAPI<IStats>(API.Stats, HTTP.READ, id).then(setStats);
+        });
     }, [])
 
     return <>
@@ -37,10 +44,10 @@ export default function ProfileGraphs()
             </select> */}
         </h2>
         <Grid container direction="row" justify="center" alignItems="center">
+            <StatBox label="Applications" value={stats.appCount} icon={AppsIcon} onClick={() => history.push(`/dashboard/applications`)}/>
             <StatBox label="Features" value={stats.featureCount} icon={AssignmentIcon} onClick={() => history.push(`/dashboard/applications`)}/>
-            <StatBox label="Untested Features" value={stats.untestedCount} icon={AssignmentTurnedInIcon} onClick={() => history.push(`/dashboard/test_session`)}/>
-            <StatBox label="users" value={0} icon={PeopleIcon}/>
             <StatBox label="bugs caught" value={stats.failedCount} icon={BugReportIcon} onClick={() => history.push(`/dashboard/reports`)}/>
+            <StatBox label="Untested Features" value={stats.untestedCount} icon={AssignmentLateIcon} onClick={() => history.push(`/dashboard/test_session`)}/>
         </Grid>
         <h2>Feature Automation</h2>
         <AutomationPieChart />

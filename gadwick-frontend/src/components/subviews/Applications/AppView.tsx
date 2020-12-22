@@ -85,7 +85,8 @@ export default function AppView()
 
     async function onInviteAccepted()
     {
-        await serverAPI(API.Invites, HTTP.UPDATE, invite?.id, { invite_status: "Accepted" });
+        const user_id = await getUserID(user.sub);
+        await serverAPI(API.Invites, HTTP.UPDATE, invite?.id, { invite_status: "Accepted", user_id });
         loadApplications();
         setInvite(null);
     }

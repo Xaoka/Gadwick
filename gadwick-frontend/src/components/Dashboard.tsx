@@ -7,10 +7,11 @@ import AppView from './subviews/Applications/AppView';
 import Tutorials from './subviews/Tutorials/Tutorials';
 import TestSession from './subviews/TestSession/TestSession';
 import Settings from './subviews/Settings/Settings';
+import Subscription from './subviews/Subscription/Subscription';
 
-import TuneIcon from '@material-ui/icons/Tune';
+import AppsIcon from '@material-ui/icons/Apps';
+import CreditCardIcon from '@material-ui/icons/CreditCard';
 import ListIcon from '@material-ui/icons/List';
-import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import EmojiObjectsIcon from '@material-ui/icons/EmojiObjects';
 import AssignmentIcon from '@material-ui/icons/Assignment';
@@ -27,7 +28,7 @@ export default function Dashboard()
         },
         {
             subView: <AppView/>,
-            icon: VerifiedUserIcon,
+            icon: AppsIcon,
             buttonID: "sidebar_applications",
             pageURL: "applications"
         },
@@ -48,6 +49,12 @@ export default function Dashboard()
             icon: AssignmentIcon,
             buttonID: "sidebar_test_session",
             pageURL: "test_session"
+        },
+        {
+            subView: <Subscription/>,
+            icon: CreditCardIcon,
+            buttonID: "sidebar_subscription",
+            pageURL: "subscription"
         },
         {
             subView: <Settings/>,
