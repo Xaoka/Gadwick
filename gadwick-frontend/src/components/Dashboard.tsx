@@ -32,23 +32,23 @@ export default function Dashboard()
             buttonID: "sidebar_applications",
             pageURL: "applications"
         },
-        {
-            subView: <Tutorials/>,
-            icon: EmojiObjectsIcon,
-            buttonID: "sidebar_tutorials",
-            pageURL: "tutorials"
-        },
-        {
-            subView: <FeatureReports/>,
-            icon: ListIcon,
-            buttonID: "sidebar_reports",
-            pageURL: "reports"
-        },
+        // {
+        //     subView: <FeatureReports/>,
+        //     icon: ListIcon,
+        //     buttonID: "sidebar_reports",
+        //     pageURL: "reports"
+        // },
         {
             subView: <TestSession/>,
             icon: AssignmentIcon,
             buttonID: "sidebar_test_session",
             pageURL: "test_session"
+        },
+        {
+            subView: <Tutorials/>,
+            icon: EmojiObjectsIcon,
+            buttonID: "sidebar_tutorials",
+            pageURL: "tutorials"
         },
         {
             subView: <Subscription/>,

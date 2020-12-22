@@ -13,6 +13,7 @@ export default function Header()
       }
       else
       {
+        // TODO: Account creation: Use auth0 hooks to generate accounts: https://manage.auth0.com/dashboard/eu/gadwick/hooks
         loginWithRedirect();
       }
     }

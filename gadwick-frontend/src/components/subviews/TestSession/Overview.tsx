@@ -3,7 +3,7 @@ import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody
 import React, { useEffect, useState } from 'react';
 import serverAPI, { API, HTTP } from '../../../apis/api';
 import getUserID from '../../../apis/user';
-import { useRouteMatch, Switch, useHistory } from 'react-router-dom';
+import { useRouteMatch, useHistory } from 'react-router-dom';
 
 interface IBaseSession
 {
@@ -40,7 +40,7 @@ export enum Status
 export default function Overview()
 {
     const { user } = useAuth0();
-    let { path, url } = useRouteMatch();
+    let { path } = useRouteMatch();
     const history = useHistory();
     
     const [sessions, setSessions] = useState<ISession[]>([])
@@ -82,8 +82,9 @@ export default function Overview()
     const activeSessions = sessions.filter((s) => s.status !== Status.COMPLETE && s.status !== Status.ABANDONED);
     const activeSessionCount = activeSessions.length;
     return <>
+        <p>This view allows you to start, manage and review testing sessions for your applications. The results of these sessions can be used to automatically update tickets on third party apps.</p>
+        <p>You can have one active session running at any time, but there may be other active test sessions being run by other users at the same time.</p>
         <h4>Active Session</h4>
-        <p>This view allows you to start, manage and review testing sessions. The results of these sessions can be used to automatically update tickets on third party apps.</p>
         {activeSessionCount === 0 && <p>You do not have any sessions active.</p> }
         {activeSessionCount > 0 && <button onClick={() => history.push(`${path}/session/${activeSessions[0].id}`)}>Resume Active Session</button>}
         {<button onClick={() => history.push(`${path}/new`)}>Start New Session</button>}

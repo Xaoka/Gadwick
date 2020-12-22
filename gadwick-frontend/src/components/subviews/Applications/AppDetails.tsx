@@ -8,7 +8,7 @@ import copyToClipboard from '../../../utils/Clipboard';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import serverAPI, { API, HTTP } from '../../../apis/api';
 import { FlexibleXYPlot, VerticalBarSeries, XAxis, YAxis } from 'react-vis';
-import AutomationPieChart from '../Overview/Stats/AutomationPieChart';
+import AutomationPieChart, { ChartType } from '../Overview/Stats/AutomationPieChart';
 import UserRoles from './UserRoles';
 
 interface IAppDetails
@@ -79,7 +79,7 @@ export default function AppDetails(props: IAppDetails)
             <StatBox label="Features" icon={CategoryIcon} value={0} style={{ display: "inline-block" }}/>
             <StatBox label="Stability" icon={CategoryIcon} value={0} style={{ display: "inline-block" }}/>
             <h3>Feature priority</h3>
-            <AutomationPieChart scale={0.6} appID={props.app.id}/>
+            <AutomationPieChart scale={0.6} id={props.app.id} type={ChartType.App}/>
             <h3>{barGraphTitle}</h3>
             {/* <FlexibleXYPlot xType="ordinal" width={500} height={200} yDomain={[0, 100]} >
                 <VerticalBarSeries data={versionData.map((v) => { return { x: v.version, y: v.passRate * 100 }})} barWidth={0.95}/>

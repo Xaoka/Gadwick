@@ -15,14 +15,14 @@ export default function Overview(props: { style?: CSSProperties, children?: Reac
     const { user } = useAuth0();
     
     return <SubView title="Profile">
-        <h2>{user.name}</h2>
+        {/* <h2>{user.name}</h2> */}
         <div style={{ display: "flex", padding: 0 }}>
             <span style={{ padding: 25, flex: 2, borderRadius: 30, borderColor: "var(--theme-primary)", borderStyle: "solid", backgroundColor: "white", margin: 25 }}>
                 <ProfileGraphs />
             </span>
-            <span style={{ padding: 25, flex: 1, borderRadius: 30, borderColor: "var(--theme-primary)", borderStyle: "solid", backgroundColor: "white", margin: 25 }}>
+            {/* <span style={{ padding: 25, flex: 1, borderRadius: 30, borderColor: "var(--theme-primary)", borderStyle: "solid", backgroundColor: "white", margin: 25 }}>
                 <ToDo/>
-            </span>
+            </span> */}
             <span style={{ padding: 25, flex: 1, borderRadius: 30, borderColor: "var(--theme-primary)", borderStyle: "solid", backgroundColor: "white", margin: 25 }}>
                 <QuickSetup/>
             </span>

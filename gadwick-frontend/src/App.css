@@ -161,8 +161,8 @@ select
 /* Find a way to do this with matui lists? */
 .list-item
 {
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   padding-left: 5px;
   padding-right: 5px;
   transition: linear;

@@ -3,6 +3,7 @@ var cors = require('cors')
 var corsOptions = require('../cors')
 var router = express.Router();
 const { awaitQuery } = require('./commands/mysql');
+const { use } = require('./Sessions');
 
 router.get('/features/:user_id', cors(corsOptions), async function(req, res, next) {
     const id = req.params.user_id;
@@ -13,26 +14,39 @@ router.get('/features/:user_id', cors(corsOptions), async function(req, res, nex
     res.send({ featureCount, failedCount, untestedCount, appCount });
 });
 
-router.get('/automation', cors(corsOptions), async function(req, res, next) {
-    const stats = await getAutomationStats();
+router.get('/automation/user/:user_id', cors(corsOptions), async function(req, res, next) {
+    const id = req.params.user_id;
+    const stats = await getAutomationStats(``, id);
     res.send(stats);
 });
 
-router.get('/automation/:app_id', cors(corsOptions), async function(req, res, next) {
+router.get('/automation/app/:app_id', cors(corsOptions), async function(req, res, next) {
     const id = req.params.app_id;
     const stats = await getAutomationStats(`AND app_id = "${id}"`);
     res.send(stats);
 });
 
-async function getAutomationStats(idSQL = "")
+async function getAutomationStats(idSQL = "", user_id)
 {
+    // TODO: Cleanup this mess of SQL
     // TODO: Work out how to make this all one query
-    const automated = (await awaitQuery(`SELECT COUNT(*) automated FROM Features WHERE id IN (SELECT feature_id id FROM Results WHERE feature_id IS NOT NULL GROUP BY feature_id) ${idSQL}`))[0].automated;
-    const important = (await awaitQuery(`SELECT COUNT(*) important FROM Features WHERE id NOT IN (SELECT feature_id id FROM Results WHERE feature_id IS NOT NULL GROUP BY feature_id) AND priority > 55 ${idSQL}`))[0].important;
-    const possible = (await awaitQuery(`SELECT COUNT(*) possible FROM Features WHERE id NOT IN (SELECT feature_id id FROM Results WHERE feature_id IS NOT NULL GROUP BY feature_id) AND priority > 35 AND priority <= 55 ${idSQL}`))[0].possible;
-    const not_worth = (await awaitQuery(`SELECT COUNT(*) not_worth FROM Features WHERE id NOT IN (SELECT feature_id id FROM Results WHERE feature_id IS NOT NULL GROUP BY feature_id) AND priority <= 35 AND priority > 0 ${idSQL}`))[0].not_worth;
+    const noTestResultsSQL = `WHERE Features.id NOT IN (SELECT feature_id id FROM Results WHERE feature_id IS NOT NULL GROUP BY feature_id)`;
+    const testResultsSQL = `WHERE Features.id IN (SELECT feature_id id FROM Results WHERE feature_id IS NOT NULL GROUP BY feature_id)`;
+    let appJoinSQL = ``;
+    let appSelectSQL = ``;
+    if (user_id !== undefined)
+    {
+        // appJoinSQL = `LEFT JOIN (SELECT * FROM AppUsers WHERE AppUsers.user_id = "${user_id}" AND invite_status = "Accepted") Invites ON Features.app_id = Invites.app_id LEFT JOIN Applications ON Applications.id = Invites.app`;
+        appJoinSQL = `LEFT JOIN Applications ON Applications.id = Features.app_id`; // TODO: Include invited apps
+        appSelectSQL = `AND Applications.user_id = "${user_id}"`;
+    }
+    
+    const automated = (await awaitQuery(`SELECT COUNT(*) automated FROM Features ${appJoinSQL} ${testResultsSQL} ${idSQL} ${appSelectSQL}`))[0].automated;
+    const important = (await awaitQuery(`SELECT COUNT(*) important FROM Features ${appJoinSQL} ${noTestResultsSQL} AND priority > 55 ${idSQL} ${appSelectSQL}`))[0].important;
+    const possible = (await awaitQuery(`SELECT COUNT(*) possible FROM Features ${appJoinSQL} ${noTestResultsSQL} AND priority > 35 AND priority <= 55 ${idSQL} ${appSelectSQL}`))[0].possible;
+    const not_worth = (await awaitQuery(`SELECT COUNT(*) not_worth FROM Features ${appJoinSQL} ${noTestResultsSQL} AND priority <= 35 AND priority > 0 ${idSQL} ${appSelectSQL}`))[0].not_worth;
     // TODO: This should actually check each field is not 0
-    const not_configured = (await awaitQuery(`SELECT COUNT(*) not_configured FROM Features WHERE id NOT IN (SELECT feature_id id FROM Results WHERE feature_id IS NOT NULL GROUP BY feature_id) AND priority < 5 ${idSQL}`))[0].not_configured;
+    const not_configured = (await awaitQuery(`SELECT COUNT(*) not_configured FROM Features ${appJoinSQL} ${noTestResultsSQL} AND priority < 5 ${idSQL} ${appSelectSQL}`))[0].not_configured;
     return { automated, important, possible, not_worth, not_configured };
 }
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Cell, ContentRenderer, Pie, PieChart, PieChartProps, PieLabelRenderProps } from 'recharts'
+import { Cell, Pie, PieChart } from 'recharts'
 import serverAPI, { API, HTTP } from '../../../../apis/api';
+import NoData from '../../NoData';
 
 interface IAutomationStats
 {
@@ -11,9 +12,12 @@ interface IAutomationStats
     not_configured: number;
 }
 
+export enum ChartType { App, User };
+
 interface IAutomationPieChart
 {
-    appID?: string;
+    type: ChartType;
+    id: string;
     scale?: number;
 }
 
@@ -21,8 +25,17 @@ export default function AutomationPieChart(props: IAutomationPieChart)
 {
     const [stats, setStats] = useState<IAutomationStats>({ automated: 0, important: 0, possible: 0, not_worth: 0, not_configured: 0 });
     useEffect(() => {
-        serverAPI<IAutomationStats>(API.AutomationStats, HTTP.READ, props.appID).then(setStats);
-    }, [])
+        // TODO: Cleaner way of providing this interface catch for when loading
+        if (props.id.length === 0) { return; }
+        if (props.type === ChartType.User)
+        {
+            serverAPI<IAutomationStats>(API.UserAutomationStats, HTTP.READ, props.id).then(setStats);
+        }
+        else
+        {
+            serverAPI<IAutomationStats>(API.AppAutomationStats, HTTP.READ, props.id).then(setStats);
+        }
+    }, [props.id])
 
     // TODO: Account for 0-count segments that would overlap
     const data =
@@ -79,7 +92,14 @@ export default function AutomationPieChart(props: IAutomationPieChart)
     };
 
     const scale = props.scale || 1;
-    return <PieChart width={300 + (350 * scale)} height={150 + (200 * scale)}>
+    const width = 300 + (350 * scale);
+    const height = 150 + (200 * scale);
+    if (stats.automated + stats.important + stats.not_configured + stats.not_worth + stats.possible <= 2)
+    {
+        return <NoData/>
+    }
+
+    return <PieChart width={width} height={height}>
         {/** TODO: Modify label line to avoid overlaps */}
         <Pie dataKey="value" isAnimationActive={false} data={data} cx={100 + (225 * scale)} cy={150 * scale} outerRadius={110 * scale} fill="#8884d8" label={renderCustomizedLabel} paddingAngle={0}>
             {
