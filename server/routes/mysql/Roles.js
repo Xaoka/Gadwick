@@ -32,6 +32,7 @@ router.put('/invites/:invite_id', cors(corsOptions), async function(req, res, ne
     res.send(response);
 });
 
+// TODO: Verify the user has sufficient permissions to do these
 router.delete('/:id', cors(corsOptions), async function(req, res, next) {
     const id = req.params.id;
     deleteEntry("AppUsers", id, req, res, next);

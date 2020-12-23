@@ -37,35 +37,24 @@ export default function AutomationPieChart(props: IAutomationPieChart)
         }
     }, [props.id])
 
-    // TODO: Account for 0-count segments that would overlap
-    const data =
-    [
+    function pushData(value: number, name: string, color: string, array: { value: number, name: string, color: string }[])
+    {
+        if (value > 0)
         {
-            value: stats.automated,
-            name: "Automated features",
-            color: "#59eb5e"
-        },
-        {
-            value: stats.important,
-            name: "Important features to test",
-            color: "#eb4034"
-        },
-        {
-            value: stats.possible,
-            name: "Possible features to test",
-            color: "#eb9934"
-        },
-        {
-            value: stats.not_worth,
-            name: "Features not worth testing",
-            color: "#9190A3"
-        },
-        {
-            value: stats.not_configured,
-            name: "Features not configured",
-            color: "#1157CF"
+            array.push({ value, name, color});
         }
-    ]
+    }
+
+    function getData()
+    {
+        let data: { value: number, name: string, color: string }[] = [];
+        pushData(stats.automated, "Automated features", "#59eb5e", data);
+        pushData(stats.important, "Important features to test", "#eb4034", data);
+        pushData(stats.possible, "Possible features to test", "#eb9934", data);
+        pushData(stats.not_worth, "Features not worth testing", "#9190A3", data);
+        pushData(stats.not_configured, "Features not configured", "#1157CF", data);
+        return data;
+    }
     // const colorRange = ["#CF9C11", "#11CFAF", "#1157CF", "#9190A3"];
 
 
@@ -94,16 +83,19 @@ export default function AutomationPieChart(props: IAutomationPieChart)
     const scale = props.scale || 1;
     const width = 300 + (350 * scale);
     const height = 150 + (200 * scale);
-    if (stats.automated + stats.important + stats.not_configured + stats.not_worth + stats.possible <= 2)
+    const statsArray = [stats.automated, stats.important, stats.not_configured, stats.not_worth, stats.possible];
+    const sum = statsArray.reduce((s1, s2) => s1+s2);
+    const overZeroCount = statsArray.filter((s) => s>0).length;
+    if (sum <= 2)// || overZeroCount < 2)
     {
-        return <NoData/>
+        return <NoData width={width}/>
     }
 
     return <PieChart width={width} height={height}>
         {/** TODO: Modify label line to avoid overlaps */}
-        <Pie dataKey="value" isAnimationActive={false} data={data} cx={100 + (225 * scale)} cy={150 * scale} outerRadius={110 * scale} fill="#8884d8" label={renderCustomizedLabel} paddingAngle={0}>
+        <Pie dataKey="value" isAnimationActive={false} data={getData()} cx={100 + (225 * scale)} cy={150 * scale} outerRadius={110 * scale} fill="#8884d8" label={renderCustomizedLabel} paddingAngle={0}>
             {
-                data.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} fontSize={10 + (6 * scale)}/>)
+                getData().map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} fontSize={10 + (6 * scale)}/>)
             }
         </Pie>
     </PieChart>

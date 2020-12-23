@@ -175,6 +175,11 @@ select
   background-color: rgb(233, 233, 233);
 }
 
+.box-shadow
+{
+  box-shadow: grey 3px 3px 11px -4px;
+}
+
 .stat-box
 {
   border-radius: 15px;

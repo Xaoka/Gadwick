@@ -1,13 +1,10 @@
-import { Dialog, DialogTitle, IconButton, SvgIconTypeMap, TextField } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import { Dialog, DialogTitle, IconButton } from '@material-ui/core';
+import React, { useState } from 'react';
 import CloseIcon from '@material-ui/icons/Close'
-import { OverridableComponent } from '@material-ui/core/OverridableComponent';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import { Roles } from './UserRoles';
-import serverAPI, { API, HTTP } from '../../../apis/api';
-import { IConfiguredApplication } from './AppView';
+import serverAPI, { API, HTTP } from '../../../../apis/api';
+import { IConfiguredApplication } from '../AppView';
+import VerifiedInput, { VerificationState } from '../../VerifiedInput';
 
 interface IInviteDialog
 {
@@ -23,7 +20,6 @@ export default function InviteDialog(props: IInviteDialog)
 {
     const [roleSelected, setRoleSelected] = useState<string>(Roles.Maintainer);
     const [email, setEmail] = useState<string>("");
-    const [EmailIcon, setEmailIcon] = useState<OverridableComponent<SvgIconTypeMap>>(RadioButtonUncheckedIcon);
 
     const roleDescriptions: { [role: string]: string[] } =
     {
@@ -32,21 +28,21 @@ export default function InviteDialog(props: IInviteDialog)
         "Guest": ["View tests", "View analytics"]
     }
 
-    useEffect(() => {
-        if (email.length === 0)
+    function verifyEmail(emailString: string): VerificationState
+    {
+        if (emailString.length === 0)
         {
-            setEmailIcon(RadioButtonUncheckedIcon);
+            return VerificationState.Pending;
         }
-        else if (email.match(emailRegex))
+        else if (emailString.match(emailRegex))
         {
-            setEmailIcon(CheckCircleIcon);
+            return VerificationState.Verified;
         }
         else
         {
-            setEmailIcon(HighlightOffIcon);
+            return VerificationState.Failed;
         }
-
-    }, [email])
+    }
 
     async function sendInvite()
     {
@@ -67,8 +63,7 @@ export default function InviteDialog(props: IInviteDialog)
         <div style={{ padding: 40, paddingTop: 0}}>
             <div style={{ paddingBottom: 10 }}>
                 <span style={{verticalAlign: "bottom"}}>Send invite to</span>
-                <TextField label="Email" style={{ marginLeft: 10 }} onChange={(evt) => setEmail(evt.target.value)}/>
-                <EmailIcon fontSize="small" style={{ marginRight: 10, verticalAlign: "bottom", paddingBottom: 5 }}/>
+                <VerifiedInput label="Email" verification={verifyEmail} onTextChanged={setEmail}/>
                 <span style={{verticalAlign: "bottom"}}>
                     for role:
                     <select onChange={(evt) => setRoleSelected(evt.target.value)} style={{ marginLeft: 10 }}>

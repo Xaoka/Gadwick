@@ -4,15 +4,19 @@ import React, { CSSProperties, useState } from 'react';
 
 interface ISidebar
 {
-    options:
-    {
-        callback: (index: number) => void;
-        icon: OverridableComponent<SvgIconTypeMap>;
-        buttonID: string;
-    }[];
+    options: ISideBarOption[];
     scale: number;
     selected: number;
 }
+
+export interface ISideBarOption
+{
+    callback: (index: number) => void;
+    icon: OverridableComponent<SvgIconTypeMap>;
+    buttonID: string;
+}
+
+
 // TODO: Replace with tabs https://material-ui.com/components/tabs/
 export default function Sidebar(props: ISidebar)
 {

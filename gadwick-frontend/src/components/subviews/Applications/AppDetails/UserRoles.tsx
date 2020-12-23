@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { IConfiguredApplication } from './AppView';
-import serverAPI, { API, HTTP } from '../../../apis/api';
+import { IConfiguredApplication } from '../AppView';
+import serverAPI, { API, HTTP } from '../../../../apis/api';
 import UserTable, { IAppUser } from './UserTable';
 import InviteDialog from './InviteDialog';
-import DeleteDialog from '../../DeleteDialog';
-import getUserID, { IUser } from '../../../apis/user';
+import DeleteDialog from '../../../DeleteDialog';
+import getUserID, { IUser } from '../../../../apis/user';
 import { useAuth0 } from '@auth0/auth0-react';
 
 interface IUserRoles
@@ -88,7 +88,7 @@ export default function UserRoles(props: IUserRoles)
         <p>Manage which users have visibility of this application and what they have access to.</p>
         <UserTable appUsers={[ { ...owner, invite_email: owner.email, app_id: props.app.id, role: Roles.Admin, invite_status: "Accepted", user_id: owner.id }, ...users ]} onAppUserDeleted={promptDeleteRole} showUsername={true} permissionLevel={getCurrentPermissionLevel()}/>
         <p>You can add users to this Application by sending them an invite.</p>
-        <h4>Pending Invites</h4>
+        <h3>Pending Invites</h3>
         <UserTable appUsers={invites} onAppUserDeleted={promptDeleteRole} permissionLevel={getCurrentPermissionLevel()}/>
         <button onClick={() => setInviteDialogOpen(true)} style={{ display: "inline", float: "right" }}>Invite</button>
         <InviteDialog open={inviteDialogOpen} onClose={() => setInviteDialogOpen(false)} app={props.app} onSubmit={refreshInvites}/>

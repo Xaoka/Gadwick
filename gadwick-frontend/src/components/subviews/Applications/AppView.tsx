@@ -10,12 +10,12 @@ import InfoCard, { MediaType } from '../../InfoCard';
 import AddIcon from '@material-ui/icons/Add';
 import PrivateRoute from '../../PrivateRoute';
 import { useRouteMatch, useHistory, Switch } from 'react-router-dom';
-import AppDetails from './AppDetails';
+import AppDetails from './AppDetails/AppDetails';
 import BreadcrumbPath from '../../BreadcrumbPath';
 import { appNameToURL } from '../../../utils/ToURL';
 import SubView from '../SubView';
-import { IAppUser } from './UserTable';
-import { Roles } from './UserRoles';
+import { IAppUser } from './AppDetails/UserTable';
+import { Roles } from './AppDetails/UserRoles';
 
 export interface IConfiguredApplication
 {
