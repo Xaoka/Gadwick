@@ -65,7 +65,7 @@ export default function Overview()
     function renderPassRate(session: ISession)
     {
         const passed = session.features_passed;
-        const failed = session.feature_ids ? JSON.parse(session.feature_ids as any).length : 0;
+        const failed = (session.feature_ids ? JSON.parse(session.feature_ids as any).length : 0) - passed;
         const rate = ((passed/(passed+failed)) * 100);
         let className = "success";
         if (rate < 60) { className = "danger"; }

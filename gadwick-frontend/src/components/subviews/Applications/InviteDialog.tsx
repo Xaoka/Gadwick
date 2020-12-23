@@ -54,6 +54,7 @@ export default function InviteDialog(props: IInviteDialog)
         props.onSubmit();
     }
     
+    // TODO: Prevent inviting existing collaborators
     return <Dialog open={props.open} maxWidth="sm" fullWidth={true} onClose={props.onClose} id="new_app_dialog">
         <DialogTitle style={{ padding: 40, paddingBottom: 0, paddingTop: 0 }}>
             <h3>

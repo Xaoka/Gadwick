@@ -30,6 +30,7 @@ export default function AppDetails(props: IAppDetails)
         
         serverAPI<IVersionPassRate[]>(API.VersionRates, HTTP.READ).then((versions) =>
         {
+            // TODO: Enforce this format on version submission?
             const newVersions = versions.sort((v1: IVersionPassRate, v2: IVersionPassRate) =>
             {
                 const version1 = v1.version.split(".").map((v) => parseInt(v));

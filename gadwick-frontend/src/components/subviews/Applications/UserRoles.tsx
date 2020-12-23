@@ -88,10 +88,10 @@ export default function UserRoles(props: IUserRoles)
         <p>Manage which users have visibility of this application and what they have access to.</p>
         <UserTable appUsers={[ { ...owner, invite_email: owner.email, app_id: props.app.id, role: Roles.Admin, invite_status: "Accepted", user_id: owner.id }, ...users ]} onAppUserDeleted={promptDeleteRole} showUsername={true} permissionLevel={getCurrentPermissionLevel()}/>
         <p>You can add users to this Application by sending them an invite.</p>
-        <button onClick={() => setInviteDialogOpen(true)} style={{ display: "inline" }}>Invite</button>
-        <InviteDialog open={inviteDialogOpen} onClose={() => setInviteDialogOpen(false)} app={props.app} onSubmit={refreshInvites}/>
         <h4>Pending Invites</h4>
         <UserTable appUsers={invites} onAppUserDeleted={promptDeleteRole} permissionLevel={getCurrentPermissionLevel()}/>
+        <button onClick={() => setInviteDialogOpen(true)} style={{ display: "inline", float: "right" }}>Invite</button>
+        <InviteDialog open={inviteDialogOpen} onClose={() => setInviteDialogOpen(false)} app={props.app} onSubmit={refreshInvites}/>
         <DeleteDialog open={deleteDialogOpen} targetType={userRoleToDelete?.invite_status === "Invited" ? "Invite" : "Permissions"} deleteTargetText={userRoleToDelete?.invite_status === "Invited" ? "their invite to join this app." : "their access permissions to this app."} onClose={() => setDeleteDialogOpen(false)} onSubmit={deleteRole}/>
     </>
 }

@@ -158,9 +158,9 @@ export default function Features(props: { style?: CSSProperties, appID?: string 
         <span style={props.style}>
             <h3>
                 Features
-                <button style={{ color: "green", float: "right" }} onClick={createNew}>New Feature</button>
             </h3>
             {renderFeatureTable()}
+            <button style={{ color: "green", float: "right" }} onClick={createNew}>New Feature</button>
         </span>
         <FeatureConfigDialog feature={dialogFeature} onClose={() =>
         {
