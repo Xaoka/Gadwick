@@ -15,19 +15,21 @@ var sessionsRouter = require('./routes/mysql/Sessions');
 var rolesRouter = require('./routes/mysql/Roles');
 var purchasesRouter = require('./routes/mysql/Purchases');
 
-var cors = require('cors')
+// var cors = require('cors')
 var app = express();
 app.use(cors())
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// app.options('*', cors()) // include before other routes
 
 // app.use('/', indexRouter);
 app.use('/features', featuresRouter);
@@ -41,7 +43,8 @@ app.use('/purchases', purchasesRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+  // next(createError(404));
+  res.send("Page not found");
 });
 
 // error handler
@@ -52,7 +55,8 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  // res.render('error');
+  res.send(`Error: ${res.locals.error}`);
 });
 
 module.exports = app;

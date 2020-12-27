@@ -14,6 +14,11 @@ This project uses:
 * NodeJS / ExpressJS
 * MYSQL
 * RDS (Amazon Relational Database)
+* Serverless
+
+## Deployments
+
+To deploy the backend, you can deploy with serverless using "cd gadwick-backend && serverless deploy"
 
 ## Principles
 

@@ -9,13 +9,25 @@ const { deleteEntry } = require('./commands/delete');
 const { update } = require('./commands/update');
 
 router.get('/:user_id', cors(corsOptions), async function(req, res, next) {
-    const id = req.params.user_id;
-    const applications = (await awaitQuery(`SELECT * FROM Applications WHERE user_id = "${id}"`));
-    const inviteBaseQuery = `SELECT * FROM Applications LEFT JOIN (SELECT app_id, invite_email, invite_status FROM AppUsers) AU ON Applications.id = AU.app_id LEFT JOIN (SELECT email, id users_user_id FROM Users) U ON U.email = AU.invite_email WHERE U.users_user_id = "${id}"`;
-    const shared = (await awaitQuery(`${inviteBaseQuery} AND invite_status = "Accepted"`));
-    const invites = (await awaitQuery(`${inviteBaseQuery} AND invite_status = "Invited"`));
+    let applications, shared, invites;
+    try
+    {
+        const id = req.params.user_id;
+        applications = (await awaitQuery(`SELECT * FROM Applications WHERE user_id = "${id}"`));
+        const inviteBaseQuery = `SELECT * FROM Applications LEFT JOIN (SELECT app_id, invite_email, invite_status FROM AppUsers) AU ON Applications.id = AU.app_id LEFT JOIN (SELECT email, id users_user_id FROM Users) U ON U.email = AU.invite_email WHERE U.users_user_id = "${id}"`;
+        shared = (await awaitQuery(`${inviteBaseQuery} AND invite_status = "Accepted"`));
+        invites = (await awaitQuery(`${inviteBaseQuery} AND invite_status = "Invited"`));
+    }
+    catch (err)
+    {
+        next(`Applications Error: ${err}`);
+        return;
+    }
     res.send({ applications, shared, invites });
 });
+router.get('/', cors(corsOptions), async function(req, res, next) {
+    res.send(`Server is up, but something else is going wrong`)
+})
 
 router.post('/', cors(corsOptions), async function(req, res, next) {
     req.body.client_secret = uuidv4();
