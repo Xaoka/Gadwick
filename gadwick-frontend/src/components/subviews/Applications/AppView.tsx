@@ -70,16 +70,13 @@ export default function AppView()
         })
     }
 
-    async function onSubmit(event: React.FormEvent<HTMLFormElement>)
+    async function onSubmit(appData: { name: string, description: string })
     {
-        event.preventDefault();
-        event.stopPropagation();
-        console.dir(event.target);
-        const formData = event.target as any; // TODO: Figure out why react doesn't know the typing
         setIsLoading(true);
+        setNewDialogOpen(false);
         const user_id = await getUserID(user.sub);
         if (!user_id) { return; }
-        await serverAPI(API.Applications, HTTP.CREATE, undefined, { user_id, name: formData[0].value })
+        await serverAPI(API.Applications, HTTP.CREATE, undefined, { user_id, name: appData.name, description: appData.description })
         const newApps = await serverAPI<IUserApps>(API.Applications, HTTP.READ, user_id)
         setIsLoading(false);
         setConfiguredApplications(newApps);
@@ -137,7 +134,7 @@ export default function AppView()
                 <BreadcrumbPath baseURL={url} stages={["Applications"]}/>
                 <h2>My Apps</h2>
                 {configuredApplications.applications.map((app) =>
-                    <InfoCard image={MediaType.Application} title={app.name} summary="My app description goes here" key={app.name} onClick={() => onAppSelected(app)}/>
+                    <InfoCard image={MediaType.Application} title={app.name} summary={app.description} key={app.name} onClick={() => onAppSelected(app)}/>
                 )}
                 <Card style={{ width: 220, height: 250, display: "inline-block", margin: 10, boxShadow: "grey 3px 3px 11px -4px"}}>
                     <IconButton style={{ width: "100%", height: "100%" }} onClick={() => setNewDialogOpen(true)}>
@@ -147,13 +144,13 @@ export default function AppView()
                 {configuredApplications.shared.length>0 && <>
                     <h2>Shared with me</h2>
                     {configuredApplications.shared.map((app) =>
-                        <InfoCard image={MediaType.Application} title={app.name} summary="My app description goes here" key={app.name} onClick={() => onAppSelected(app)}/>
+                        <InfoCard image={MediaType.Application} title={app.name} summary={app.description} key={app.name} onClick={() => onAppSelected(app)}/>
                     )}
                 </>}
                 {configuredApplications.invites.length>0 && <>
                     <h2>Invites</h2>
                     {configuredApplications.invites.map((app) =>
-                        <InfoCard image={MediaType.Application} title={app.name} summary="My app description goes here" key={app.name} onClick={() => setInvite(app)}/>
+                        <InfoCard image={MediaType.Application} title={app.name} summary={app.description} key={app.name} onClick={() => setInvite(app)}/>
                     )}
                 </>}
             </PrivateRoute>

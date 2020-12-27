@@ -52,7 +52,7 @@ export default function InfoCard(props: IInfoCard)
   }
 
     const classes = useStyles();
-    return  <Card className={classes.root}>
+    return  <Card className={classes.root} style={{ width: 240, height: 250 }}>
       <CardActionArea onClick={props.onClick}>
         {getImage()}
         <CardContent>
@@ -60,7 +60,7 @@ export default function InfoCard(props: IInfoCard)
             {props.title}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
-            {props.summary}
+            {!!props.summary && (props.summary.length > 50 ? `${props.summary.substring(0, 47)}...` : props.summary)}
           </Typography>
         </CardContent>
       </CardActionArea>

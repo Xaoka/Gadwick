@@ -15,10 +15,11 @@ export enum API
     Users = "users",
     UsersByAuth = "users/auth",
     Roles = "roles",
-    AppRoles = "roles/app",
+    AppRoles = "roles/apps",
     Invites = "roles/invites",
     Sessions = "sessions",
-    SessionsByAuth = "sessions/auth"
+    SessionsByAuth = "sessions/auth",
+    Subscriptions = "products/subscriptions"
 }
 export enum HTTP { CREATE, READ, UPDATE, DELETE }
 
@@ -37,8 +38,9 @@ function getHTTPMethod(httpMethod: HTTP)
     }
 }
 
-export default async function serverAPI<T extends object>(apiMethod: API, httpMethod: HTTP, dbID?: string, payload?: object): Promise<T>
+export default async function serverAPI<T extends object>(apiMethod: API, httpMethod: HTTP, dbID?: string, payload?: object, additionalPath?: { pathKey: string, value: string }[]): Promise<T>
 {
-    const response = await getHTTPMethod(httpMethod)(`http://localhost:3003/${apiMethod}/${dbID||""}`, payload);
+    const pathExtension = additionalPath ? additionalPath.map((p) => `/${p.pathKey}/${p.value}`).join("") : ""
+    const response = await getHTTPMethod(httpMethod)(`http://localhost:3003/${apiMethod}/${dbID||""}${pathExtension}`, payload);
     return response.data;
 }

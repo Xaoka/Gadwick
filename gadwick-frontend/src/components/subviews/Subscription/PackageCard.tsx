@@ -13,6 +13,7 @@ export interface IPackageCard
         bottomColor: string;
     };
     selected: boolean;
+    onClick: () => void;
 }
 
 export default function PackageCard(props: IPackageCard)
@@ -21,7 +22,8 @@ export default function PackageCard(props: IPackageCard)
     const border = props.selected ? `${props.backgroundColours.bottomColor} solid 10px` : ``;
     const padding = props.selected ? 20 : 30;
 
-    return <span style={{ boxShadow: "grey 0px 0px 11px -2px", padding: padding, marginLeft: 25, marginRight: 25, background: background, border: border, position: "relative" }}>
+    return <span style={{ boxShadow: "grey 0px 0px 11px -2px", padding: padding, marginLeft: 25, marginRight: 25, background: background, border: border, position: "relative" }}
+            onClick={props.onClick}>
         <div style={{ color: "var(--theme-primary)", fontSize: 50, textAlign: "center" }}>
             {props.title}
         </div>

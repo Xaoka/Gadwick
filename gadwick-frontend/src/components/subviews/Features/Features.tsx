@@ -69,11 +69,11 @@ export default function Features(props: { style?: CSSProperties, appID?: string 
             {
                 name: "Description",
                 value: feature.description
-            },
-            {
-                name: "Pass Rate",
-                value: `${feature.passRate}%`
             }
+            // {
+            //     name: "Pass Rate",
+            //     value: `${feature.passRate}%`
+            // }
         ]
     }
 
@@ -117,7 +117,7 @@ export default function Features(props: { style?: CSSProperties, appID?: string 
                         <TableCell>Feature Name</TableCell>
                         {/* <TableCell align="right">Status</TableCell> */}
                         <TableCell align="left">Description</TableCell>
-                        <TableCell align="left">Pass Rate (%)</TableCell>
+                        {/* <TableCell align="left">Pass Rate (%)</TableCell> */}
                         <TableCell align="left">Ticket Link</TableCell>
                         <TableCell align="left">Priority</TableCell>
                         <TableCell></TableCell>
@@ -142,9 +142,11 @@ export default function Features(props: { style?: CSSProperties, appID?: string 
                         </TableCell>
                         <TableCell>
                             {/** TODO: Make this use a delete dialog! */}
-                            <IconButton onClick={(evt) => onDelete(evt, feature)}>
-                                <DeleteForeverIcon className="danger"/>
-                            </IconButton>
+                            <Tooltip title="Delete this feature.">
+                                <IconButton onClick={(evt) => onDelete(evt, feature)}>
+                                    <DeleteForeverIcon style={{ color: "darkred" }}/>
+                                </IconButton>
+                            </Tooltip>
                         </TableCell>
                     </TableRow>
                 ))}

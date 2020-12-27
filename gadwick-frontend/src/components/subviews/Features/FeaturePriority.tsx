@@ -1,3 +1,4 @@
+import { Tooltip } from '@material-ui/core';
 import React, { CSSProperties } from 'react';
 
 interface IFeaturePriority
@@ -7,6 +8,7 @@ interface IFeaturePriority
 
 function scoreStyling(score: number): CSSProperties
 {
+    // TODO: Figure out why this CSS behaves differently between quick setup and features
     const style: CSSProperties =
     {
         // position: "fixed",
@@ -20,7 +22,12 @@ function scoreStyling(score: number): CSSProperties
         textAlign: "center",
         fontWeight: "bold",
         color: "black",
-        padding: "0.25em"
+        padding: "0.5em",
+        // paddingTop: "em",
+        fontSize: "0.75rem",
+        // boxSizing: "content-box",
+        // paddingLeft: `${0.25 + (0.25 * (3-score.toString().length))}em`,
+        // paddingRight: `${0.25 + (0.25 * (3-score.toString().length))}em`
     };
     if (score > 55)
     {
@@ -46,9 +53,40 @@ function scoreStyling(score: number): CSSProperties
     return style;
 }
 
+function getTextRating(score: number): string
+{
+    if (score > 55)
+    {
+        return "high"
+    }
+    else if (score > 45)
+    {
+        return "moderate"
+    }
+    else if (score > 25)
+    {
+        return "low"
+    }
+    else
+    {
+        return "very low"
+    }
+}
+
 export default function FeaturePriority(props: IFeaturePriority)
 {
-    return <span style={scoreStyling(props.priority)}>
-        {props.priority}
-    </span>
+    let toolTip = "";
+    if (props.priority > 0)
+    {
+        toolTip = `This feature has a ${getTextRating(props.priority)} priority for automation testing.`;
+    }
+    else
+    {
+        toolTip = "This feature has not been configured yet."
+    }
+    return <Tooltip title={toolTip}>
+        <span style={scoreStyling(props.priority)}>
+            {props.priority}
+        </span>
+    </Tooltip>
 }

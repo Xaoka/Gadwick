@@ -32,7 +32,7 @@ export default function Snippets(props: ISnippets)
         if (language === "Python")
         {
             return <code>
-                python -m pip install Gadwick
+                pip install -i https://test.pypi.org/simple/ gadwick-pkg-Xaoka
             </code>
         }
     }

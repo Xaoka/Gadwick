@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import CategoryIcon from '@material-ui/icons/Category';
-import { Card, IconButton, Tab, Table, TableBody, TableCell, TableHead, TableRow, Tabs, TextField, Tooltip } from '@material-ui/core';
+import { IconButton, TextField, Tooltip } from '@material-ui/core';
 import copyToClipboard from '../../../../utils/Clipboard';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { IConfiguredApplication } from '../AppView';
 import serverAPI, { API, HTTP } from '../../../../apis/api';
+import getUserID from '../../../../apis/user';
+import { useAuth0 } from '@auth0/auth0-react';
+import { useHistory } from 'react-router-dom';
+import { Delete } from '@material-ui/icons';
+import DeleteDialog from '../../../DeleteDialog';
 
 interface ISettings
 {
@@ -14,9 +18,17 @@ interface ISettings
 
 export default function Settings(props: ISettings)
 {
+    const { user } = useAuth0();
+    const history = useHistory();
     const [appName, setAppName] = useState<string>(props.app.name);
     const [appDescription, setAppDescription] = useState<string>(props.app.description);
     const [hasChanges, setHasChanges] = useState<boolean>(false);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
+    const [userID, setUserID] = useState<string|null>(null);
+
+    useEffect(() => {
+        getUserID(user.sub).then(setUserID);
+    }, [])
 
     useEffect(() => {
         setHasChanges(appName !== props.app.name || appDescription !== props.app.description)
@@ -29,6 +41,39 @@ export default function Settings(props: ISettings)
         {
             props.onSaved();
         }
+    }
+
+    function onLeave()
+    {
+        if (!userID)
+        {
+            console.warn(`Trying to leave app with no user ID.`);
+            return;
+        }
+        if (!props.app.id)
+        {
+            console.warn(`Trying to leave app with no user ID.`);
+            return;
+        }
+        serverAPI(API.AppRoles, HTTP.DELETE, props.app.id, { }, [{ pathKey: "users", value: userID }]);
+        returnToAppsView();
+    }
+
+    function onAppDeleted()
+    {
+        setDeleteDialogOpen(false);
+        serverAPI(API.Applications, HTTP.DELETE, props.app.id);
+        returnToAppsView();
+    }
+
+    function returnToAppsView()
+    {
+        // TODO: This needs to refresh properly on leave!
+        if (props.onSaved)
+        {
+            props.onSaved();
+        }
+        history.push(`/dashboard/applications`);
     }
 
     return <>
@@ -45,6 +90,22 @@ export default function Settings(props: ISettings)
                 <FileCopyIcon/>
             </IconButton>
         </Tooltip>
-        {/** TODO: Allow for customisation of icon/colours? */}
+        {userID !== props.app.user_id && <>
+            <h3>Leave Application</h3>
+            <p>By leaving this application you will no longer be able to see or modify it unless invited back.</p>
+            <button className="danger" onClick={onLeave}>
+                Leave
+            </button>
+        </>
+        }
+        {userID === props.app.user_id && <>
+            <h3>Delete Application</h3>
+            <p>Deleting this application will remove it for all users and cannot be undone.</p>
+            <button className="danger" onClick={() => setDeleteDialogOpen(true)}>
+                Delete
+            </button>
+            <DeleteDialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)} onSubmit={onAppDeleted} targetType="Application" deleteTargetText="the application, features and test results for all users."/>
+        </>
+        }
     </>
 }

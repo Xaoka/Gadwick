@@ -56,11 +56,11 @@ export default function Dashboard()
             buttonID: "sidebar_subscription",
             pageURL: "subscription"
         },
-        {
-            subView: <Settings/>,
-            icon: SettingsIcon,
-            buttonID: "sidebar_settings",
-            pageURL: "settings"
-        }
+        // {
+        //     subView: <Settings/>,
+        //     icon: SettingsIcon,
+        //     buttonID: "sidebar_settings",
+        //     pageURL: "settings"
+        // }
     ]} sidebarScale={1.25}/>
 }

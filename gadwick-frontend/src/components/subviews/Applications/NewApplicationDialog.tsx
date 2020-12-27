@@ -1,26 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Dialog from '@material-ui/core/Dialog'
-import { DialogTitle, IconButton } from '@material-ui/core';
+import { DialogTitle, IconButton, Input, InputLabel, TextField } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close'
 
 interface INewApplicationDialog
 {
     onClose: () => void;
-    onSubmit: (data: any) => void;
+    onSubmit: (data: { name: string, description: string }) => void;
     open: boolean;
 }
 
 export default function NewApplicationDialog(props: INewApplicationDialog)
 {
-    // TODO: Ensure the app name is unique to the user
-    return <Dialog open={props.open} maxWidth="md" onClose={props.onClose} id="new_app_dialog">
+    const [appName, setAppName] = useState<string>("")
+    const [appDescription, setAppDescription] = useState<string>("")
+
+    function onSubmit(evt: React.MouseEvent<HTMLButtonElement, MouseEvent>)
+    {
+        evt.preventDefault();
+        evt.stopPropagation();
+        props.onSubmit({ name: appName, description: appDescription });
+    }
+
+    return <Dialog open={props.open} maxWidth="sm" onClose={props.onClose} id="new_app_dialog">
             <DialogTitle style={{ padding: 40, paddingBottom: 0 }}>
-                <h3>New Application</h3>
-                <IconButton style={{float: "right"}} onClick={props.onClose}><CloseIcon/></IconButton>
+                <h3>
+                    New Application
+                <IconButton style={{float: "right"}} onClick={props.onClose}>
+                    <CloseIcon/>
+                </IconButton>
+                </h3>
             </DialogTitle>
-            Create a new application, these represent your products and allow you to track testing data on a per-product basis.
-            <form onSubmit={props.onSubmit} style={{ padding: 40 }}>
-                <input defaultValue="My App" key="name"/><button>Submit</button>
-            </form>
+            <div style={{ padding: 40, paddingTop: 0 }}>
+                <p>An application represents your product and allows you to track testing data on a per-product basis.</p>
+                <TextField label="Application Name *" onChange={(evt) => setAppName(evt.target.value)} style={{ display: "block" }} autoFocus={true} />
+                <TextField label="Description" onChange={(evt) => setAppDescription(evt.target.value)} style={{ display: "block" }} fullWidth={true}/>
+                <div>
+                    <button disabled={appName.length === 0} onClick={onSubmit}>
+                        Submit
+                    </button>
+                </div>
+            </div>
         </Dialog>
 }
