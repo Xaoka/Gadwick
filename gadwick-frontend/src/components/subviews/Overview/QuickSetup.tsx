@@ -6,23 +6,23 @@ import { IFeature } from '../Features/Features';
 import serverAPI, { API, HTTP } from '../../../apis/api';
 import { useAuth0 } from '@auth0/auth0-react';
 import getUserID from '../../../apis/user';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+// import { useHistory, useRouteMatch } from 'react-router-dom';
 import FeatureConfigDialog from '../Features/FeatureConfigDialog';
 import FeaturePriority from '../Features/FeaturePriority';
 import NoData from '../NoData';
 
-const optionCSS: CSSProperties =
-{
-    width: 100,
-    height: 100,
-    borderRadius: 15,
-    borderColor: "transparent",
-    color: "white",
-    backgroundColor: "var(--theme-primary)",
-    textAlign: "center",
-    alignContent: "center",
-    display: "inline-block"
-}
+// const optionCSS: CSSProperties =
+// {
+//     width: 100,
+//     height: 100,
+//     borderRadius: 15,
+//     borderColor: "transparent",
+//     color: "white",
+//     backgroundColor: "var(--theme-primary)",
+//     textAlign: "center",
+//     alignContent: "center",
+//     display: "inline-block"
+// }
 
 export default function QuickSetup()
 {
@@ -63,7 +63,7 @@ export default function QuickSetup()
         {priorityFeatures.length === 0 && <NoData/>}
         {priorityFeatures.map((f) =>
         {
-            return <div id={f.id} className="list-item" onClick={() => setQuickEditFeature(f)}>
+            return <div id={f.id} className="list-item" onClick={() => setQuickEditFeature(f)} key={f.id}>
                 <span>
                     {f.name}
                     <div className="info">{f.app_name}</div>

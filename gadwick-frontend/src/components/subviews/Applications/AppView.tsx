@@ -1,4 +1,4 @@
-import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, IconButton, Card } from '@material-ui/core';
+import { IconButton, Card } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import serverAPI, { API, HTTP } from '../../../apis/api';
 import { useAuth0 } from "@auth0/auth0-react";
@@ -14,7 +14,7 @@ import AppDetails from './AppDetails/AppDetails';
 import BreadcrumbPath from '../../BreadcrumbPath';
 import { appNameToURL } from '../../../utils/ToURL';
 import SubView from '../SubView';
-import { IAppUser } from './AppDetails/UserTable';
+// import { IAppUser } from './AppDetails/UserTable';
 import { Roles } from './AppDetails/UserRoles';
 
 export interface IConfiguredApplication
@@ -119,7 +119,7 @@ export default function AppView()
 
     function appRoute(app: IConfiguredApplication)
     {
-        return <PrivateRoute path={`${path}/${appNameToURL(app.name)}`}>
+        return <PrivateRoute path={`${path}/${appNameToURL(app.name)}`} key={app.id}>
             <BreadcrumbPath baseURL={url} stages={["Applications", app.name]}/>
             <AppDetails app={app}/>
         </PrivateRoute>
