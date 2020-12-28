@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors')
+var corsOptions = require('./routes/cors');
 
 // var indexRouter = require('./routes/index');
 var featuresRouter = require('./routes/mysql/Features');
@@ -18,7 +19,8 @@ var purchasesRouter = require('./routes/mysql/Purchases');
 
 // var cors = require('cors')
 var app = express();
-app.use(cors())
+app.use(cors(corsOptions))
+app.options('*', cors(corsOptions)) // include before other routes
 
 // view engine setup
 // app.set('views', path.join(__dirname, 'views'));
@@ -30,7 +32,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app.options('*', cors()) // include before other routes
 
 // app.use('/', indexRouter);
 app.use('/features', featuresRouter);

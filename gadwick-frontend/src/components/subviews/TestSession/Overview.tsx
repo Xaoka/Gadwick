@@ -110,7 +110,7 @@ export default function Overview()
                 </TableHead>
                 <TableBody>
                     {sessions.map((session) =>
-                    <TableRow id={session.id} hover onClick={() => goToSession(session)}>
+                    <TableRow id={session.id} hover onClick={() => goToSession(session)} key={session.id}>
                         <TableCell>{session.app_name}</TableCell>
                         <TableCell>{session.app_version}</TableCell>
                         <TableCell className={getStatusStyling(session.status)}>{session.status}</TableCell>

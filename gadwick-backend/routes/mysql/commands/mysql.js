@@ -43,8 +43,9 @@ function awaitQuery(query)
             {
                 if (error)
                 {
-                    console.log(`\x1b[31m%s\x1b[0m`,`Problem resolving query:\n${query}\n\n`);
-                    reject(error)
+                    // console.log(`\x1b[31m%s\x1b[0m`,`Problem resolving query:\n${query}\n\n`);
+                    // reject(error)
+                    resolve({ error: `Issue Resolving your query: ${error}`})
                 }
                 resolve(results);
             })
