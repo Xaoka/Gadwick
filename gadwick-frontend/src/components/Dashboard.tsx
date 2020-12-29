@@ -1,21 +1,18 @@
 import React from 'react';
 import View from './subviews/View';
 import Overview from './subviews/Overview/overview';
-import Features from './subviews/Features/Features';
-import FeatureReports from './subviews/FeatureReports';
 import AppView from './subviews/Applications/AppView';
 import Tutorials from './subviews/Tutorials/Tutorials';
 import TestSession from './subviews/TestSession/TestSession';
-import Settings from './subviews/Settings/Settings';
+// import Settings from './subviews/Settings/Settings';
 import Subscription from './subviews/Subscription/Subscription';
 
 import AppsIcon from '@material-ui/icons/Apps';
 import CreditCardIcon from '@material-ui/icons/CreditCard';
-import ListIcon from '@material-ui/icons/List';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import EmojiObjectsIcon from '@material-ui/icons/EmojiObjects';
 import AssignmentIcon from '@material-ui/icons/Assignment';
-import SettingsIcon from '@material-ui/icons/Settings';
+// import SettingsIcon from '@material-ui/icons/Settings';
 
 export default function Dashboard()
 {

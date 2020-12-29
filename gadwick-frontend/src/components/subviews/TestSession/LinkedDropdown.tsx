@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { IBoard, IBoardColumn, IBoardWithColumns } from '../../../apis/thirdParty/IThirdparty';
-import { DialogTitle, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
+import { TableCell } from '@material-ui/core';
 
 interface ILinkedDropDown
 {

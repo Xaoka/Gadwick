@@ -1,12 +1,9 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import { List, ListItem, SvgIconTypeMap } from '@material-ui/core';
-import { CheckBox } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
-import { Switch, useHistory, useRouteMatch } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import serverAPI, { API, HTTP } from '../../../apis/api';
-import PrivateRoute from '../../PrivateRoute';
 import { IFeature } from '../Features/Features';
-import NewSession from './NewSession';
 import { ISession, ISessionResponse } from './Overview';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
@@ -23,8 +20,7 @@ interface ISessionView
 
 export default function SessionView(props: ISessionView)
 {
-    const { user } = useAuth0();
-    let { path, url } = useRouteMatch();
+    let { path } = useRouteMatch();
     const history = useHistory();
     let match = useRouteMatch<{sessionID: string}>({
       path: `${path}/:sessionID`
@@ -98,7 +94,7 @@ export default function SessionView(props: ISessionView)
         // if (index === featureIndex) { className = "list-selected"; }
         if (results[index] === true) { className = "success"; }
         if (results[index] === false) { className = "danger"; }
-        const onClick = (index === featureIndex) ? () => setFeatureIndex(featureIndex+1) : undefined;
+        // const onClick = (index === featureIndex) ? () => setFeatureIndex(featureIndex+1) : undefined;
 
         let Icon: OverridableComponent<SvgIconTypeMap>;
         if (results[index] === undefined)

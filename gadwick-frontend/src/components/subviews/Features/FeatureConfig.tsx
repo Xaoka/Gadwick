@@ -4,7 +4,7 @@ import serverAPI, { API, HTTP } from '../../../apis/api';
 import CombinedRating from './CombinedRating';
 import { IFeature, IFeatureRatings } from './Features';
 import SimpleRating from './SimpleRating';
-import { Dialog, TextField } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import Steps from './Steps';
 import DeleteDialog from '../../DeleteDialog';
 

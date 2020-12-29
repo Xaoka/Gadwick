@@ -1,19 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import serverAPI, { API, HTTP } from '../../../apis/api';
+import React from 'react';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
-import { Grid } from '@material-ui/core';
-import StatBox from './Stats/StatBox';
-import CategoryIcon from '@material-ui/icons/Category';
-import { useAuth0 } from "@auth0/auth0-react";
 import QuickSetup from './QuickSetup';
-import ToDo from './ToDo';
+// import ToDo from './ToDo';
 import ProfileGraphs from './Stats/ProfileGraphs';
 import SubView from '../SubView';
 
-export default function Overview(props: { style?: CSSProperties, children?: React.ReactNode })
-{
-    const { user } = useAuth0();
-    
+export default function Overview()
+{   
     return <SubView title="Profile">
         {/* <h2>{user.name}</h2> */}
         <div style={{ display: "flex", padding: 0 }}>
