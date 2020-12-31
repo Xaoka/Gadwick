@@ -34,7 +34,7 @@ export default function PackageCard(props: IPackageCard)
         <div>
             <p>{props.summary}</p>
             <ul>
-                {props.features.map((f) => <li>{f}</li>)}
+                {props.features.map((f) => <li key={f}>{f}</li>)}
             </ul>
         </div>
         <div style={{ margin: "auto" }}>

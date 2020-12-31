@@ -51,10 +51,11 @@ export default function QuickSetup()
     return <>
         <h2>Features</h2>
         {/* <h4>Quick Setup</h4> */}
-        <button onClick={() => setImportDialogOpen(true)}>
+        {/** TODO: Re-add feature importing later */}
+        {/* <button onClick={() => setImportDialogOpen(true)}>
             Import Features
             {chevron}
-        </button>
+        </button> */}
         {/* <button onClick={() => setFeatureDialogOpen(true)}>
             Import Test Results
             {chevron}

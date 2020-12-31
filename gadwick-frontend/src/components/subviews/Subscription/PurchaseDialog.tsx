@@ -27,7 +27,7 @@ export default function PurchaseDialog(props: IPurchaseDialog)
             <img src={`/tiers/${props.product.img}.png`} width={180} height={180} style={{ marginLeft: "calc(50% - 90px)" }}/>
             <p>You'll retain any benefits that you've already paid for until they expire and in addition you'll get the following:</p>
             <ul>
-                {props.product.features.map((f) => <li>{f}</li>)}
+                {props.product.features.map((f) => <li key={f}>{f}</li>)}
             </ul>
             <div style={{ textAlign: "center" }}>
                 <button style={{ margin: "auto"}} className="success">
