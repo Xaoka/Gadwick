@@ -47,7 +47,7 @@ enum APIServer
 export default async function serverAPI<T extends object>(apiMethod: API, httpMethod: HTTP, dbID?: string, payload?: object, additionalPath?: { pathKey: string, value: string }[]): Promise<T>
 {
     // TODO: Function to select server
-    const server = APIServer.dev;
+    const server = APIServer.local;
     const pathExtension = additionalPath ? additionalPath.map((p) => `/${p.pathKey}/${p.value}`).join("") : ""
     const response = await getHTTPMethod(httpMethod)(`${server}/${apiMethod}/${dbID||""}${pathExtension}`, payload);
     return response.data;

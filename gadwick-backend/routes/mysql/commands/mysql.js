@@ -19,40 +19,33 @@ function connectToDatabase()
         console.log('Connected to database.');
         connection.query(`USE gadwick`)
     });
+    connection.on('error', function(err) {
+        if (!err.fatal) {
+          return;
+        }
+    
+        if (err.code !== 'PROTOCOL_CONNECTION_LOST') {
+          throw err;
+        }
+    
+        console.log('Re-connecting lost connection: ' + err.stack);
+    
+        connection = mysql.createConnection(connection.config);
+        handleDisconnect(connection);
+        connection.connect();
+      });
 }
 connectToDatabase();
 
 // TODO: !! Use post and actual sanitization rather than our own injection thing:
 // TODO: escapeID: https://stackoverflow.com/questions/57598136/error-er-no-db-error-no-database-selected-node-js-mysql-when-always-using
 // https://stackoverflow.com/questions/15778572/preventing-sql-injection-in-node-js
-function makeQuery(query, callback)
-{
-    try
-    {
-        if (connection.state === "disconnected")
-        {
-            connectToDatabase();
-        }
-        connection.query(query, callback);
-    }
-    catch (e)
-    {
-        console.log(`Problem with your query:`)
-        console.log("\x1b[32m%s\x1b[0m", query);
-        console.log(e);
-    }
-}
-
 function awaitQuery(query)
 {
     return new Promise((resolve, reject) =>
     {
         try
         {
-            if (connection.state === "disconnected")
-            {
-                connectToDatabase();
-            }
             connection.query(query, (error, results, fields) =>
             {
                 if (error)
@@ -72,4 +65,4 @@ function awaitQuery(query)
     })
 }
 
-module.exports = { makeQuery, awaitQuery };
+module.exports = { awaitQuery };

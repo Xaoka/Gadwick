@@ -2,21 +2,18 @@ var express = require('express');
 var cors = require('cors')
 var corsOptions = require('../cors')
 var router = express.Router();
-const { makeQuery, awaitQuery } = require('./commands/mysql');
+const { awaitQuery } = require('./commands/mysql');
 const { insertInto } = require('./commands/insert');
 const { deleteEntry } = require('./commands/delete');
 const { update } = require('./commands/update');
 
-router.get('/', cors(corsOptions), function(req, res, next) {
+router.get('/', cors(corsOptions), async function(req, res, next) {
     const ids = (req.query.id || req.query.ids).split(",");
     console.log(ids);
     const idQuery = ids ? `WHERE ${ids.map((id) => `id = "${id}"`).join(" OR ")}` : "";
 
-    makeQuery(`SELECT * FROM Features LEFT JOIN (SELECT id app_id, name app_name FROM Applications) Apps ON Features.app_id = Apps.app_id ${idQuery}`, function (err, result, fields) {
-        if (err) throw err;
-        console.log(result);
-        res.send(result);
-    });
+    const response = await awaitQuery(`SELECT * FROM Features LEFT JOIN (SELECT id app_id, name app_name FROM Applications) Apps ON Features.app_id = Apps.app_id ${idQuery}`);
+    res.send(response);
 });
 
 router.get('/priority/:user_id', cors(corsOptions), async function(req, res, next) {
@@ -27,23 +24,17 @@ router.get('/priority/:user_id', cors(corsOptions), async function(req, res, nex
     res.send(response);
 });
 
-router.get('/app/:app_id', cors(corsOptions), function(req, res, next) {
+router.get('/app/:app_id', cors(corsOptions), async function(req, res, next) {
     const id = req.params.app_id;
-    makeQuery(`SELECT * FROM Features WHERE app_id = "${id}"`, function (err, result, fields) {
-        if (err) throw err;
-        console.log(result);
-        res.send(result);
-    });
+    const response = await awaitQuery(`SELECT * FROM Features WHERE app_id = "${id}"`);
+    res.send(response);
 });
 
-router.get('/s/:client_secret', cors(corsOptions), function(req, res, next) {
+router.get('/s/:client_secret', cors(corsOptions), async function(req, res, next) {
     const client_secret = req.params.client_secret;
     console.log(client_secret)
-    makeQuery(`SELECT * FROM Features LEFT JOIN (SELECT id app_id, client_secret FROM Applications) AS Apps ON Features.app_id = Apps.app_id WHERE Apps.client_secret = "${client_secret}"`, function (err, result, fields) {
-        if (err) throw err;
-        console.log(result);
-        res.send(result);
-    });
+    const response = await awaitQuery(`SELECT * FROM Features LEFT JOIN (SELECT id app_id, client_secret FROM Applications) AS Apps ON Features.app_id = Apps.app_id WHERE Apps.client_secret = "${client_secret}"`);
+    res.send(response);
 });
 
 
