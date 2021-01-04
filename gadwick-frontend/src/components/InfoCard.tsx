@@ -14,7 +14,7 @@ media: {
 },
 });
 
-export enum MediaType { Code, Application, Testing, AvailableSoon }
+export enum MediaType { Code, Application, Testing, AvailableSoon, TAU }
 
 interface IInfoCard
 {
@@ -57,6 +57,12 @@ export default function InfoCard(props: IInfoCard)
         />
       case MediaType.AvailableSoon:
         return <NotAvailable reason={NotAvailableReason.ComingSoon} size="sm"/>
+      case MediaType.TAU:
+        return <CardMedia
+          className={classes.media}
+          image="/tutorials/tau_logo.png"
+          title="Test Automation University"
+          />
     }
   }
 

@@ -12,7 +12,6 @@ router.get('/auth/:user_id', cors(corsOptions), async function(req, res, next) {
     //  Apps I own
     //  Apps I've accepted invites to
     //  Fetch the app names and user names for these sessions
-    //  Known issue: If you have your own app under invites the passes show double
     const sessions = (await awaitQuery(`SELECT Sessions.id, started_on, status, Sessions.app_id, app_version, feature_ids, Apps.app_name, user_name, SUM(IF(STRCMP(passed, "false"), 1.0, 0.0)) features_passed FROM Sessions LEFT JOIN (SELECT Applications.id app_id, Applications.name app_name, user_id app_user_id FROM Applications) Apps ON Apps.app_id = Sessions.app_id LEFT JOIN (SELECT * FROM AppUsers WHERE invite_status = "Accepted") AU ON Apps.app_id = AU.app_id LEFT JOIN (SELECT id user_id, name user_name FROM Users) U ON U.user_id = Sessions.user_id LEFT JOIN (SELECT session_id, passed FROM Results) R ON R.session_id = Sessions.id WHERE Sessions.user_id = "${id}" OR U.user_id = "${id}" OR Apps.app_user_id = "${id}" GROUP BY Sessions.id ORDER BY started_on DESC`));
     res.send(sessions)
 });
