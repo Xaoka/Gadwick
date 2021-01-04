@@ -1,5 +1,6 @@
 import { Card, CardActionArea, CardMedia, CardContent, Typography, makeStyles, Button, CardActions } from '@material-ui/core';
 import React from 'react';
+import NotAvailable, { NotAvailableReason } from './subviews/NotAvailable';
 
 const useStyles = makeStyles({
 root: {
@@ -13,7 +14,7 @@ media: {
 },
 });
 
-export enum MediaType { Code, Application }
+export enum MediaType { Code, Application, Testing, AvailableSoon }
 
 interface IInfoCard
 {
@@ -48,6 +49,14 @@ export default function InfoCard(props: IInfoCard)
           image="/tutorials/product.png"
           title="Application"
         />
+      case MediaType.Testing:
+        return <CardMedia
+          className={classes.media}
+          image="/tutorials/testing.png"
+          title="Test"
+        />
+      case MediaType.AvailableSoon:
+        return <NotAvailable reason={NotAvailableReason.ComingSoon} size="sm"/>
     }
   }
 

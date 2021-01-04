@@ -1,9 +1,10 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
+import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, TableFooter, TablePagination } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import serverAPI, { API, HTTP } from '../../../apis/api';
 import getUserID from '../../../apis/user';
 import { useRouteMatch, useHistory } from 'react-router-dom';
+import TablePaginationActions from '@material-ui/core/TablePagination/TablePaginationActions';
 
 interface IBaseSession
 {
@@ -42,6 +43,8 @@ export default function Overview()
     const { user } = useAuth0();
     let { path } = useRouteMatch();
     const history = useHistory();
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(5);
     
     const [sessions, setSessions] = useState<ISession[]>([])
 
@@ -52,6 +55,17 @@ export default function Overview()
             serverAPI<ISession[]>(API.SessionsByAuth, HTTP.READ, user_id).then(setSessions);
         });
     }, [])
+    
+    const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+        setPage(newPage);
+      };
+    
+    const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+    };
 
     function getStatusStyling(status: string): string
     {
@@ -65,13 +79,14 @@ export default function Overview()
     function renderPassRate(session: ISession)
     {
         const passed = session.features_passed;
-        const failed = (session.feature_ids ? JSON.parse(session.feature_ids as any).length : 0) - passed;
-        const rate = ((passed/(passed+failed)) * 100);
+        // const failed = () - passed;
+        const featureCount = session.feature_ids ? JSON.parse(session.feature_ids as any).length : 0;
+        const rate = ((passed/featureCount) * 100);
         let className = "success";
         if (rate < 60) { className = "danger"; }
         else if (rate < 80) { className = "major-warning"; }
         else if (rate < 100) { className = "warning"; }
-        return <TableCell className={className}>{rate.toFixed(1)}% ({passed}/{passed+failed})</TableCell>
+        return <TableCell className={className}>{rate.toFixed(1)}% ({passed}/{featureCount})</TableCell>
     }
 
     function goToSession(session: ISession)
@@ -109,7 +124,10 @@ export default function Overview()
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {sessions.map((session) =>
+                    {(rowsPerPage > 0
+                        ? sessions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        : sessions
+                    ).map((session) =>
                     <TableRow id={session.id} hover onClick={() => goToSession(session)} key={session.id}>
                         <TableCell>{session.app_name}</TableCell>
                         <TableCell>{session.app_version}</TableCell>
@@ -122,7 +140,26 @@ export default function Overview()
                         <TableCell>{(new Date(session.started_on)).toLocaleTimeString()}</TableCell>
                     </TableRow>
                     )}
+                    {/** TODO: Empty rows? */}
                 </TableBody>
+                <TableFooter>
+                <TableRow>
+                    <TablePagination
+                        rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                        colSpan={7}
+                        count={sessions.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        SelectProps={{
+                            inputProps: { 'aria-label': 'rows per page' },
+                            native: true,
+                        }}
+                        onChangePage={handleChangePage}
+                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                        ActionsComponent={TablePaginationActions}
+                        />
+                </TableRow>
+                </TableFooter>
             </Table>
         </TableContainer>
     </>

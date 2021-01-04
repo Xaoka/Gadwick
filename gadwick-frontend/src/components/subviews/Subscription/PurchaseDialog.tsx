@@ -1,19 +1,27 @@
 import { Dialog, DialogTitle, IconButton } from '@material-ui/core';
 import React, { useState } from 'react';
 import CloseIcon from '@material-ui/icons/Close'
-import { IRenderedProduct } from './Subscription';
+import { IProduct } from './Subscription';
+import serverAPI, { API, HTTP } from '../../../apis/api';
 
 interface IPurchaseDialog
 {
     open: boolean;
     onClose: () => void;
-    product: IRenderedProduct;
+    product: IProduct;
 }
 
 // https://stripe.com/docs/billing/subscriptions/checkout
 
 export default function PurchaseDialog(props: IPurchaseDialog)
 {
+    async function onPurchase()
+    {
+        const { sessionId } = await serverAPI(API.CheckoutSession, HTTP.CREATE, undefined, { product_id: props.product.stripe_id })
+        const stripe = (window as any).Stripe("pk_test_51I1uUQBdEJQZjJeTeQAdniHjnSIBYoebSjmB3bZ5Kq7ZWQFnEkZ1Bh7YTpLJyrKy96NLAmpfQiKAD6yQ8kb5UNVj00pKWCn3v4")
+        stripe.redirectToCheckout({sessionId: sessionId}).then(console.dir);
+    }
+
     return <Dialog open={props.open} maxWidth="xs" fullWidth={false} onClose={props.onClose} id="new_app_dialog">
         <DialogTitle style={{ padding: 40, paddingBottom: 0, paddingTop: 0 }}>
             <h3>
@@ -30,7 +38,7 @@ export default function PurchaseDialog(props: IPurchaseDialog)
                 {props.product.features.map((f) => <li key={f}>{f}</li>)}
             </ul>
             <div style={{ textAlign: "center" }}>
-                <button style={{ margin: "auto"}} className="success">
+                <button style={{ margin: "auto"}} className="success" onClick={onPurchase}>
                     Buy for £{(props.product.price_in_pence/100).toFixed(2)}
                 </button>
             </div>

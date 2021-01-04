@@ -1,6 +1,7 @@
 import { useAuth0 } from '@auth0/auth0-react';
+import { TextField } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, version } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import serverAPI, { API, HTTP } from '../../../apis/api';
 import getUserID from '../../../apis/user';
@@ -8,9 +9,15 @@ import getUserID from '../../../apis/user';
 import InfoCard, { MediaType } from '../../InfoCard';
 import { IConfiguredApplication, IUserApps } from '../Applications/AppView';
 import { IFeature } from '../Features/Features';
+import NotAvailable, { NotAvailableReason } from '../NotAvailable';
 import { ISession } from './Overview';
 
 enum State { App, Features }
+export enum TestType
+{
+    Integration = "INTEGRATION",
+    Regression = "REGRESSION"
+}
 
 interface INewSession
 {
@@ -24,7 +31,11 @@ export default function NewSession(props: INewSession)
     const history = useHistory();
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [configuredApplications, setConfiguredApplications] = useState<IUserApps>({ applications: [], invites: [], shared: [] });
-    // const [state, setState] = useState<State>(State.App)
+    const [state, setState] = useState<State>(State.App)
+    const [appSelected, setAppSelected] = useState<IConfiguredApplication|null>(null);
+    const [versions, setVersions] = useState<{version: string}[]>([]);
+    const [versionSelected, setVersionSelected] = useState<string>("new");
+    const [sessionVersion, setSessionVersion] = useState<string>("0.0.0");
     
     useEffect(() => {
         setIsLoading(true);
@@ -40,22 +51,9 @@ export default function NewSession(props: INewSession)
     }, []);
     function onAppSelected(app: IConfiguredApplication)
     {
-        // setState(State.Features);
-        // TODO: Possibly allow the user to only test new/old or specific features
-        // TODO: Select app version (And infer this?)
-        onSessionStarted(app);
-    }
-
-    function onSessionStarted(app: IConfiguredApplication)
-    {
-        // TODO: make userID a hook?! Or cache?
-        getUserID(user.sub).then(async (user_id) =>
-        {
-            const features = await serverAPI<IFeature[]>(API.AppFeatures, HTTP.READ, app.id);
-            const feature_ids = JSON.stringify(features.map((f) => f.id));
-            const response = await serverAPI<ISession>(API.Sessions, HTTP.CREATE, undefined, { user_id, app_version: "0.0.0", app_id: app.id, feature_ids });
-            history.push(`${props.sessionURL}/${response.id}`);
-        });
+        serverAPI<{version: string}[]>(API.ApplicationsVersions, HTTP.READ, app.id).then(setVersions);
+        setAppSelected(app);
+        setState(State.Features);
     }
 
     function renderSkeletons()
@@ -70,8 +68,36 @@ export default function NewSession(props: INewSession)
         }
         return skeletons;
     }
-    return <>
-        {/* {state == State.App && <> */}
+
+    function setVersion(value: string)
+    {
+        setVersionSelected(value);
+        if (value === "new")
+        {
+            setSessionVersion("0.0.0");
+        }
+        else
+        {
+            setSessionVersion(value);
+        }
+    }
+
+    async function onTestTypeSelected(type: TestType)
+    {
+        if (appSelected === null)
+        {
+            console.warn("Test selected with no app?!");
+            return;
+        }
+        // TODO: make userID a hook?! Or cache?
+        const user_id = await getUserID(user.sub);
+        const response = await serverAPI<ISession>(API.Sessions, HTTP.CREATE, undefined, { user_id, app_version: sessionVersion, app_id: appSelected.id, type });
+        history.push(`${props.sessionURL}/${response.id}`);
+    }
+
+    if (state == State.App)
+    {
+        return <>
             <p>Choose which app you would like to test:</p>
             {isLoading && renderSkeletons()}
             {!isLoading && configuredApplications.applications.map((app) =>
@@ -81,6 +107,35 @@ export default function NewSession(props: INewSession)
                 <InfoCard image={MediaType.Application} title={app.name} summary="My app description goes here" key={app.name} onClick={() => onAppSelected(app)}/>
             )}
             {!isLoading && configuredApplications.applications.length === 0 && configuredApplications.shared.length === 0 && <p>You have no apps configured, you'll need to make one first.</p>}
-        {/* </>} */}
-    </>
+        </>
+    }
+    else if (state == State.Features)
+    {
+        const isNewVersion = versionSelected === "new";
+        return <>
+            <h4>Session Information</h4>
+            <p>Information about your test session.</p>
+            <div>
+                <span style={{ display: "inline-block", verticalAlign: "top", marginRight: 10 }}>
+                    {/* <p style={{ margin: 0 }}>
+                        Version
+                    </p> */}
+                    <select onChange={(evt) => { setVersion(evt.target.value) }}>
+                        {versions.map((v) => <option value={v.version} key={v.version}>{v.version}</option>)}
+                        <option value="new">New Version</option>
+                    </select>
+                </span>
+                {isNewVersion && <TextField defaultValue="0.0.0" style={{ display: "inline-block", verticalAlign: "bottom" }} disabled={versionSelected!=="new"} onChange={(evt) => setSessionVersion(evt.target.value)}/>}
+            </div>
+            <h4>Session Type</h4>
+            <p>Select a session type below to begin your testing session.</p>
+            <InfoCard title="Regression Test" summary="Test all the features for this application" image={MediaType.Testing} onClick={() => onTestTypeSelected(TestType.Regression)}/>
+            <InfoCard title="Integration Test" summary="Test all the untested features for this application" image={MediaType.Testing} onClick={() => onTestTypeSelected(TestType.Integration)}/>
+            <InfoCard title="Critical Path Test" summary="Test only features that are a high priority for this application" image={MediaType.AvailableSoon}/>
+            <InfoCard title="Test Common Issues" summary="Test only features that fail frequently for this application" image={MediaType.AvailableSoon}/>
+            <InfoCard title="Exploratory Test" summary="Perform an exploratory test and report issues you find" image={MediaType.AvailableSoon}/>
+            <InfoCard title="Localization Test" summary="Test each feature supports the desired languages" image={MediaType.AvailableSoon}/>
+        </>
+    }
+    return <div>Invalid State</div>
 }

@@ -12,6 +12,7 @@ export enum API
     AppAutomationStats = "stats/automation/app",
     UserAutomationStats = "stats/automation/user",
     Applications = "applications",
+    ApplicationsVersions = "applications/versions",
     Users = "users",
     UsersByAuth = "users/auth",
     Roles = "roles",
@@ -19,7 +20,10 @@ export enum API
     Invites = "roles/invites",
     Sessions = "sessions",
     SessionsByAuth = "sessions/auth",
-    Subscriptions = "products/subscriptions"
+    Subscriptions = "products/subscriptions",
+    PurchasesForUser = "purchases/user",
+    UserSubscription = "purchases/subscription/user",
+    CheckoutSession = "purchases/create-checkout-session"
 }
 export enum HTTP { CREATE, READ, UPDATE, DELETE }
 

@@ -7,6 +7,8 @@ interface INotAvailable
 {
     /** Defaults to "100%" */
     width?: string|number;
+    /** Defaults to "md" */
+    size?: "sm"|"md";
     reason: NotAvailableReason;
 }
 
@@ -26,9 +28,11 @@ export default function NotAvailable(props: INotAvailable)
     }
 
     const width = (props.width !== undefined) ? props.width : "100%";
+    const fontSize = props.size === "sm" ? 80 : 130;
+    const margin = props.size === "sm" ? 30 : 50;
     return <div style={{ width }}>
-        <div style={{ margin: "auto", color: "grey", fontSize: 130, textAlign: "center" }}>
-            <LockIcon color="inherit" fontSize="inherit" style={{ marginBottom: -50, marginTop: -50 }} />
+        <div style={{ margin: "auto", color: "grey", fontSize, textAlign: "center" }}>
+            <LockIcon color="inherit" fontSize="inherit" style={{ marginBottom: -margin, marginTop: -margin }} />
             <p style={{ textAlign: "center", fontSize: "initial" }}>
                 {getReasonText()}
             </p>

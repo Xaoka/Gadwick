@@ -25,9 +25,6 @@ router.get('/:user_id', cors(corsOptions), async function(req, res, next) {
     }
     res.send({ applications, shared, invites });
 });
-router.get('/', cors(corsOptions), async function(req, res, next) {
-    res.send(`Server is up, but something else is going wrong`)
-})
 
 router.post('/', cors(corsOptions), async function(req, res, next) {
     req.body.client_secret = uuidv4();
@@ -38,6 +35,11 @@ router.put('/:app_id', cors(corsOptions), async function(req, res, next) {
     const app_id = req.params.app_id;
     update(req.body, ["name", "description"], "Applications", app_id)
 });
+
+router.get('/versions/:app_id', cors(corsOptions), async function(req, res, next) {
+    const response = await awaitQuery(`SELECT version From Results GROUP BY version`)
+    res.send(response);
+})
 
 router.delete('/:app_id', cors(corsOptions), async function(req, res, next) {
     const id = req.params.app_id;

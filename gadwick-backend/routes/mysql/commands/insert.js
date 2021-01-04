@@ -1,19 +1,24 @@
 
-const { makeQuery } = require('./mysql');
+const { awaitQuery } = require('./mysql');
 const { v4: uuidv4 } = require('uuid');
 
-function insertInto(allowedKeys, optionalKeys, table, req, res, next)
+async function insertInto(allowedKeys, optionalKeys, table, req, res, next)
 {
     const userData = req.body;
+    if (!req.body)
+    {
+        next(`No body.`);
+        return;
+    }
     for (const key of allowedKeys)
     {
-        if (userData[key] === undefined) { next({ message: `Missing field '${key}'`}); return; }
+        if (userData[key] === undefined) { next(`Missing field '${key}'`); return; }
     }
     for (const key of Object.keys(userData))
     {
         if (!allowedKeys.includes(key) && !optionalKeys.includes(key))
         {
-            next({ message: `Erroneous field '${key}'`});
+            next(`Erroneous field '${key}'`);
             return;
         }
     }
@@ -25,11 +30,13 @@ function insertInto(allowedKeys, optionalKeys, table, req, res, next)
     console.log(`QUERY:`)
     console.log("\x1b[32m%s\x1b[0m", query);
     
-    makeQuery(query, function (err, result, fields) {
-        if (err) throw err;
-        console.log(result);
-        res.send({ id: entryID });
-    });
+    const response = await awaitQuery(query);
+    if (response.error)
+    {
+        res.send({ response });
+        return;
+    }
+    res.send({ id: entryID, response });
 }
 
 module.exports = { insertInto };
