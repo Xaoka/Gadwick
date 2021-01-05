@@ -32,8 +32,12 @@ function connectToDatabase()
     
         connection = mysql.createConnection(connection.config);
         handleDisconnect(connection);
-        connection.connect();
-      });
+        connectToDatabase();
+    });
+    connection.on('end',() =>
+    {
+        connectToDatabase();
+    })
 }
 connectToDatabase();
 

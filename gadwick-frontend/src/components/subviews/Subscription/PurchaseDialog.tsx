@@ -1,8 +1,10 @@
 import { Dialog, DialogTitle, IconButton } from '@material-ui/core';
-import React, { useState } from 'react';
+import React from 'react';
 import CloseIcon from '@material-ui/icons/Close'
 import { IProduct } from './Subscription';
 import serverAPI, { API, HTTP } from '../../../apis/api';
+import { useAuth0 } from '@auth0/auth0-react';
+import getUserID from '../../../apis/user';
 
 interface IPurchaseDialog
 {
@@ -15,11 +17,13 @@ interface IPurchaseDialog
 
 export default function PurchaseDialog(props: IPurchaseDialog)
 {
+    const { user } = useAuth0();
     async function onPurchase()
     {
-        const { sessionId } = await serverAPI(API.CheckoutSession, HTTP.CREATE, undefined, { product_id: props.product.stripe_id })
+        const user_id = await getUserID(user.sub);
+        const { sessionId } = await serverAPI(API.CheckoutSession, HTTP.CREATE, undefined, { product_name: props.product.product_name, user_id })
         const stripe = (window as any).Stripe("pk_test_51I1uUQBdEJQZjJeTeQAdniHjnSIBYoebSjmB3bZ5Kq7ZWQFnEkZ1Bh7YTpLJyrKy96NLAmpfQiKAD6yQ8kb5UNVj00pKWCn3v4")
-        stripe.redirectToCheckout({sessionId: sessionId}).then(console.dir);
+        const response = await stripe.redirectToCheckout({sessionId: sessionId});
     }
 
     return <Dialog open={props.open} maxWidth="xs" fullWidth={false} onClose={props.onClose} id="new_app_dialog">

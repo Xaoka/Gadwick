@@ -1,6 +1,6 @@
 const { awaitQuery } = require('./mysql');
 
-async function update(userData, optionalFields, tableName, entryID)
+async function update(userData, optionalFields, tableName, entryID, field)
 {
     const sqlFields = [];
     for (const field of optionalFields)

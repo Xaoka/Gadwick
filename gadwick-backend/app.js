@@ -17,6 +17,7 @@ var sessionsRouter = require('./routes/mysql/Sessions');
 var rolesRouter = require('./routes/mysql/Roles');
 var purchasesRouter = require('./routes/mysql/Purchases');
 var productsRouter = require('./routes/mysql/Products');
+var stripeRouter = require('./routes/mysql/Stripe');
 
 // var cors = require('cors')
 var app = express();
@@ -28,7 +29,11 @@ app.options('*', cors(corsOptions)) // include before other routes
 // app.set('view engine', 'jade');
 
 app.use(logger('dev'));
-app.use(express.json());
+app.use(express.json({
+  verify: (req, res, buf) => {
+    req.rawBody = buf
+  }
+}));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -44,6 +49,7 @@ app.use('/sessions', sessionsRouter);
 app.use('/roles', rolesRouter);
 app.use('/purchases', purchasesRouter);
 app.use('/products', productsRouter);
+app.use('/stripe', stripeRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

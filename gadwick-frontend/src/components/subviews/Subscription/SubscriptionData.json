@@ -1,0 +1,71 @@
+{
+    "free":
+    {
+        "title": "Free",
+        "product_name": "Free",
+        "price": "£0",
+        "price_in_pence": 0,
+        "id": "",
+        "img": "tier_1",
+        "summary": "Perfect for trying out Gadwick",
+        "features":
+        [
+            "Access to all of Gadwick's features",
+            "Up to two applications",
+            "Up to one additional collaborator per application"
+        ],
+        "stripe_id": "",
+        "type": "SUBSCRIPTION",
+        "backgroundColours":
+        {
+            "bottomColor": "#eee6ff",
+            "midColour": "#f4f0fb"
+        }
+    },
+    "standard":
+    {
+        "title": "Standard",
+        "product_name": "Standard",
+        "price": "£10",
+        "price_in_pence": 1000,
+        "summary": "The standard Gadwick subscription",
+        "id": "",
+        "img": "free_tier",
+        "features":
+        [
+            "Access to all of Gadwick's features",
+            "Up to ten applications",
+            "Up to five additional collaborator per application"
+        ],
+        "stripe_id": "",
+        "type": "SUBSCRIPTION",
+        "backgroundColours":
+        {
+            "bottomColor": "rgba(217,255,215,1)",
+            "midColour": "rgba(240,251,240,1)"
+        }
+    },
+    "premium":
+    {
+        "title": "Premium",
+        "product_name": "Premium",
+        "price": "£50",
+        "price_in_pence": 5000,
+        "summary": "Ideal for larger companies",
+        "id": "",
+        "img": "tier_2",
+        "features":
+        [
+            "Access to all of Gadwick's features",
+            "Unlimited applications",
+            "Unlimited collaborators per application"
+        ],
+        "stripe_id": "",
+        "type": "SUBSCRIPTION",
+        "backgroundColours":
+        {
+            "bottomColor": "#fff1d7",
+            "midColour": "#fbf8f0"
+        }
+    }
+}
