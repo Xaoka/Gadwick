@@ -6,13 +6,14 @@
         "price": "£0",
         "price_in_pence": 0,
         "id": "",
-        "img": "tier_1",
+        "img": "free_tier",
         "summary": "Perfect for trying out Gadwick",
         "features":
         [
-            "Access to all of Gadwick's features",
+            "Automation analytics",
+            "Test suite integration",
             "Up to two applications",
-            "Up to one additional collaborator per application"
+            "Tutorials from automation professionals"
         ],
         "stripe_id": "",
         "type": "SUBSCRIPTION",
@@ -30,12 +31,14 @@
         "price_in_pence": 1000,
         "summary": "The standard Gadwick subscription",
         "id": "",
-        "img": "free_tier",
+        "img": "tier_1",
         "features":
         [
-            "Access to all of Gadwick's features",
+            "Automation analytics",
+            "Test suite integration",
             "Up to ten applications",
-            "Up to five additional collaborator per application"
+            "Invite other users to collaborate on your applications",
+            "Tutorials from automation professionals"
         ],
         "stripe_id": "",
         "type": "SUBSCRIPTION",
@@ -56,9 +59,12 @@
         "img": "tier_2",
         "features":
         [
-            "Access to all of Gadwick's features",
+            "Automation analytics",
+            "Test suite integration",
             "Unlimited applications",
-            "Unlimited collaborators per application"
+            "Invite other users to collaborate on your applications",
+            "Tutorials from automation professionals",
+            "Premium only tutorials and articles"
         ],
         "stripe_id": "",
         "type": "SUBSCRIPTION",

@@ -38,8 +38,8 @@ router.post('/invites', cors(corsOptions), async function(req, res, next) {
 });
 
 router.put('/invites/:invite_id', cors(corsOptions), async function(req, res, next) {
-    const response = update(req.body, ["invite_status", "user_id"], "AppUsers", req.params.invite_id);
-    res.send(response);
+    const response = await update(req.body, ["invite_status", "user_id"], "AppUsers", req.params.invite_id);
+    res.send(`Updated invite ${req.params.invite_id} with status "${req.body.invite_status}": ${JSON.stringify(response)}`);
 });
 
 // TODO: Verify the user has sufficient permissions to do these

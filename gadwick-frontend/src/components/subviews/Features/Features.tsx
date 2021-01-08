@@ -8,6 +8,7 @@ import LinkIcon from '@material-ui/icons/Link';
 import LinkOffIcon from '@material-ui/icons/LinkOff';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import FeaturePriority from './FeaturePriority';
+import { Roles } from '../Applications/AppDetails/UserRoles';
 
 export interface IFeatureRatings
 {
@@ -43,7 +44,14 @@ export interface IFeature extends IFeatureRatings
     priority: number;
 }
 
-export default function Features(props: { style?: CSSProperties, appID?: string })
+interface IFeatures
+{
+    style?: CSSProperties;
+    appID?: string;
+    permissionLevel: Roles;
+}
+
+export default function Features(props: IFeatures)
 {
     const [dialogFeature, setDialogFeature] = useState<IFeature|null>(null);
     const [features, setFeatures] = useState<IFeature[]>([])
@@ -120,7 +128,7 @@ export default function Features(props: { style?: CSSProperties, appID?: string 
                         {/* <TableCell align="left">Pass Rate (%)</TableCell> */}
                         <TableCell align="left">Ticket Link</TableCell>
                         <TableCell align="left">Priority</TableCell>
-                        <TableCell></TableCell>
+                        {(props.permissionLevel === Roles.Admin || props.permissionLevel === Roles.Maintainer) && <TableCell></TableCell>}
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -140,14 +148,14 @@ export default function Features(props: { style?: CSSProperties, appID?: string 
                         <TableCell>
                             <FeaturePriority priority={feature.priority}/>
                         </TableCell>
-                        <TableCell>
+                        {(props.permissionLevel === Roles.Admin || props.permissionLevel === Roles.Maintainer) && <TableCell>
                             {/** TODO: Make this use a delete dialog! */}
                             <Tooltip title="Delete this feature.">
                                 <IconButton onClick={(evt) => onDelete(evt, feature)}>
                                     <DeleteForeverIcon style={{ color: "darkred" }}/>
                                 </IconButton>
                             </Tooltip>
-                        </TableCell>
+                        </TableCell>}
                     </TableRow>
                 ))}
                 </TableBody>

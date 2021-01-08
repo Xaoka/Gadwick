@@ -8,7 +8,9 @@ const { deleteEntry } = require('./commands/delete');
 const { update } = require('./commands/update');
 
 router.get('/', cors(corsOptions), async function(req, res, next) {
-    const ids = (req.query.id || req.query.ids).split(",");
+    const idString = (req.query.id || req.query.ids);
+    if (!idString) { res.status(400).send("Neither 'id' or 'ids' was defined"); return }
+    const ids = idString.split(",");
     console.log(ids);
     const idQuery = ids ? `WHERE ${ids.map((id) => `id = "${id}"`).join(" OR ")}` : "";
 

@@ -14,7 +14,7 @@ router.get('/:user_id', cors(corsOptions), async function(req, res, next) {
     {
         const id = req.params.user_id;
         applications = (await awaitQuery(`SELECT * FROM Applications WHERE user_id = "${id}"`));
-        const inviteBaseQuery = `SELECT * FROM Applications LEFT JOIN (SELECT app_id, invite_email, invite_status FROM AppUsers) AU ON Applications.id = AU.app_id LEFT JOIN (SELECT email, id users_user_id FROM Users) U ON U.email = AU.invite_email WHERE U.users_user_id = "${id}"`;
+        const inviteBaseQuery = `SELECT * FROM Applications LEFT JOIN (SELECT app_id, invite_email, invite_status, id invite_id, role FROM AppUsers) AU ON Applications.id = AU.app_id LEFT JOIN (SELECT email, id users_user_id FROM Users) U ON U.email = AU.invite_email WHERE U.users_user_id = "${id}"`;
         shared = (await awaitQuery(`${inviteBaseQuery} AND invite_status = "Accepted"`));
         invites = (await awaitQuery(`${inviteBaseQuery} AND invite_status = "Invited"`));
     }

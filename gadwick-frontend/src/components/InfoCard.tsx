@@ -1,6 +1,8 @@
-import { Card, CardActionArea, CardMedia, CardContent, Typography, makeStyles, Button, CardActions } from '@material-ui/core';
+import { Card, CardActionArea, CardMedia, CardContent, Typography, makeStyles, Button, CardActions, Tooltip } from '@material-ui/core';
 import React from 'react';
 import NotAvailable, { NotAvailableReason } from './subviews/NotAvailable';
+import { SubscriptionTier } from './subviews/Subscription/Subscription';
+import TierIcon from './TierIcon';
 
 const useStyles = makeStyles({
 root: {
@@ -22,7 +24,8 @@ interface IInfoCard
     summary: string;
     image: MediaType;
     onClick?: () => void;
-    actions?: ICardActions[]
+    actions?: ICardActions[];
+    subscription?: SubscriptionTier;
 }
 
 export interface ICardActions
@@ -40,21 +43,23 @@ export default function InfoCard(props: IInfoCard)
       case MediaType.Code:
         return <CardMedia
           className={classes.media}
-          image="/tutorials/code.png"
+          image="/tutorials/tutorial_blur.png"
           title="Code"
         />
       case MediaType.Application:
-        return <CardMedia
-          className={classes.media}
-          image="/tutorials/product.png"
-          title="Application"
-        />
+        return <Tooltip title={"Business vector created by freepik - www.freepik.com"}>
+          <CardMedia
+            className={classes.media}
+            image="/tutorials/app_laptop.png"
+          />
+        </Tooltip>
       case MediaType.Testing:
-        return <CardMedia
-          className={classes.media}
-          image="/tutorials/testing.png"
-          title="Test"
-        />
+        return <Tooltip title={"Business vector created by jcomp - www.freepik.com"}>
+          <CardMedia
+            className={classes.media}
+            image="/tutorials/test_type.png"
+          />
+        </Tooltip>
       case MediaType.AvailableSoon:
         return <NotAvailable reason={NotAvailableReason.ComingSoon} size="sm"/>
       case MediaType.TAU:
@@ -70,7 +75,10 @@ export default function InfoCard(props: IInfoCard)
     const classes = useStyles();
     return  <Card className={classes.root} style={{ width: 300, height: 260 }}>
       <CardActionArea onClick={props.onClick}>
-        {getImage()}
+        <div style={{position: "relative"}}>
+          {getImage()}
+          {props.subscription && <TierIcon tier={props.subscription}/>}
+        </div>
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
             {props.title}

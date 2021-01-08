@@ -23,9 +23,9 @@ export default function InviteDialog(props: IInviteDialog)
 
     const roleDescriptions: { [role: string]: string[] } =
     {
-        "Maintainer": ["Modify app settings", "Add, configure or remove features", "Run tests", "View analytics"],
+        "Maintainer": ["Modify app settings", "Add, configure or remove features", "Run tests", "View analytics", "Add or remove users"],
         "Tester": ["View app settings", "View features", "Run tests", "View analytics"],
-        "Guest": ["View tests", "View analytics"]
+        "Guest": ["View app settings except secret keys", "View tests", "View features", "View analytics"]
     }
 
     function verifyEmail(emailString: string): VerificationState

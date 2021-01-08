@@ -9,10 +9,12 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { useHistory } from 'react-router-dom';
 import { Delete } from '@material-ui/icons';
 import DeleteDialog from '../../../DeleteDialog';
+import { Roles } from './UserRoles';
 
 interface ISettings
 {
     app: IConfiguredApplication;
+    permissionLevel: Roles;
     onSaved?: () => void; // TODO: Figure out how we want to propagate this event
 }
 
@@ -76,12 +78,15 @@ export default function Settings(props: ISettings)
         history.push(`/dashboard/applications`);
     }
 
+    const canEdit = props.permissionLevel === Roles.Admin || props.permissionLevel === Roles.Maintainer;
+
     return <>
         <h3>Details</h3>
-        <TextField label="App Name" defaultValue={props.app.name} style={{ display: "block" }} onChange={(evt) => setAppName(evt.target.value)}/>
-        <TextField label="Description" defaultValue={props.app.description} style={{ display: "block", width: "50%" }} fullWidth={true} onChange={(evt) => setAppDescription(evt.target.value)}/>
-        <button onClick={onSave} disabled={!hasChanges}>Save</button>
+        <TextField label="App Name" disabled={!canEdit} defaultValue={props.app.name} style={{ display: "block" }} onChange={(evt) => setAppName(evt.target.value)}/>
+        <TextField label="Description" disabled={!canEdit} defaultValue={props.app.description} style={{ display: "block", width: "50%" }} fullWidth={true} onChange={(evt) => setAppDescription(evt.target.value)}/>
+        <button onClick={onSave} disabled={!hasChanges||!canEdit}>Save</button>
 
+        {props.permissionLevel !== Roles.Guest && <>
         <h3>Integrations</h3>
         <p>You can connect your test suite to Gadwick by using the Gadwick reporter and configuring it with your client secret for this app:</p>
         <input defaultValue={props.app.client_secret} disabled style={{ width: 250 }}/>
@@ -90,7 +95,8 @@ export default function Settings(props: ISettings)
                 <FileCopyIcon/>
             </IconButton>
         </Tooltip>
-        {userID !== props.app.user_id && <>
+        </>}
+        {props.permissionLevel !== Roles.Admin && <>
             <h3>Leave Application</h3>
             <p>By leaving this application you will no longer be able to see or modify it unless invited back.</p>
             <button className="danger" onClick={onLeave}>
@@ -98,7 +104,7 @@ export default function Settings(props: ISettings)
             </button>
         </>
         }
-        {userID === props.app.user_id && <>
+        {props.permissionLevel === Roles.Admin && <>
             <h3>Delete Application</h3>
             <p>Deleting this application will remove it for all users and cannot be undone.</p>
             <button className="danger" onClick={() => setDeleteDialogOpen(true)}>

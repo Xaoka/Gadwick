@@ -7,6 +7,7 @@ import serverAPI, { API, HTTP } from '../../../apis/api';
 import getUserID from '../../../apis/user';
 // import BreadcrumbPath from '../../BreadcrumbPath';
 import InfoCard, { MediaType } from '../../InfoCard';
+import { Roles } from '../Applications/AppDetails/UserRoles';
 import { IConfiguredApplication, IUserApps } from '../Applications/AppView';
 import { IFeature } from '../Features/Features';
 import NotAvailable, { NotAvailableReason } from '../NotAvailable';
@@ -103,7 +104,7 @@ export default function NewSession(props: INewSession)
             {!isLoading && configuredApplications.applications.map((app) =>
                 <InfoCard image={MediaType.Application} title={app.name} summary="My app description goes here" key={app.name} onClick={() => onAppSelected(app)}/>
             )}
-            {!isLoading && configuredApplications.shared.map((app) =>
+            {!isLoading && configuredApplications.shared.filter((sharedApp) => sharedApp.role !== Roles.Guest).map((app) =>
                 <InfoCard image={MediaType.Application} title={app.name} summary="My app description goes here" key={app.name} onClick={() => onAppSelected(app)}/>
             )}
             {!isLoading && configuredApplications.applications.length === 0 && configuredApplications.shared.length === 0 && <p>You have no apps configured, you'll need to make one first.</p>}

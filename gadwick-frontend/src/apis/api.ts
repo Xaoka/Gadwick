@@ -24,6 +24,7 @@ export enum API
     Purchase = "purchases",
     PurchasesForUser = "purchases/user",
     UserSubscription = "purchases/subscription",
+    CancelSubscription = "purchases/cancel-subscription/user",
     CheckoutSession = "purchases/create-checkout-session"
 }
 export enum HTTP { CREATE, READ, UPDATE, DELETE }

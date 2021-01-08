@@ -7,6 +7,7 @@ const { insertInto } = require('./commands/insert');
 const { update } = require('./commands/update');
 const { v4: uuidv4 } = require('uuid');
 const Stripe = require('stripe');
+const { response } = require('express');
 const stripe = Stripe('sk_test_51I1uUQBdEJQZjJeTymX8EeTNLmQdiUjoptah48acJKY5h1iJZ9itkIInsrSjgVH7GHbgRxrIvS9FRhOHWGsG1HLb00pFp5brz3');
 
 
@@ -50,7 +51,7 @@ router.get('/subscription/:user_id', cors(corsOptions), async function(req, res,
     const user_id = req.params.user_id;
     // Get the most recent, highest rank subscription purchase
     console.log(`Getting subscription data for ${user_id}`);
-    const response = await awaitQuery(`SELECT * FROM Purchases LEFT JOIN (SELECT product_name, id product_id, type FROM Products) P on Purchases.product_id = P.product_id WHERE user_id = "${user_id}" AND type = "SUBSCRIPTION" GROUP BY Purchases.product_id ORDER BY sold_at_time`);
+    const response = await awaitQuery(`SELECT * FROM Purchases LEFT JOIN (SELECT product_name, id product_id, type FROM Products) P on Purchases.product_id = P.product_id WHERE user_id = "${user_id}" AND type = "SUBSCRIPTION" AND status = "SUCCESS" GROUP BY Purchases.product_id ORDER BY sold_at_time`);
     res.send(response);
 });
 
@@ -113,5 +114,32 @@ router.post("/create-checkout-session", async (req, res, next) => {
       });
     }
   });
+  
+router.put('/cancel-subscription/user/:user_id', cors(corsOptions), async function(req, res, next) {
+  const user_id = req.params.user_id;
+  const purchases = (await awaitQuery(`SELECT * FROM Purchases LEFT JOIN (SELECT product_name, id product_id, type FROM Products) P ON Purchases.product_id = P.product_id WHERE user_id = "${user_id}" AND type = "SUBSCRIPTION" AND status = "SUCCESS"`));
+  console.log(`Found ${purchases.length} active subscriptions`);
+  if (purchases.length > 0)
+  {
+    for (const purchase of purchases)
+    {
+      if (purchase.stripe_subscription_id)
+      {
+        try
+        {
+          await stripe.subscriptions.del(purchase.stripe_subscription_id);
+        }
+        catch (error)
+        {
+          res.status(500).send(`Issue cancelling subscription via stripe API`);
+          return;
+        }
+        await update({status: "CANCELLED"}, ["status"], "Purchases", purchase.id);
+      }
+    }
+  }
+
+  res.send(`Cancelled subscriptions: ${purchases.length > 0 ? purchases.map((p) => p.id) : ""}`);
+});
   
 module.exports = router;

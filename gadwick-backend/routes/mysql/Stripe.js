@@ -35,7 +35,7 @@ router.post("/", bodyParser.raw({type: 'application/json'}), async (req, res, ne
               const purchases = (await awaitQuery(`SELECT * FROM Purchases WHERE intent_id = "${session.id}" ORDER BY sold_at_time DESC LIMIT 1`));
               if (purchases.length > 0)
               {
-                update({status: "SUCCESS"}, ["status"], "Purchases", purchases[0].id);
+                update({status: "SUCCESS", stripe_subscription_id: purchases[0].subscription}, ["status", "stripe_subscription_id"], "Purchases", purchases[0].id);
                 res.status(200).send(purchases[0].id);
               }
               else
@@ -44,7 +44,7 @@ router.post("/", bodyParser.raw({type: 'application/json'}), async (req, res, ne
                 return;
               }
               break;
-
+          // TODO: Do we need to catch something here when the month rolls around?
           // case 'payment_intent.succeeded':
           //     intent = event.data.object;
           //     console.log("Succeeded:", intent.id);

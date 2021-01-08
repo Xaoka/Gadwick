@@ -137,11 +137,14 @@ button:disabled
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
-  margin: 30px;
+  /* margin: 30px; */
   padding: 20px;
   background-color: #1c1c1c;
   color: white;
   display: block;
+  /* border-left-color: #363636;
+  border-left-width: 30px;
+  border-left-style: solid; */
 }
 
 .comment

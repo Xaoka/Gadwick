@@ -1,4 +1,4 @@
-import { IconButton, Card } from '@material-ui/core';
+import { IconButton, Card, Tooltip } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import serverAPI, { API, HTTP } from '../../../apis/api';
 import { useAuth0 } from "@auth0/auth0-react";
@@ -16,9 +16,13 @@ import { appNameToURL } from '../../../utils/ToURL';
 import SubView from '../SubView';
 // import { IAppUser } from './AppDetails/UserTable';
 import { Roles } from './AppDetails/UserRoles';
+import useSubscription from '../../../apis/subscription';
+import { SubscriptionTier } from '../Subscription/Subscription';
+import InfoIcon from '@material-ui/icons/Info';
 
 export interface IConfiguredApplication
 {
+    /** Application ID */
     id: string;
     name: string;
     features: number;
@@ -34,6 +38,7 @@ export interface IAppInvite extends IConfiguredApplication
     invite_email: string;
     invite_status: "Invited"|"Accepted";
     app_id: string;
+    invite_id: string;
 }
 
 export interface IUserApps
@@ -53,6 +58,7 @@ export default function AppView()
     const [invite, setInvite] = useState<IAppInvite|null>(null);
     const [appToDelete, setAppToDelete] = useState<IConfiguredApplication|null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const tier = useSubscription();
     
     useEffect(loadApplications, [])
 
@@ -85,13 +91,13 @@ export default function AppView()
     async function onInviteAccepted()
     {
         const user_id = await getUserID(user.sub);
-        await serverAPI(API.Invites, HTTP.UPDATE, invite?.id, { invite_status: "Accepted", user_id });
+        await serverAPI(API.Invites, HTTP.UPDATE, invite?.invite_id, { invite_status: "Accepted", user_id });
         loadApplications();
         setInvite(null);
     }
     async function onInviteDeclined()
     {
-        await serverAPI(API.Invites, HTTP.DELETE, invite?.id);
+        await serverAPI(API.Invites, HTTP.DELETE, invite?.invite_id);
         loadApplications();
         setInvite(null);
     }
@@ -125,6 +131,21 @@ export default function AppView()
         </PrivateRoute>
     }
 
+    let newAppRequirement = SubscriptionTier.Free;
+    if (configuredApplications.applications.length >= 2)
+    {
+        newAppRequirement = SubscriptionTier.Standard;
+    }
+    if (configuredApplications.applications.length >= 10)
+    {
+        newAppRequirement = SubscriptionTier.Premium;
+    }
+    let canMakeApp = false;
+    if (newAppRequirement === SubscriptionTier.Free) { canMakeApp = true; }
+    if (newAppRequirement === SubscriptionTier.Standard && tier !== SubscriptionTier.Free) { canMakeApp = true; }
+    if (newAppRequirement === SubscriptionTier.Premium && tier === SubscriptionTier.Premium) { canMakeApp = true; }
+    const maxApps = (tier === SubscriptionTier.Free) ? 2 : 10;
+
     return <SubView title="Applications">
         <Switch>
             {/** TODO: Links for all apps */}
@@ -132,15 +153,22 @@ export default function AppView()
             {configuredApplications.shared.map(appRoute)}
             <PrivateRoute path="/">
                 <BreadcrumbPath baseURL={url} stages={["Applications"]}/>
-                <h2>My Apps</h2>
+                <h2>My Apps
+                    {tier !== SubscriptionTier.Premium && <>
+                        {` (${configuredApplications.applications.length}/${maxApps}) `}
+                        <Tooltip title={`Your ${tier} subscription entitles you to ${maxApps} apps. To have more, upgrade your subscription.`}>
+                            <InfoIcon/>
+                        </Tooltip>
+                    </>}
+                </h2>
                 {configuredApplications.applications.map((app) =>
                     <InfoCard image={MediaType.Application} title={app.name} summary={app.description} key={app.name} onClick={() => onAppSelected(app)}/>
                 )}
-                <Card style={{ width: 220, height: 250, display: "inline-block", margin: 10, boxShadow: "grey 3px 3px 11px -4px"}}>
+                {canMakeApp && <Card style={{ width: 300, height: 260, display: "inline-block", margin: 10, boxShadow: "grey 3px 3px 11px -4px"}}>
                     <IconButton style={{ width: "100%", height: "100%" }} onClick={() => setNewDialogOpen(true)}>
                         <AddIcon fontSize="large"/>
                     </IconButton>
-                </Card>
+                </Card>}
                 {configuredApplications.shared.length>0 && <>
                     <h2>Shared with me</h2>
                     {configuredApplications.shared.map((app) =>
