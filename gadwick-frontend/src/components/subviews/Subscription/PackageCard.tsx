@@ -24,6 +24,7 @@ export interface IPackageCardData
 
 export default function PackageCard(props: IPackageCard)
 {
+    // TODO: Attribute the assets: <a href='https://www.freepik.com/vectors/heart'>Heart vector created by pch.vector - www.freepik.com</a>
     const background = `linear-gradient(0deg, ${props.data.backgroundColours.bottomColor} 0%, ${props.data.backgroundColours.midColour} 16%, rgba(255,255,255,1) 100%)`;
     const border = props.selected ? `${props.data.backgroundColours.bottomColor} solid 10px` : ``;
     const padding = props.selected ? 20 : 30;

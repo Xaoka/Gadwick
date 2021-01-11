@@ -8,7 +8,8 @@ const { update } = require('./commands/update');
 const { v4: uuidv4 } = require('uuid');
 const bodyParser = require('body-parser');
 const Stripe = require('stripe');
-const stripe = Stripe('sk_test_51I1uUQBdEJQZjJeTymX8EeTNLmQdiUjoptah48acJKY5h1iJZ9itkIInsrSjgVH7GHbgRxrIvS9FRhOHWGsG1HLb00pFp5brz3');
+const keys = require('../../keys.json');
+const stripe = Stripe(keys.stripe_liveKey);
 
 router.post("/", bodyParser.raw({type: 'application/json'}), async (req, res, next) => {
     const endpointSecret = "whsec_xXPiVsqVTLRnVhoKQaZlBymEBvtA7AJN"// TODO: hide

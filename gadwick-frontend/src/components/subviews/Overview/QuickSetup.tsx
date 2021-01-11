@@ -62,7 +62,7 @@ export default function QuickSetup()
         </button> */}
         <h4>Test Automation Priority</h4>
         {priorityFeatures.length === 0 && <NoData/>}
-        {priorityFeatures.map((f) =>
+        {priorityFeatures.length > 0 && priorityFeatures.map((f) =>
         {
             return <div id={f.id} className="list-item" onClick={() => setQuickEditFeature(f)} key={f.id}>
                 <span>

@@ -9,7 +9,7 @@ export default function Setup(/*props: { app: IConfiguredApplication }*/)
         <div>First we'll need to install the Gadwick dependency.</div>
         <CodeSnippet language={language} onLanguageChanged={setLanguage} code={{ "NodeJS": ["npm i gadwick"], "Python": ["pip install -i https://test.pypi.org/simple/ gadwick-pkg-Xaoka"]}}/>
         Then we can configure Gadwick so it knows which account and product you are working on. You'll need to provide the path to your test directory and the client secret for your product.
-        <CodeSnippet language={language} onLanguageChanged={setLanguage} code={{ "NodeJS": ["gadwick configure", "./path/to/my/tests", "{app-client-secret}"], "Python": ["gadwick configure?", "./path/to/my/tests", "{app-client-secret}"]}}/>
+        <CodeSnippet language={language} onLanguageChanged={setLanguage} code={{ "NodeJS": ["gadwick configure", "{api-key}", "./path/to/my/tests", "{app-client-secret}"], "Python": ["gadwick configure?", "./path/to/my/tests", "{app-client-secret}"]}}/>
         Once Gadwick is configured, we can sync your local test files with the features that have been set up on Gadwick. This will generate test stubs for any missing tests and update Gadwick with any local tests you might already have.
         <CodeSnippet language={language} onLanguageChanged={setLanguage} code={{ "NodeJS": ["gadwick update"] }}/>
         Once this process is complete, you will see an output like the one below and there may be new test files in your test directory.

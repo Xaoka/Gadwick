@@ -25,7 +25,8 @@ export default async function getUserID(auth_id: string): Promise<string|null>
     }
     catch (error)
     {
-        alert(`User Not Found`);
+        console.error(error);
+        // alert(`User Not Found`);
         return "";
     }
 }

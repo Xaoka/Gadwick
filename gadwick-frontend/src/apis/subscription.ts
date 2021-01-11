@@ -17,15 +17,18 @@ export default function useSubscription()
         const subscriptions = await serverAPI<IProductPurchase[]>(API.UserSubscription, HTTP.READ, user_id!);
         // TODO: Do we need to check if it's expired?
         let userTier = SubscriptionTier.Free;
-        for (const sub of subscriptions)
+        if (!!subscriptions.length)
         {
-            if (sub.product_name === "Premium")
+            for (const sub of subscriptions)
             {
-                userTier = SubscriptionTier.Premium;
-            }
-            else if (sub.product_name === "Standard" && tier !== SubscriptionTier.Premium)
-            {
-                userTier = SubscriptionTier.Standard;
+                if (sub.product_name === "Premium")
+                {
+                    userTier = SubscriptionTier.Premium;
+                }
+                else if (sub.product_name === "Standard" && tier !== SubscriptionTier.Premium)
+                {
+                    userTier = SubscriptionTier.Standard;
+                }
             }
         }
         setTier(userTier);

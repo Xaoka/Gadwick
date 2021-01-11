@@ -14,6 +14,7 @@ export interface ISideBarOption
     callback: (index: number) => void;
     icon: OverridableComponent<SvgIconTypeMap>;
     buttonID: string;
+    localOnly?: boolean;
 }
 
 
@@ -26,9 +27,11 @@ export default function Sidebar(props: ISidebar)
 
     return <span className="sidebar">
         {props.options.map((opt, index) =>
-            <div style={divStyle} className={props.selected === index ? "selected" : ""} onClick={() => { opt.callback(index); }} key={index}>
+        {
+            if (opt.localOnly && window.location.hostname !== "localhost") { return null; }
+            return <div style={divStyle} className={props.selected === index ? "selected" : ""} onClick={() => { opt.callback(index); }} key={index}>
                 <opt.icon style={{ fontSize: "inherit" }} color="inherit"/>
             </div>
-        )}
+        })}
     </span>
 }

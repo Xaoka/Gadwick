@@ -15,6 +15,11 @@ router.get('/', cors(corsOptions), async function(req, res, next) {
     const idQuery = ids ? `WHERE ${ids.map((id) => `id = "${id}"`).join(" OR ")}` : "";
 
     const response = await awaitQuery(`SELECT * FROM Features LEFT JOIN (SELECT id app_id, name app_name FROM Applications) Apps ON Features.app_id = Apps.app_id ${idQuery}`);
+    if (response.length === 0)
+    {
+        res.sendStatus(404);
+        return;
+    }
     res.send(response);
 });
 
@@ -57,7 +62,7 @@ router.put('/:id', cors(corsOptions), function(req, res, next) {
 router.delete('/:id', cors(corsOptions), function(req, res, next) {
     const id = req.params.id;
     deleteEntry("Features", id, req, res, next);
-    deleteEntry("Results", id, req, res, next, "feature_id");
+    deleteEntry("Results", id, req, res, next, "feature_id", "id", true);
 })
 
 module.exports = router;

@@ -8,7 +8,9 @@ const { update } = require('./commands/update');
 const { v4: uuidv4 } = require('uuid');
 const Stripe = require('stripe');
 const { response } = require('express');
-const stripe = Stripe('sk_test_51I1uUQBdEJQZjJeTymX8EeTNLmQdiUjoptah48acJKY5h1iJZ9itkIInsrSjgVH7GHbgRxrIvS9FRhOHWGsG1HLb00pFp5brz3');
+const keys = require('../../keys.json');
+const stripe = Stripe(keys.stripe_liveKey);
+
 
 
 router.post('/', cors(corsOptions), async function(req, res, next) {
@@ -41,6 +43,11 @@ router.post('/', cors(corsOptions), async function(req, res, next) {
     // insertInto(["user_id", "sold_at_price_pence", "sold_at_time", "product_id"], [], "Purchases", req, res, next);
 });
 
+router.get('/', cors(corsOptions), async function(req, res, next) {
+    const response = await awaitQuery(`SELECT * FROM Purchases LEFT JOIN (SELECT product_name, id product_id FROM Products) P on Purchases.product_id = P.product_id LEFT JOIN Users ON Purchases.user_id = Users.id ORDER BY Purchases.sold_at_time DESC`);
+    res.send(response);
+});
+
 router.get('/:user_id', cors(corsOptions), async function(req, res, next) {
     const user_id = req.params.user_id;
     const response = await awaitQuery(`SELECT * FROM Purchases LEFT JOIN (SELECT product_name, id product_id FROM Products) P on Purchases.product_id = P.product_id WHERE user_id = "${user_id}"`);
@@ -57,7 +64,7 @@ router.get('/subscription/:user_id', cors(corsOptions), async function(req, res,
 
 router.post("/create-checkout-session", async (req, res, next) => {
     // TODO: Local/Dev
-    const url = `http://localhost:3006/dashboard/subscription`
+    const url = `https://gadwick.co.uk/dashboard/subscription`
     const { product_name, user_id } = req.body;
     const products = (await awaitQuery(`SELECT * FROM Products WHERE product_name = "${product_name}"`));
     if (products.length === 0)

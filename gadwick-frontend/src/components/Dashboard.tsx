@@ -4,15 +4,17 @@ import Overview from './subviews/Overview/overview';
 import AppView from './subviews/Applications/AppView';
 import Tutorials from './subviews/Tutorials/Tutorials';
 import TestSession from './subviews/TestSession/TestSession';
-// import Settings from './subviews/Settings/Settings';
+import Settings from './subviews/Settings/Settings';
 import Subscription from './subviews/Subscription/Subscription';
+import Admin from './subviews/Admin/Admin';
 
 import AppsIcon from '@material-ui/icons/Apps';
 import CreditCardIcon from '@material-ui/icons/CreditCard';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import EmojiObjectsIcon from '@material-ui/icons/EmojiObjects';
 import AssignmentIcon from '@material-ui/icons/Assignment';
-// import SettingsIcon from '@material-ui/icons/Settings';
+import BuildIcon from '@material-ui/icons/Build';
+import SettingsIcon from '@material-ui/icons/Settings';
 
 export default function Dashboard()
 {
@@ -53,11 +55,18 @@ export default function Dashboard()
             buttonID: "sidebar_subscription",
             pageURL: "subscription"
         },
-        // {
-        //     subView: <Settings/>,
-        //     icon: SettingsIcon,
-        //     buttonID: "sidebar_settings",
-        //     pageURL: "settings"
-        // }
+        {
+            subView: <Settings/>,
+            icon: SettingsIcon,
+            buttonID: "sidebar_settings",
+            pageURL: "settings"
+        },
+        {
+            subView: <Admin/>,
+            icon: BuildIcon,
+            buttonID: "sidebar_admin",
+            pageURL: "admin",
+            localOnly: true
+        },
     ]} sidebarScale={1.25}/>
 }

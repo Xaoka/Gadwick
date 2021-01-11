@@ -43,7 +43,7 @@ export default function NewSession(props: INewSession)
         getUserID(user.sub).then((user_id) =>
         {
             if (!user_id) { return; }
-            serverAPI<IUserApps>(API.Applications, HTTP.READ, user_id).then((apps) =>
+            serverAPI<IUserApps>(API.ApplicationsForUser, HTTP.READ, user_id).then((apps) =>
             {
                 setConfiguredApplications(apps)
                 setIsLoading(false);
@@ -52,7 +52,7 @@ export default function NewSession(props: INewSession)
     }, []);
     function onAppSelected(app: IConfiguredApplication)
     {
-        serverAPI<{version: string}[]>(API.ApplicationsVersions, HTTP.READ, app.id).then(setVersions);
+        serverAPI<{version: string}[]>(API.ApplicationsForUser, HTTP.READ, app.id).then(setVersions);
         setAppSelected(app);
         setState(State.Features);
     }

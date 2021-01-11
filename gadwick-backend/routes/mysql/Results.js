@@ -16,7 +16,8 @@ router.get('/session/:id', cors(corsOptions), async function(req, res, next) {
 });
 
 router.post('/', cors(corsOptions), function(req, res, next) {
-    insertInto(["passed", "version", "feature_id", "session_id"], [], "Results", req, res, next);
+    // TODO: Verify credentials here?
+    insertInto(["passed", "version", "feature_id", "automated"], ["session_id"], "Results", req, res, next);
 });
 
 router.get('/versions', cors(corsOptions), async function(req, res, next) {

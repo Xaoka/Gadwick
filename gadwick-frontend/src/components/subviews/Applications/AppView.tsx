@@ -68,7 +68,7 @@ export default function AppView()
         getUserID(user.sub).then((user_id) =>
         {
             if (!user_id) { return; }
-            serverAPI<IUserApps>(API.Applications, HTTP.READ, user_id).then((apps) =>
+            serverAPI<IUserApps>(API.ApplicationsForUser, HTTP.READ, user_id).then((apps) =>
             {
                 setConfiguredApplications(apps)
                 setIsLoading(false);
@@ -83,7 +83,7 @@ export default function AppView()
         const user_id = await getUserID(user.sub);
         if (!user_id) { return; }
         await serverAPI(API.Applications, HTTP.CREATE, undefined, { user_id, name: appData.name, description: appData.description })
-        const newApps = await serverAPI<IUserApps>(API.Applications, HTTP.READ, user_id)
+        const newApps = await serverAPI<IUserApps>(API.ApplicationsForUser, HTTP.READ, user_id)
         setIsLoading(false);
         setConfiguredApplications(newApps);
     }

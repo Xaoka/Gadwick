@@ -125,7 +125,7 @@ export default function SessionView(props: ISessionView)
         {
             serverAPI<ISession>(API.Sessions, HTTP.UPDATE, match?.params.sessionID, { status: Status.INCOMPLETE })
         }
-        serverAPI<ISession>(API.TestResults, HTTP.CREATE, undefined, { feature_id: features[featureIndex].id, passed, version: session?.app_version, session_id: session?.id })
+        serverAPI<ISession>(API.TestResults, HTTP.CREATE, undefined, { feature_id: features[featureIndex].id, passed, version: session?.app_version, session_id: session?.id, automated: "FALSE" })
 
         const newResults = [...results];
         newResults[featureIndex] = passed;

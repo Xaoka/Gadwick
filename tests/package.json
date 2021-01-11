@@ -17,7 +17,8 @@
   },
   "dependencies": {
     "axios": "^0.21.0",
-    "gadwick": "^1.0.6",
+    "cypress": "^6.2.1",
+    "gadwick": "^1.0.12",
     "jest": "^26.6.3"
   }
 }

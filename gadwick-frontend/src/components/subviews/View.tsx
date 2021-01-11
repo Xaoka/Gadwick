@@ -13,6 +13,7 @@ export interface IView
         subView: React.ReactElement;
         buttonID: string;
         pageURL: string;
+        localOnly?: boolean;
     }[];
     sidebarScale: number;
 }
@@ -42,10 +43,14 @@ export default function View(props: IView)
     }
     
     return <span style={{ display: "flex", height: "100%", flexDirection: "row", overflow: "hidden" }}>
-        <Sidebar options={ props.pages.map((page) => { return { icon: page.icon, callback: onPageChanged, buttonID: page.buttonID }}) } scale={props.sidebarScale} selected={activeIndex}/>
+        <Sidebar options={ props.pages.map((page) => { return { icon: page.icon, callback: onPageChanged, buttonID: page.buttonID, localOnly: page.localOnly }}) } scale={props.sidebarScale} selected={activeIndex}/>
         <div style={{flex: 5, paddingLeft: 20, height: "100%"}}>
             <Switch>
-                {props.pages.map((page) => <PrivateRoute path={`${path}/${page.pageURL}`} key={page.pageURL}>{page.subView}</PrivateRoute>)}
+                {props.pages.map((page) =>
+                {
+                    if (page.localOnly && window.location.hostname !== "localhost") { return null; }
+                    return <PrivateRoute path={`${path}/${page.pageURL}`} key={page.pageURL}>{page.subView}</PrivateRoute>
+                })}
             </Switch>
         </div>
     </span>

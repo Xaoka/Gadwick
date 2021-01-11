@@ -92,7 +92,7 @@ export default function FeatureSelect(props: IFeatureSelect)
         getUserID(user.sub).then((id) =>
         {
             if (!id) { return; }
-            serverAPI<IConfiguredApplication[]>(API.Applications, HTTP.READ, id).then((apps) =>
+            serverAPI<IConfiguredApplication[]>(API.ApplicationsForUser, HTTP.READ, id).then((apps) =>
             {
                 setApps(apps);
                 setAppSelected(apps[0]);

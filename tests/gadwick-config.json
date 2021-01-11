@@ -1,14 +1,29 @@
 {
-  "test_directory": "apis",
+  "test_directory": "./apis",
   "client_secret": "bc19deb0-7a22-44b9-acee-21f6c5c0f9a6",
+  "api_key": "97bbeb6d-24fd-48c9-b641-4fb192bb4960",
   "idMap": {
     "ids": {
+      "06db0589-3b11-4bb0-a2c2-b121aeabc1e2": "100 Score",
       "1606650027167": "NPM Module Config",
-      "1606672503985": "Feature API"
+      "1606672503985": "Feature API",
+      "26a570ac-a8d6-40ed-8ecd-93a3c2c58141": "Creating and deleting apps",
+      "40a541fb-68a0-4901-b2b1-7c748533caa1": "Sidebar",
+      "b982c2fc-ecc7-4428-9c60-5928bd324283": "App Graph",
+      "c94161de-49f8-4a12-be3f-45cb5ddbf344": "No Priority",
+      "9485215d-d307-4832-a0ca-42fee61e922d": "App CRUD API",
+      "95c0886a-1574-4a64-8db9-442e5625aa94": "App management on website"
     },
     "names": {
+      "100 Score": "06db0589-3b11-4bb0-a2c2-b121aeabc1e2",
       "NPM Module Config": "1606650027167",
-      "Feature API": "1606672503985"
+      "Feature API": "1606672503985",
+      "Creating and deleting apps": "26a570ac-a8d6-40ed-8ecd-93a3c2c58141",
+      "Sidebar": "40a541fb-68a0-4901-b2b1-7c748533caa1",
+      "App Graph": "b982c2fc-ecc7-4428-9c60-5928bd324283",
+      "No Priority": "c94161de-49f8-4a12-be3f-45cb5ddbf344",
+      "App CRUD API": "9485215d-d307-4832-a0ca-42fee61e922d",
+      "App management on website": "95c0886a-1574-4a64-8db9-442e5625aa94"
     }
   }
 }
