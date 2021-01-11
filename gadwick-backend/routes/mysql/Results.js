@@ -4,6 +4,7 @@ var corsOptions = require('../cors')
 var router = express.Router();
 const { awaitQuery } = require('./commands/mysql');
 const { insertInto } = require('./commands/insert');
+var mysql = require('mysql');
 
 router.get('/', cors(corsOptions), async function(req, res, next) {
     const response = await awaitQuery("SELECT * FROM Results LEFT JOIN Features ON Results.feature_id = Features.id");
@@ -11,7 +12,7 @@ router.get('/', cors(corsOptions), async function(req, res, next) {
 });
 router.get('/session/:id', cors(corsOptions), async function(req, res, next) {
     const id = req.params.id;
-    const response = await awaitQuery(`SELECT * FROM Results LEFT JOIN Features ON Results.feature_id = Features.id WHERE session_id = "${id}"`);
+    const response = await awaitQuery(`SELECT * FROM Results LEFT JOIN Features ON Results.feature_id = Features.id WHERE session_id = "${mysql.escape(id)}"`);
     res.send(response);
 });
 

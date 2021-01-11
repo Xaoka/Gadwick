@@ -1,4 +1,5 @@
 const { awaitQuery } = require('./mysql');
+var mysql = require('mysql');
 
 async function update(userData, optionalFields, tableName, entryID, field)
 {
@@ -9,7 +10,7 @@ async function update(userData, optionalFields, tableName, entryID, field)
         {
             // TODO: Should not be rolling our own sanitization here! Use the official API
             const value = userData[field].length ? userData[field].replace("'","\\'").replace(`"`, `\\"`) : userData[field];
-            sqlFields.push(`${field} = '${value}'`)
+            sqlFields.push(`${field} = '${mysql.escape(value)}'`)
         }
     }
     if (sqlFields.length === 0) { return { error: "No fields set" }; }

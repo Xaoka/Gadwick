@@ -10,6 +10,7 @@ const Stripe = require('stripe');
 const { response } = require('express');
 const keys = require('../../keys.json');
 const stripe = Stripe(keys.stripe_liveKey);
+var mysql = require('mysql');
 
 
 
@@ -50,7 +51,7 @@ router.get('/', cors(corsOptions), async function(req, res, next) {
 
 router.get('/:user_id', cors(corsOptions), async function(req, res, next) {
     const user_id = req.params.user_id;
-    const response = await awaitQuery(`SELECT * FROM Purchases LEFT JOIN (SELECT product_name, id product_id FROM Products) P on Purchases.product_id = P.product_id WHERE user_id = "${user_id}"`);
+    const response = await awaitQuery(`SELECT * FROM Purchases LEFT JOIN (SELECT product_name, id product_id FROM Products) P on Purchases.product_id = P.product_id WHERE user_id = "${mysql.escape(user_id)}"`);
     res.send(response);
 });
 
@@ -58,7 +59,7 @@ router.get('/subscription/:user_id', cors(corsOptions), async function(req, res,
     const user_id = req.params.user_id;
     // Get the most recent, highest rank subscription purchase
     console.log(`Getting subscription data for ${user_id}`);
-    const response = await awaitQuery(`SELECT * FROM Purchases LEFT JOIN (SELECT product_name, id product_id, type FROM Products) P on Purchases.product_id = P.product_id WHERE user_id = "${user_id}" AND type = "SUBSCRIPTION" AND status = "SUCCESS" GROUP BY Purchases.product_id ORDER BY sold_at_time`);
+    const response = await awaitQuery(`SELECT * FROM Purchases LEFT JOIN (SELECT product_name, id product_id, type FROM Products) P on Purchases.product_id = P.product_id WHERE user_id = "${mysql.escape(user_id)}" AND type = "SUBSCRIPTION" AND status = "SUCCESS" GROUP BY Purchases.product_id ORDER BY sold_at_time`);
     res.send(response);
 });
 
@@ -66,7 +67,7 @@ router.post("/create-checkout-session", async (req, res, next) => {
     // TODO: Local/Dev
     const url = `https://gadwick.co.uk/dashboard/subscription`
     const { product_name, user_id } = req.body;
-    const products = (await awaitQuery(`SELECT * FROM Products WHERE product_name = "${product_name}"`));
+    const products = (await awaitQuery(`SELECT * FROM Products WHERE product_name = "${mysql.escape(product_name)}"`));
     if (products.length === 0)
     {
       next(`Product "${product_name}" not found.`);
@@ -107,7 +108,7 @@ router.post("/create-checkout-session", async (req, res, next) => {
         cancel_url: `${url}`,
       });
       const entryID = uuidv4();
-      awaitQuery(`INSERT INTO Purchases (id, product_id, sold_at_price_pence, sold_at_time, user_id, intent_id, status) VALUES ("${entryID}", "${product.id}", ${product.price_in_pence}, "${(new Date(Date.now())).toISOString()}", "${user_id}", "${session.id}", "PENDING")`);
+      awaitQuery(`INSERT INTO Purchases (id, product_id, sold_at_price_pence, sold_at_time, user_id, intent_id, status) VALUES ("${mysql.escape(entryID)}", "${mysql.escape(product.id)}", ${mysql.escape(product.price_in_pence)}, "${(new Date(Date.now())).toISOString()}", "${mysql.escape(user_id)}", "${mysql.escape(session.id)}", "PENDING")`);
   
       res.send({
         sessionId: session.id,
@@ -124,7 +125,7 @@ router.post("/create-checkout-session", async (req, res, next) => {
   
 router.put('/cancel-subscription/user/:user_id', cors(corsOptions), async function(req, res, next) {
   const user_id = req.params.user_id;
-  const purchases = (await awaitQuery(`SELECT * FROM Purchases LEFT JOIN (SELECT product_name, id product_id, type FROM Products) P ON Purchases.product_id = P.product_id WHERE user_id = "${user_id}" AND type = "SUBSCRIPTION" AND status = "SUCCESS"`));
+  const purchases = (await awaitQuery(`SELECT * FROM Purchases LEFT JOIN (SELECT product_name, id product_id, type FROM Products) P ON Purchases.product_id = P.product_id WHERE user_id = "${mysql.escape(user_id)}" AND type = "SUBSCRIPTION" AND status = "SUCCESS"`));
   console.log(`Found ${purchases.length} active subscriptions`);
   if (purchases.length > 0)
   {

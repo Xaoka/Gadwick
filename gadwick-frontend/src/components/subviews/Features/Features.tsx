@@ -9,6 +9,7 @@ import LinkOffIcon from '@material-ui/icons/LinkOff';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import FeaturePriority from './FeaturePriority';
 import { Roles } from '../Applications/AppDetails/UserRoles';
+import DeleteDialog from '../../DeleteDialog';
 
 export interface IFeatureRatings
 {
@@ -55,6 +56,9 @@ export default function Features(props: IFeatures)
 {
     const [dialogFeature, setDialogFeature] = useState<IFeature|null>(null);
     const [features, setFeatures] = useState<IFeature[]>([])
+    const [featureToDelete, setFeatureToDelete] = useState<IFeature|null>(null);
+    const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
+
     useEffect(() => {
         updateList();
     }, [])
@@ -93,11 +97,19 @@ export default function Features(props: IFeatures)
             console.dir(data)
         });
     }
-    async function onDelete(evt: React.MouseEvent<HTMLButtonElement, MouseEvent>, feature: IFeature)
+
+    async function openDelete(evt: React.MouseEvent<HTMLButtonElement, MouseEvent>, feature: IFeature)
     {
+        setDeleteOpen(true);
         evt.preventDefault();
         evt.stopPropagation();
-        await serverAPI(API.Features, HTTP.DELETE, feature.id);
+        setFeatureToDelete(feature);
+    }
+
+    async function onDelete()
+    {
+        setDeleteOpen(false);
+        await serverAPI(API.Features, HTTP.DELETE, featureToDelete!.id);
         updateList();
     }
 
@@ -151,7 +163,7 @@ export default function Features(props: IFeatures)
                         {(props.permissionLevel === Roles.Admin || props.permissionLevel === Roles.Maintainer) && <TableCell>
                             {/** TODO: Make this use a delete dialog! */}
                             <Tooltip title="Delete this feature.">
-                                <IconButton onClick={(evt) => onDelete(evt, feature)}>
+                                <IconButton onClick={(evt) => openDelete(evt, feature)}>
                                     <DeleteForeverIcon style={{ color: "darkred" }}/>
                                 </IconButton>
                             </Tooltip>
@@ -161,6 +173,7 @@ export default function Features(props: IFeatures)
                 </TableBody>
             </Table>
             </TableContainer>
+            <DeleteDialog open={deleteOpen} onSubmit={onDelete} onClose={() => setDeleteOpen(false)} targetType="Feature" deleteTargetText="this feature and any results associated with it."/>
         </>
     }
 

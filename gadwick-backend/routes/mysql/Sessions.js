@@ -5,6 +5,7 @@ var router = express.Router();
 const { awaitQuery } = require('./commands/mysql');
 const { insertInto } = require('./commands/insert');
 const { update } = require('./commands/update');
+var mysql = require('mysql');
 
 router.get('/auth/:user_id', cors(corsOptions), async function(req, res, next) {
     const id = req.params.user_id;
@@ -12,13 +13,13 @@ router.get('/auth/:user_id', cors(corsOptions), async function(req, res, next) {
     //  Apps I own
     //  Apps I've accepted invites to
     //  Fetch the app names and user names for these sessions
-    const sessions = (await awaitQuery(`SELECT Sessions.id, started_on, status, Sessions.app_id, app_version, feature_ids, Apps.app_name, user_name, SUM(IF(STRCMP(passed, "false"), 1.0, 0.0)) features_passed FROM Sessions LEFT JOIN (SELECT Applications.id app_id, Applications.name app_name, user_id app_user_id FROM Applications) Apps ON Apps.app_id = Sessions.app_id LEFT JOIN (SELECT * FROM AppUsers WHERE invite_status = "Accepted") AU ON Apps.app_id = AU.app_id LEFT JOIN (SELECT id user_id, name user_name FROM Users) U ON U.user_id = Sessions.user_id LEFT JOIN (SELECT session_id, passed FROM Results) R ON R.session_id = Sessions.id WHERE Sessions.user_id = "${id}" OR U.user_id = "${id}" OR Apps.app_user_id = "${id}" GROUP BY Sessions.id ORDER BY started_on DESC`));
+    const sessions = (await awaitQuery(`SELECT Sessions.id, started_on, status, Sessions.app_id, app_version, feature_ids, Apps.app_name, user_name, SUM(IF(STRCMP(passed, "false"), 1.0, 0.0)) features_passed FROM Sessions LEFT JOIN (SELECT Applications.id app_id, Applications.name app_name, user_id app_user_id FROM Applications) Apps ON Apps.app_id = Sessions.app_id LEFT JOIN (SELECT * FROM AppUsers WHERE invite_status = "Accepted") AU ON Apps.app_id = AU.app_id LEFT JOIN (SELECT id user_id, name user_name FROM Users) U ON U.user_id = Sessions.user_id LEFT JOIN (SELECT session_id, passed FROM Results) R ON R.session_id = Sessions.id WHERE Sessions.user_id = "${mysql.escape(id)}" OR U.user_id = "${mysql.escape(id)}" OR Apps.app_user_id = "${mysql.escape(id)}" GROUP BY Sessions.id ORDER BY started_on DESC`));
     res.send(sessions)
 });
 
 router.get('/:session_id', cors(corsOptions), async function(req, res, next) {
     const id = req.params.session_id;
-    const session = (await awaitQuery(`SELECT * FROM Sessions LEFT JOIN (SELECT id aid, name app_name FROM Applications) as Apps ON app_id = Apps.aid WHERE Sessions.id = '${id}'`));
+    const session = (await awaitQuery(`SELECT * FROM Sessions LEFT JOIN (SELECT id aid, name app_name FROM Applications) as Apps ON app_id = Apps.aid WHERE Sessions.id = '${mysql.escape(id)}'`));
     res.send(session)
 });
 
@@ -31,14 +32,14 @@ router.post('/', cors(corsOptions), async function(req, res, next) {
     console.log(`TYPE: ${type}`)
     if (type === "REGRESSION")
     {
-        features = (await awaitQuery(`SELECT Features.id FROM Features LEFT JOIN Applications ON Features.app_id = Applications.id WHERE Applications.id = "${req.body.app_id}"`));
+        features = (await awaitQuery(`SELECT Features.id FROM Features LEFT JOIN Applications ON Features.app_id = Applications.id WHERE Applications.id = "${mysql.escape(req.body.app_id)}"`));
     }
     else if (type === "INTEGRATION")
     {
-        features = await awaitQuery(`SELECT Features.id FROM Features LEFT JOIN Applications ON Features.app_id = Applications.id WHERE Applications.id = "${req.body.app_id}" AND Features.id NOT IN (SELECT feature_id FROM Results WHERE feature_id IS NOT NULL AND NOT version = "${req.body.app_version}" GROUP BY feature_id)`)
+        features = await awaitQuery(`SELECT Features.id FROM Features LEFT JOIN Applications ON Features.app_id = Applications.id WHERE Applications.id = "${mysql.escape(req.body.app_id)}" AND Features.id NOT IN (SELECT feature_id FROM Results WHERE feature_id IS NOT NULL AND NOT version = "${mysql.escape(req.body.app_version)}" GROUP BY feature_id)`)
     }
     console.log(`FEATURES: ${features}`)
-    req.body.feature_ids = JSON.stringify(features.map((f) => f.id));
+    req.body.feature_ids = JSON.stringify(features.map((f) => mysql.escape(f.id)));
 
     insertInto(["app_id", "app_version", "user_id", "started_on", "status", "feature_ids", "type"], [], "Sessions", req, res, next);
 });

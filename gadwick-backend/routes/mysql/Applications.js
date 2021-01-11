@@ -7,10 +7,11 @@ const { insertInto } = require('./commands/insert');
 const { v4: uuidv4 } = require('uuid');
 const { deleteEntry } = require('./commands/delete');
 const { update } = require('./commands/update');
+var mysql = require('mysql');
 
 router.get('/:app_id', cors(corsOptions), async function(req, res, next) {
     const app_id = req.params.app_id;
-    applications = (await awaitQuery(`SELECT * FROM Applications WHERE id = "${app_id}"`));
+    applications = (await awaitQuery(`SELECT * FROM Applications WHERE id = "${mysql.escape(app_id)}"`));
     if (applications.length === 0)
     {
         res.sendStatus(404);
@@ -39,8 +40,8 @@ router.get('/user/:user_id', cors(corsOptions), async function(req, res, next) {
     try
     {
         const id = req.params.user_id;
-        applications = (await awaitQuery(`SELECT * FROM Applications WHERE user_id = "${id}"`));
-        const inviteBaseQuery = `SELECT * FROM Applications LEFT JOIN (SELECT app_id, invite_email, invite_status, id invite_id, role FROM AppUsers) AU ON Applications.id = AU.app_id LEFT JOIN (SELECT email, id users_user_id FROM Users) U ON U.email = AU.invite_email WHERE U.users_user_id = "${id}"`;
+        applications = (await awaitQuery(`SELECT * FROM Applications WHERE user_id = "${mysql.escape(id)}"`));
+        const inviteBaseQuery = `SELECT * FROM Applications LEFT JOIN (SELECT app_id, invite_email, invite_status, id invite_id, role FROM AppUsers) AU ON Applications.id = AU.app_id LEFT JOIN (SELECT email, id users_user_id FROM Users) U ON U.email = AU.invite_email WHERE U.users_user_id = "${mysql.escape(id)}"`;
         shared = (await awaitQuery(`${inviteBaseQuery} AND invite_status = "Accepted"`));
         invites = (await awaitQuery(`${inviteBaseQuery} AND invite_status = "Invited"`));
     }

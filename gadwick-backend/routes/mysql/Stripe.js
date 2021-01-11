@@ -10,6 +10,7 @@ const bodyParser = require('body-parser');
 const Stripe = require('stripe');
 const keys = require('../../keys.json');
 const stripe = Stripe(keys.stripe_liveKey);
+var mysql = require('mysql');
 
 router.post("/", bodyParser.raw({type: 'application/json'}), async (req, res, next) => {
     const endpointSecret = "whsec_xXPiVsqVTLRnVhoKQaZlBymEBvtA7AJN"// TODO: hide
@@ -33,7 +34,7 @@ router.post("/", bodyParser.raw({type: 'application/json'}), async (req, res, ne
           case 'checkout.session.completed':
               const session = event.data.object;
               // Get the most recent purchase entry for this intent
-              const purchases = (await awaitQuery(`SELECT * FROM Purchases WHERE intent_id = "${session.id}" ORDER BY sold_at_time DESC LIMIT 1`));
+              const purchases = (await awaitQuery(`SELECT * FROM Purchases WHERE intent_id = "${mysql.escape(session.id)}" ORDER BY sold_at_time DESC LIMIT 1`));
               if (purchases.length > 0)
               {
                 update({status: "SUCCESS", stripe_subscription_id: purchases[0].subscription}, ["status", "stripe_subscription_id"], "Purchases", purchases[0].id);

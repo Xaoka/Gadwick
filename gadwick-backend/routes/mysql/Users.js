@@ -6,15 +6,16 @@ const { awaitQuery } = require('./commands/mysql');
 const { insertInto } = require('./commands/insert');
 const { update } = require('./commands/update');
 const { v4: uuidv4 } = require('uuid');
+var mysql = require('mysql');
 
 router.get('/auth/:auth_id', cors(corsOptions), async function(req, res, next) {
     const id = req.params.auth_id;
-    const user = (await awaitQuery(`SELECT name, id, email FROM Users WHERE auth_id = '${id}'`));
+    const user = (await awaitQuery(`SELECT name, id, email FROM Users WHERE auth_id = '${mysql.escape(id)}'`));
     res.send(user)
 });
 router.get('/:user_id', cors(corsOptions), async function(req, res, next) {
     const id = req.params.user_id;
-    const user = (await awaitQuery(`SELECT name, id, email FROM Users WHERE id = '${id}'`))[0];
+    const user = (await awaitQuery(`SELECT name, id, email FROM Users WHERE id = '${mysql.escape(id)}'`))[0];
     res.send(user)
 });
 router.get('/', cors(corsOptions), async function(req, res, next) {
@@ -35,7 +36,7 @@ router.post('/key/:user_id', cors(corsOptions), async function(req, res, next) {
 });
 router.get('/key/:api_key', cors(corsOptions), async function(req, res, next) {
     const id = req.params.api_key;
-    const user = (await awaitQuery(`SELECT name, id, email FROM Users WHERE api_key = '${id}'`));
+    const user = (await awaitQuery(`SELECT name, id, email FROM Users WHERE api_key = '${mysql.escape(id)}'`));
     console.dir(user);
     if (user)
     {
