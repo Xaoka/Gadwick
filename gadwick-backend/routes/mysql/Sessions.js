@@ -19,7 +19,7 @@ router.get('/auth/:user_id', cors(corsOptions), async function(req, res, next) {
 
 router.get('/:session_id', cors(corsOptions), async function(req, res, next) {
     const id = req.params.session_id;
-    const session = (await awaitQuery(`SELECT * FROM Sessions LEFT JOIN (SELECT id aid, name app_name FROM Applications) as Apps ON app_id = Apps.aid WHERE Sessions.id = '${mysql.escape(id)}'`));
+    const session = (await awaitQuery(`SELECT * FROM Sessions LEFT JOIN (SELECT id aid, name app_name FROM Applications) as Apps ON app_id = Apps.aid WHERE Sessions.id = ${mysql.escape(id)}`));
     res.send(session)
 });
 
