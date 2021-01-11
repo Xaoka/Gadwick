@@ -27,21 +27,21 @@ router.get('/', cors(corsOptions), async function(req, res, next) {
 router.get('/priority/:user_id', cors(corsOptions), async function(req, res, next) {
     // TODO: This needs to filter where there aren't any automated results
     const user_id = req.params.user_id;
-    const response = await awaitQuery(`SELECT * FROM Features F LEFT JOIN (SELECT id app_id, name app_name, user_id FROM Applications) AS Apps ON F.app_id = Apps.app_id WHERE F.id NOT IN (SELECT feature_id id FROM Results WHERE feature_id IS NOT NULL GROUP BY feature_id) AND user_id = "${mysql.escape(user_id)}" ORDER BY F.priority DESC LIMIT 10 `);
+    const response = await awaitQuery(`SELECT * FROM Features F LEFT JOIN (SELECT id app_id, name app_name, user_id FROM Applications) AS Apps ON F.app_id = Apps.app_id WHERE F.id NOT IN (SELECT feature_id id FROM Results WHERE feature_id IS NOT NULL GROUP BY feature_id) AND user_id = ${mysql.escape(user_id)} ORDER BY F.priority DESC LIMIT 10 `);
     
     res.send(response);
 });
 
 router.get('/app/:app_id', cors(corsOptions), async function(req, res, next) {
     const id = req.params.app_id;
-    const response = await awaitQuery(`SELECT * FROM Features WHERE app_id = "${mysql.escape(id)}"`);
+    const response = await awaitQuery(`SELECT * FROM Features WHERE app_id = ${mysql.escape(id)}`);
     res.send(response);
 });
 
 router.get('/s/:client_secret', cors(corsOptions), async function(req, res, next) {
     const client_secret = req.params.client_secret;
     console.log(client_secret)
-    const response = await awaitQuery(`SELECT * FROM Features LEFT JOIN (SELECT id app_id, client_secret FROM Applications) AS Apps ON Features.app_id = Apps.app_id WHERE Apps.client_secret = "${mysql.escape(client_secret)}"`);
+    const response = await awaitQuery(`SELECT * FROM Features LEFT JOIN (SELECT id app_id, client_secret FROM Applications) AS Apps ON Features.app_id = Apps.app_id WHERE Apps.client_secret = ${mysql.escape(client_secret)}`);
     res.send(response);
 });
 
