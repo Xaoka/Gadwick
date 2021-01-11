@@ -27,7 +27,7 @@ async function insertInto(allowedKeys, optionalKeys, table, req, res, next)
     console.log(`Inserting with ID: ${entryID}`)
     console.log(Object.entries(userData).map((e) => `"${e[0]}" = "${e[1]}"`));
     // E.G. "INSERT INTO Results (version, passed, id) VALUES ('0.1.0', 'true', '1605638481223')"
-    const query = `INSERT INTO ${table} (id, ${Object.keys(userData).join(", ")}) VALUES ('${mysql.escape(entryID)}', ${Object.values(userData).map((v) => `'${mysql.escape(v)}'`).join(", ")})`;
+    const query = `INSERT INTO ${table} (id, ${Object.keys(userData).map(mysql.escapeId).join(", ")}) VALUES (${mysql.escape(entryID)}, ${Object.values(userData).map((v) => `${mysql.escape(v)}`).join(", ")})`;
     console.log(`QUERY:`)
     console.log("\x1b[32m%s\x1b[0m", query);
     
