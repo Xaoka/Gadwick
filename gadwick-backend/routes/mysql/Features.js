@@ -13,7 +13,7 @@ router.get('/', cors(corsOptions), async function(req, res, next) {
     if (!idString) { res.status(400).send("Neither 'id' or 'ids' was defined"); return }
     const ids = idString.split(",");
     console.log(ids);
-    const idQuery = ids ? `WHERE ${ids.map((id) => `id = "${mysql.escape(id)}"`).join(" OR ")}` : "";
+    const idQuery = ids ? `WHERE ${ids.map((id) => `id = ${mysql.escape(id)}`).join(" OR ")}` : "";
 
     const response = await awaitQuery(`SELECT * FROM Features LEFT JOIN (SELECT id app_id, name app_name FROM Applications) Apps ON Features.app_id = Apps.app_id ${idQuery}`);
     if (response.length === 0)

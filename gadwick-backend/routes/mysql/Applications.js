@@ -11,7 +11,7 @@ var mysql = require('mysql');
 
 router.get('/:app_id', cors(corsOptions), async function(req, res, next) {
     const app_id = req.params.app_id;
-    applications = (await awaitQuery(`SELECT * FROM Applications WHERE id = "${mysql.escape(app_id)}"`));
+    applications = (await awaitQuery(`SELECT * FROM Applications WHERE id = ${mysql.escape(app_id)}`));
     if (applications.length === 0)
     {
         res.sendStatus(404);
