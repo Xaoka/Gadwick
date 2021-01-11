@@ -8,7 +8,7 @@ describe(`App CRUD API`, function() {
 		// C
 		const response = await axios.post(`${endpoint}/applications`, { name: "Robot App", description: "An app made for robots", user_id: "ro-bot" })
 		const applicationID = response.data.id;
-		expect(applicationID).not.toBeUndefined();
+		expect(applicationID).toBeDefined();
 		expect(applicationID.match(uuidRegex));
 
 		// U
