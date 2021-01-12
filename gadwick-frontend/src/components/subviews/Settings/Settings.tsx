@@ -61,5 +61,7 @@ export default function Settings()
             <p>For security reasons this will only be shown to you once. You should make note of it securely.</p>
             <p>{APIKey}<CopyButton textToCopy={APIKey}/></p>
         </>}
+        <h2>Terms & Conditions</h2>
+        The terms and conditions for using Gadwick services are detailed in our <a href="/privacy-policy">Privacy Policy</a>.
     </SubView>
 }

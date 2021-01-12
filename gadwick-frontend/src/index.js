@@ -5,6 +5,8 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { Auth0Provider } from "@auth0/auth0-react";
 
+
+
 ReactDOM.render(
   <React.StrictMode>
     <Auth0Provider
