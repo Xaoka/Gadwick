@@ -3,7 +3,18 @@
   "client_secret": "bc19deb0-7a22-44b9-acee-21f6c5c0f9a6",
   "api_key": "48130afc-e343-42fe-8c9f-efe34c8df503",
   "idMap": {
-    "ids": [],
-    "names": []
+    "ids": {
+      "06db0589-3b11-4bb0-a2c2-b121aeabc1e2": "100 Score",
+      "1606672503985": "Feature API",
+      "9485215d-d307-4832-a0ca-42fee61e922d": "App CRUD API",
+      "95c0886a-1574-4a64-8db9-442e5625aa94": "App management on website",
+      "undefined": "NPMModule Config"
+    },
+    "names": {
+      "100 Score": "06db0589-3b11-4bb0-a2c2-b121aeabc1e2",
+      "Feature API": "1606672503985",
+      "App CRUD API": "9485215d-d307-4832-a0ca-42fee61e922d",
+      "App management on website": "95c0886a-1574-4a64-8db9-442e5625aa94"
+    }
   }
 }

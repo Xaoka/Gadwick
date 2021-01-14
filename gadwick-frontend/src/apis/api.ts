@@ -46,16 +46,9 @@ function getHTTPMethod(httpMethod: HTTP)
     }
 }
 
-enum APIServer
-{
-    local = "http://localhost:3003",
-    dev = "https://3i07lk1jl8.execute-api.us-east-1.amazonaws.com"
-}
-
 export default async function serverAPI<T extends object>(apiMethod: API, httpMethod: HTTP, dbID?: string, payload?: object, additionalPath?: { pathKey: string, value: string }[]): Promise<T>
 {
-    // TODO: Function to select server
-    const server = APIServer.local;
+    const server = (window.location.hostname !== "localhost") ? "https://3i07lk1jl8.execute-api.us-east-1.amazonaws.com" : "http://localhost:3003";
     const pathExtension = additionalPath ? additionalPath.map((p) => `/${p.pathKey}/${p.value}`).join("") : ""
     const response = await getHTTPMethod(httpMethod)(`${server}/${apiMethod}/${dbID||""}${pathExtension}`, payload);
     return response.data;

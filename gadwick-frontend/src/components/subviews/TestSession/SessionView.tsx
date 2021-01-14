@@ -10,7 +10,7 @@ import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { Status } from './Overview';
-import { ITestResult } from '../FeatureReports';
+import { ITestResult } from '../Features/Results';
 import SubmitResultsDialog from './SubmitResultsDialog';
 
 interface ISessionView

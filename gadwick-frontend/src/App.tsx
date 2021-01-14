@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Landing from './components/subviews/Landing/landing';
 import Header from './components/header';
 import Dashboard from './components/Dashboard';

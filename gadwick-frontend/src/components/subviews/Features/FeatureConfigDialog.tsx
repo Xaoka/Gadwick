@@ -14,9 +14,9 @@ interface IFeatureConfigDialog
 
 export default function FeatureConfigDialog(props: IFeatureConfigDialog)
 {
-    return <Dialog open={props.feature !== null} maxWidth="md" onClose={props.onClose} id="feature_config_dialog" style={{overflow: "hidden"}}>
+    return <Dialog open={props.feature !== null} maxWidth="md" fullWidth={true} onClose={props.onClose} id="feature_config_dialog" style={{overflow: "hidden"}}>
             <DialogTitle>
-                <h3>Feature Configuration<IconButton style={{float: "right"}} onClick={props.onClose}><CloseIcon/></IconButton></h3>
+                <h2>Feature Information<IconButton style={{float: "right"}} onClick={props.onClose}><CloseIcon/></IconButton></h2>
             </DialogTitle>
             {props.feature ? <FeatureConfig feature={props.feature} style={{ padding: 40, paddingTop: 0, overflow: "scroll" }} onDeleted={props.onClose}/> : <Skeleton></Skeleton>}
         </Dialog>

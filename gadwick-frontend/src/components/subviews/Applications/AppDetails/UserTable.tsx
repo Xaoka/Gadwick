@@ -48,7 +48,7 @@ export default function UserTable(props: IUserTable)
             </TableHead>
             <TableBody>
                 {props.appUsers.map((user) =>
-                    <TableRow>
+                    <TableRow key={user.id}>
                         {props.showUsername && <TableCell>{user.name}</TableCell>}
                         <TableCell>{user.invite_email}</TableCell>
                         <TableCell>{user.role}</TableCell>

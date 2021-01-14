@@ -76,7 +76,7 @@ export default function InviteDialog(props: IInviteDialog)
             <p>An invite will be shown in the app view to the user with this email address if they exist.</p>
             <p>Users with this permission level will be able to:</p>
             <ul>
-                {roleDescriptions[roleSelected].map((permission) => <li>{permission}</li>)}
+                {roleDescriptions[roleSelected].map((permission) => <li key={permission}>{permission}</li>)}
             </ul>
             <div>
                 <button className="danger" onClick={props.onClose}>Cancel</button>

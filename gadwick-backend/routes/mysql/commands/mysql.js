@@ -1,11 +1,12 @@
 var mysql = require('mysql');
 const util = require('util');
+const config = require('dotenv').config();
 
 var connection = mysql.createConnection({
-    host     : "gadwick-db.coqc02b1gisw.eu-west-2.rds.amazonaws.com",//process.env.RDS_HOSTNAME,
-    user     : "admin",//process.env.RDS_USERNAME,
-    password : "mysqladmin",//process.env.RDS_PASSWORD,
-    port     : 3306//process.env.RDS_PORT
+    host     : process.env.DB_HOST || process.env.SLS_DB_HOST,
+    user     : process.env.DB_USER || process.env.SLS_DB_USER,
+    password : process.env.DB_PASSWORD || process.env.SLS_DB_PASSWORD,
+    port     : process.env.DB_PORT || process.env.SLS_DB_PORT
   });
 
 function connectToDatabase()
@@ -31,7 +32,7 @@ function connectToDatabase()
         console.log('Re-connecting lost connection: ' + err.stack);
     
         connection = mysql.createConnection(connection.config);
-        handleDisconnect(connection);
+        // handleDisconnect(connection);
         connectToDatabase();
     });
     connection.on('end',() =>

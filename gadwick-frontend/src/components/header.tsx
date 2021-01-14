@@ -13,9 +13,8 @@ export default function Header()
       }
       else
       {
-        // TODO: Account creation: Use auth0 hooks to generate accounts: https://manage.auth0.com/dashboard/eu/gadwick/hooks
-        const rootURL = (window.location.hostname !== "localhost") ? "gadwick.co.uk" : `localhost:${window.location.port}`;
-        loginWithRedirect({ redirectUri: `${window.location.protocol}//${rootURL}/dashboard/overview` });
+        // const rootURL = (window.location.hostname !== "localhost") ? window.location.hostname : `localhost:${window.location.port}`;
+        loginWithRedirect({ redirectUri: `${window.location.origin}/dashboard/overview` });
       }
     }
     const text = isAuthenticated ? "Log Out" : "Log In";

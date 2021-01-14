@@ -49,6 +49,31 @@ router.get('/s/:client_secret', cors(corsOptions), async function(req, res, next
 router.post('/', cors(corsOptions), function(req, res, next) {
     insertInto(["name", "description", "app_id"], ["thirdparty_id", "thirdparty_provider", "thirdparty_board", "thirdparty_link"], "Features", req, res, next);
 })
+router.post('/s/:app_secret', cors(corsOptions), async function(req, res, next) {
+    if (!req.body.name)
+    {
+        res.sendStatus(400);
+        return;
+    }
+    const features = await awaitQuery(`SELECT id FROM Features WHERE name = ${mysql.escape(req.body.name)}`);
+
+    if (features.length > 0)
+    {
+        res.status(302).send({id: features[0].id});
+        return;
+    }
+
+    const app_secret = req.params.app_secret;
+    const app_ids = await awaitQuery(`SELECT id FROM Applications WHERE client_secret = ${mysql.escape(app_secret)}`);
+    console.log(`Fetching app for secret ${app_secret}: ${app_ids.join()}`)
+    if (app_ids.length === 0)
+    {
+        res.sendStatus(404);
+        return;
+    }
+    req.body.app_id = app_ids[0].id;
+    insertInto(["name", "description", "app_id"], ["thirdparty_id", "thirdparty_provider", "thirdparty_board", "thirdparty_link"], "Features", req, res, next);
+})
 
 router.put('/:id', cors(corsOptions), function(req, res, next) {
     const id = req.params.id;

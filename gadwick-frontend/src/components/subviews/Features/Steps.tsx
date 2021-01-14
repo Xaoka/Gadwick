@@ -53,7 +53,7 @@ export default function Steps(props: ISteps)
     function step(text: string|undefined, index: number)
     {
         const lastStep = index === steps.length -1;
-        return <div>
+        return <div key={index}>
             <span style={{ paddingRight: 20 }}>
                 {index + 1}.
             </span>
@@ -77,8 +77,8 @@ export default function Steps(props: ISteps)
 
     return <>
         {steps.map(step)}
-        <div style={{ marginRight: "10%" }}>
-            <button disabled={saveDisabled} style={{ float: "right"}} onClick={onSaved}>
+        <div>
+            <button disabled={saveDisabled} style={{ float: "right"}} className="success" onClick={onSaved}>
                 Save
             </button>
         </div>
