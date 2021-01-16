@@ -5,3 +5,5 @@ node_modules
 build/
 .env*
 keys.json
+
+deployment/configs

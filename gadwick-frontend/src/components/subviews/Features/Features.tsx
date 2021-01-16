@@ -93,7 +93,18 @@ export default function Features(props: IFeatures)
     {
         serverAPI<IFeature[]>(API.AppFeatures, HTTP.READ, props.appID).then((data) =>
         {
-            setFeatures(data.map((f) => { return { ...f, steps: JSON.parse(f.steps as any) } }));
+            setFeatures(data.map((f) =>
+            {
+                let steps = [""];
+                try
+                {
+                    steps = JSON.parse(f.steps as any)
+                }
+                catch (err)
+                {
+                    console.warn(err);
+                }
+                return { ...f, steps } }));
             console.dir(data)
         });
     }

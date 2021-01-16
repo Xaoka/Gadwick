@@ -23,6 +23,7 @@ router.get('/session/:id', cors(corsOptions), async function(req, res, next) {
 
 router.post('/', cors(corsOptions), function(req, res, next) {
     // TODO: Verify credentials here?
+    delete req.body.api_key;
     insertInto(["passed", "version", "feature_id", "automated"], ["session_id"], "Results", req, res, next);
 });
 

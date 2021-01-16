@@ -1,4 +1,5 @@
 import Axios from 'axios';
+import deploymentConfig from '../config.json';
 
 export enum API
 {
@@ -48,7 +49,7 @@ function getHTTPMethod(httpMethod: HTTP)
 
 export default async function serverAPI<T extends object>(apiMethod: API, httpMethod: HTTP, dbID?: string, payload?: object, additionalPath?: { pathKey: string, value: string }[]): Promise<T>
 {
-    const server = (window.location.hostname !== "localhost") ? "https://3i07lk1jl8.execute-api.us-east-1.amazonaws.com" : "http://localhost:3003";
+    const server = deploymentConfig.API_URL;
     const pathExtension = additionalPath ? additionalPath.map((p) => `/${p.pathKey}/${p.value}`).join("") : ""
     const response = await getHTTPMethod(httpMethod)(`${server}/${apiMethod}/${dbID||""}${pathExtension}`, payload);
     return response.data;

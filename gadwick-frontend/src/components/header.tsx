@@ -20,6 +20,6 @@ export default function Header()
     const text = isAuthenticated ? "Log Out" : "Log In";
     return <div style={{ position: "absolute", top: 15, right: 15 }}>
         { isAuthenticated ? <span>Logged in as {user.name}</span> : null }
-        <button onClick={onLogin}>{text}</button>
+        <button onClick={onLogin} id="login">{text}</button>
     </div>
 }

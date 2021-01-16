@@ -8,12 +8,12 @@ const { update } = require('./commands/update');
 const { v4: uuidv4 } = require('uuid');
 const bodyParser = require('body-parser');
 const Stripe = require('stripe');
-const keys = require('../../keys.json');
-const stripe = Stripe(keys.stripe_liveKey);
+const config = require('../../config.json');
+const stripe = Stripe(config.STRIPE_KEY);
 var mysql = require('mysql');
 
 router.post("/", bodyParser.raw({type: 'application/json'}), async (req, res, next) => {
-    const endpointSecret = "whsec_xXPiVsqVTLRnVhoKQaZlBymEBvtA7AJN"// TODO: hide
+    const endpointSecret = config.STRIPE_ENDPOINT_SECRET;
     const sig = req.headers['stripe-signature'];
     const body = req.rawBody;
   

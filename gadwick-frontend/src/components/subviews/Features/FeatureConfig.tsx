@@ -22,12 +22,16 @@ interface IFeatureConfig
 export default function FeatureConfig(props: IFeatureConfig)
 {
     const [tab, setTab] = useState<number>(0);
+    const [ratings, setRatings] = useState<{ [key: string]: number }>({});
     const [riskRating, setRiskRating] = useState(0);
     const [valueRating, setValueRating] = useState(0);
     const [efficiencyRating, setEfficiencyRating] = useState(0);
     const [volatilityRating, setVolatilityRating] = useState(0);
     const [priorityRating, setPriorityRating] = useState(0);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+    const [name, setName] = useState(props.feature.name);
+    const [description, setDescription] = useState(props.feature.description);
     // const [lastSavedScore, setLastSavedScore] = useState(0);
 
     function calculateRisk()
@@ -56,28 +60,38 @@ export default function FeatureConfig(props: IFeatureConfig)
         }
     }
 
-    function renderCombinedRating(primaryTitle: string, primaryKey: keyof IFeatureRatings, secondaryTitle: string, secondaryKey: keyof IFeatureRatings, resultTitle: string, setRating: (val: number) => void)
+    function renderCombinedRating(primaryTitle: string, primaryKey: keyof IFeatureRatings, primaryTip: string, secondaryTitle: string, secondaryKey: keyof IFeatureRatings, secondaryTip: string, resultTitle: string, resultTip: string, setRating: (val: number) => void)
     {
         function onResultChanged(primaryRating: number, secondaryRating: number, resultRating: number)
         {
             setRating(resultRating);
-            const payload: any = {};//TODO: Type
-            payload[primaryKey] = primaryRating;
-            payload[secondaryKey] = secondaryRating;
-            serverAPI<IFeature[]>(API.Features, HTTP.UPDATE, props.feature.id, payload)
+            const newRatings = {...ratings}
+            newRatings[primaryKey] = primaryRating;
+            newRatings[secondaryKey] = secondaryRating;
+            setRatings(newRatings);
         }
-        return <CombinedRating primaryRating={{ title: primaryTitle, initialValue: props.feature[primaryKey] as any }} secondaryRating={{ title: secondaryTitle, initialValue: props.feature[secondaryKey] as any }} resultRatingTitle={resultTitle} onResultChanged={onResultChanged}/>
+        return <CombinedRating primaryRating={{ title: primaryTitle, initialValue: props.feature[primaryKey] as any, toolTip: primaryTip }} secondaryRating={{ title: secondaryTitle, toolTip: secondaryTip, initialValue: props.feature[secondaryKey] as any }} resultRatingTitle={resultTitle} resultRatingToolTip={resultTip} onResultChanged={onResultChanged}/>
     }
 
-    function renderTextField(title: string, defaultValue: string, key: string, width: string)
+    function renderTextField(title: string, defaultValue: string, onChanged: (value: string) => void, width: string)
     {
-        function onTextChanged(evt: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>)
-        {
-            const payload: { [key: string]: string} = {}
-            payload[key] = evt.target.value;
-            serverAPI<IFeature[]>(API.Features, HTTP.UPDATE, props.feature.id, payload)
-        }
-        return <TextField id="outlined-basic" label={title} variant="outlined" defaultValue={defaultValue} style={{ width, paddingBottom: 10, paddingTop: 10 }} onBlur={(evt) => onTextChanged(evt)}/>
+        return <TextField
+            id="outlined-basic"
+            label={title}
+            variant="outlined"
+            defaultValue={defaultValue}
+            style={{ width, paddingBottom: 10, paddingTop: 10 }}
+            onChange={(evt) => onChanged(evt.target.value)}/>
+    }
+
+    function onFeatureSaved()
+    {
+        serverAPI<IFeature[]>(API.Features, HTTP.UPDATE, props.feature.id, { name, description });
+    }
+
+    function onRatingsSaved()
+    {
+        serverAPI<IFeature[]>(API.Features, HTTP.UPDATE, props.feature.id, ratings);
     }
 
     function onStepsChanged(steps: string[])
@@ -108,14 +122,14 @@ export default function FeatureConfig(props: IFeatureConfig)
         <div hidden={tab !== 0}>
             <h3>Settings</h3>
             <h4>Feature</h4>
-            {renderTextField("Feature Name", props.feature.name, "name", "40%")}
-            {renderTextField("Description", props.feature.description, "description", "90%")}
+            {renderTextField("Feature Name", props.feature.name, setName, "40%")}
+            {renderTextField("Description", props.feature.description, setDescription, "90%")}
             <div>
-                <button style={{ float: "right" }} className="success" onClick={() => null}>Save</button>
+                <button style={{ float: "right" }} className="success" onClick={onFeatureSaved}>Save</button>
             </div>
             <h4>Steps</h4>
             <p>Define the steps to follow to test this feature</p>
-            <Steps steps={props.feature.steps || [""]} onChanged={onStepsChanged}/>
+            <Steps steps={props.feature.steps?.length > 0 ? props.feature.steps : [""]} onChanged={onStepsChanged}/>
             <h4>Delete Feature</h4>
             <p>Permanently delete this feature, <b>this cannot be undone</b>.</p>
             <div>
@@ -123,12 +137,12 @@ export default function FeatureConfig(props: IFeatureConfig)
             </div>
         </div>
         <div hidden={tab !== 1}>
-            <h3>Importance<div className="info">How core is this feature to your product</div></h3>
-            {renderCombinedRating("Frequency of use", "use_frequency", "Severity", "severity", "Risk", setRiskRating)}
-            {renderCombinedRating("Distinctness", "distinctness", "Fix Priority", "fix_priority", "Value", setValueRating)}
-            <h4>Automation<div className="info">Is it worth our time to automate</div></h4>
-            {renderCombinedRating("Time Cost", "time_cost", "Ease", "ease", "Efficiency", setEfficiencyRating)}
-            {renderCombinedRating("Similar Problem Frequency", "similar_problem_frequency", "Problem Frequency", "problem_frequency", "Volatility", setVolatilityRating)}
+            <h3>Ratings</h3>
+            {renderCombinedRating("Frequency of use", "use_frequency", "How often this feature is used, higher rating is more frequent", "Severity", "severity", "How much of an impact will problems with this feature cause", "Risk", "Calculated risk associated with the feature", setRiskRating)}
+            {renderCombinedRating("Distinctness", "distinctness", "How much of this feature is not covered by other tests or features", "Fix Priority", "fix_priority", "How urgent is the feature to fix", "Value", "Calculated value of testing the feature", setValueRating)}
+            {/* <h4>Automation<div className="info">Is it worth our time to automate</div></h4> */}
+            {renderCombinedRating("Time Cost", "time_cost", "How much time will it take to write a test for this feature, higher is faster", "Ease", "ease", "How easy would it be to write a test for this feature", "Efficiency", "Efficiency of writing a test for this feature", setEfficiencyRating)}
+            {renderCombinedRating("Similar Problem Frequency", "similar_problem_frequency", "How often similar features have problems", "Problem Frequency", "problem_frequency", "How often this feature has problems", "Volatility", "Calculated volatility of the feature", setVolatilityRating)}
             <h4>Summary</h4>
 
             <span>This feature is {riskRating > 3 ? "high" : "low"} risk, </span>
@@ -137,8 +151,10 @@ export default function FeatureConfig(props: IFeatureConfig)
             <span>and {volatilityRating > 3 ? "a" : "not a"} common area for problems, </span>
             <span>as such we would recommend {getRecommendation()}</span>
             <div>
-                <SimpleRating key="primary" title={"Priority Score"} initialValue={priorityRating} disabled={true}/>
-                {/* <button style={{ float: "right" }} onClick={saveFeature}>Save Changes</button> */}
+                <SimpleRating key="primary" title={"Priority Score"} toolTip={"How important it is to write an automated test for this feature"} initialValue={priorityRating} disabled={true}/>
+            </div>
+            <div>
+                <button style={{ float: "right" }} className="success" onClick={onRatingsSaved}>Save</button>
             </div>
         </div>
         <div hidden={tab !== 2}>

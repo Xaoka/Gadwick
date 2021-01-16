@@ -8,8 +8,8 @@ const { update } = require('./commands/update');
 const { v4: uuidv4 } = require('uuid');
 const Stripe = require('stripe');
 const { response } = require('express');
-const keys = require('../../keys.json');
-const stripe = Stripe(keys.stripe_liveKey);
+const config = require('../../config.json');
+const stripe = Stripe(config.STRIPE_KEY);
 var mysql = require('mysql');
 
 

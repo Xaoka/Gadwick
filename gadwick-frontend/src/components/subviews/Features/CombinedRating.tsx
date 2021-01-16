@@ -8,6 +8,7 @@ interface ICombinedRating
     primaryRating: ISimpleRating;
     secondaryRating: ISimpleRating;
     resultRatingTitle: string;
+    resultRatingToolTip: string;
     onResultChanged?: (primaryRating: number, secondaryRating: number, resultRating: number) => void;
 }
 
@@ -32,9 +33,9 @@ export default function CombinedRating(props: ICombinedRating)
     // eslint-disable-next-line
     }, [primaryRating, secondaryRating]);
 
-    return <div>
-        <SimpleRating key="primary" title={props.primaryRating.title} initialValue={primaryRating} onChanged={setPrimaryRating} />
-        <SimpleRating key="secondary" title={props.secondaryRating.title} initialValue={secondaryRating} onChanged={setSecondaryRating} />
-        <SimpleRating key="result" title={props.resultRatingTitle} initialValue={resultRating} disabled={true} style={{ float: "right" }}/>
+    return <div style={{ display: "grid", gridTemplateColumns: "33% 33% 33%" }}>
+        <SimpleRating key="primary" title={props.primaryRating.title} toolTip={props.primaryRating.toolTip} initialValue={primaryRating} onChanged={setPrimaryRating} />
+        <SimpleRating key="secondary" title={props.secondaryRating.title} toolTip={props.secondaryRating.toolTip} initialValue={secondaryRating} onChanged={setSecondaryRating} />
+        <SimpleRating key="result" title={props.resultRatingTitle} toolTip={props.resultRatingToolTip} initialValue={resultRating} disabled={true} style={{ textAlign: "right" }}/>
     </div>
 }

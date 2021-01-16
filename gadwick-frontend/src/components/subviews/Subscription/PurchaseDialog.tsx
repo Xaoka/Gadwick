@@ -5,6 +5,7 @@ import { IProduct } from './Subscription';
 import serverAPI, { API, HTTP } from '../../../apis/api';
 import { useAuth0 } from '@auth0/auth0-react';
 import getUserID from '../../../apis/user';
+import deploymentConfig from '../../../config.json';
 
 interface IPurchaseDialog
 {
@@ -14,8 +15,7 @@ interface IPurchaseDialog
 }
 
 // https://stripe.com/docs/billing/subscriptions/checkout
-const testKey = "pk_test_51I1uUQBdEJQZjJeTeQAdniHjnSIBYoebSjmB3bZ5Kq7ZWQFnEkZ1Bh7YTpLJyrKy96NLAmpfQiKAD6yQ8kb5UNVj00pKWCn3v4";
-const liveKey = "pk_live_51I1uUQBdEJQZjJeTyY7bYp881RhkBO4bRp94siFLTO73o7dMTS9H1ViN5OtJB8nc1QN9Km8qW6kLUQq0yLmxQDZr00R3E8ujWu";
+
 
 export default function PurchaseDialog(props: IPurchaseDialog)
 {
@@ -24,7 +24,7 @@ export default function PurchaseDialog(props: IPurchaseDialog)
     {
         const user_id = await getUserID(user.sub);
         const { sessionId } = await serverAPI(API.CheckoutSession, HTTP.CREATE, undefined, { product_name: props.product.product_name, user_id })
-        const stripe = (window as any).Stripe(liveKey)
+        const stripe = (window as any).Stripe(deploymentConfig.STRIPE_KEY)
         const response = await stripe.redirectToCheckout({sessionId: sessionId});
     }
 
