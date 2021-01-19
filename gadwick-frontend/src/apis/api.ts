@@ -47,10 +47,20 @@ function getHTTPMethod(httpMethod: HTTP)
     }
 }
 
+interface IServerResponse<T>
+{
+    // data: T;// TODO: Make all apis have this format
+    error?: string;
+}
+
 export default async function serverAPI<T extends object>(apiMethod: API, httpMethod: HTTP, dbID?: string, payload?: object, additionalPath?: { pathKey: string, value: string }[]): Promise<T>
 {
     const server = deploymentConfig.API_URL;
     const pathExtension = additionalPath ? additionalPath.map((p) => `/${p.pathKey}/${p.value}`).join("") : ""
-    const response = await getHTTPMethod(httpMethod)(`${server}/${apiMethod}/${dbID||""}${pathExtension}`, payload);
-    return response.data;
+    const response = await getHTTPMethod(httpMethod)<IServerResponse<T>>(`${server}/${apiMethod}/${dbID||""}${pathExtension}`, payload);
+    if (response.data.error)
+    {
+        throw Error(response.data.error);
+    }
+    return response.data as any;
 }

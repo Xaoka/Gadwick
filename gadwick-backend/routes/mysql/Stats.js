@@ -10,8 +10,8 @@ router.get('/features/:user_id', cors(corsOptions), async function(req, res, nex
     const id = req.params.user_id;
     const featureCount = (await awaitQuery(`SELECT COUNT(*) featureCount FROM Features LEFT JOIN Applications ON Features.app_id = Applications.id WHERE Applications.user_id = "${id}"`))[0].featureCount;
     const failedCount = (await awaitQuery(`SELECT COUNT(*) failedCount FROM Results LEFT JOIN Features ON Results.feature_id = Features.id LEFT JOIN Applications ON Features.app_id = Applications.id WHERE Applications.user_id = ${mysql.escape(id)}`))[0].failedCount;
-    const untestedCount = (await awaitQuery(`SELECT COUNT(*) untested FROM Features LEFT JOIN Applications ON Features.app_id = Applications.id WHERE Applications.user_id = "${id}" AND Features.id NOT IN (SELECT feature_id id FROM Results WHERE feature_id IS NOT NULL GROUP BY feature_id)`))[0].untested;
-    const appCount = (await awaitQuery(`SELECT COUNT(*) appCount FROM Applications LEFT JOIN AppUsers ON AppUsers.app_id = Applications.id WHERE (invite_status = "Accepted" AND AppUsers.user_id = ${mysql.escape(id)}) OR Applications.user_id = ${mysql.escape(id)}`))[0].appCount;
+    const untestedCount = (await awaitQuery(`SELECT COUNT(*) untested FROM Features LEFT JOIN Applications ON Features.app_id = Applications.id WHERE Applications.user_id = "${id}" AND Features.id NOT IN (SELECT feature_id id FROM Results WHERE feature_id IS NOT NULL AND STRCMP(automated, "FALSE") GROUP BY feature_id)`))[0].untested;
+    const appCount = (await awaitQuery(`SELECT * FROM Applications LEFT JOIN AppUsers ON AppUsers.app_id = Applications.id WHERE Applications.user_id = ${mysql.escape(id)} GROUP BY Applications.id`)).length;
     res.send({ featureCount, failedCount, untestedCount, appCount });
 });
 
@@ -31,8 +31,8 @@ async function getAutomationStats(idSQL = "", user_id)
 {
     // TODO: Cleanup this mess of SQL
     // TODO: Work out how to make this all one query
-    const noTestResultsSQL = `WHERE Features.id NOT IN (SELECT feature_id id FROM Results WHERE feature_id IS NOT NULL GROUP BY feature_id)`;
-    const testResultsSQL = `WHERE Features.id IN (SELECT feature_id id FROM Results WHERE feature_id IS NOT NULL GROUP BY feature_id)`;
+    const noTestResultsSQL = `WHERE Features.id NOT IN (SELECT feature_id id FROM Results WHERE feature_id IS NOT NULL AND STRCMP(automated, "FALSE") GROUP BY feature_id)`;
+    const testResultsSQL = `WHERE Features.id IN (SELECT feature_id id FROM Results WHERE feature_id IS NOT NULL AND STRCMP(automated, "FALSE") GROUP BY feature_id)`;
     let appJoinSQL = ``;
     let appSelectSQL = ``;
     if (user_id !== undefined)

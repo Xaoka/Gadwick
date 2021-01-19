@@ -1,9 +1,9 @@
 {
   "name": "server",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "cypress run --spec \"cypress/integration/*.spec.js\" --reporter gadwick/reporter.cjs",
+    "start": "cypress run --spec \"cypress/integration/*.spec.js\" --reporter gadwick/reporter.cjs --quiet",
     "test": "jest"
   },
   "jest": {
@@ -18,7 +18,7 @@
   "dependencies": {
     "axios": "^0.21.0",
     "cypress": "^6.2.1",
-    "gadwick": "^1.0.28",
+    "gadwick": "^1.0.38",
     "jest": "^26.6.3"
   }
 }

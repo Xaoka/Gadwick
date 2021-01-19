@@ -17,6 +17,7 @@ export interface ITestResult
     version: string;
     name: string;
     automated: "TRUE"|"FALSE"|null;
+    reason?: string;
 }
 
 export default function Results(props: IResults)
@@ -41,8 +42,9 @@ export default function Results(props: IResults)
                 <TableHead>
                 <TableRow>
                     <TableCell>Product Version</TableCell>
-                    <TableCell align="left">Status</TableCell>
                     <TableCell>Type</TableCell>
+                    <TableCell align="left">Status</TableCell>
+                    <TableCell align="left">Note</TableCell>
                 </TableRow>
                 </TableHead>
                 <TableBody>
@@ -51,8 +53,9 @@ export default function Results(props: IResults)
                         const domID = `result_entry_${result.name ? result.name.replace(" ", "_").toLowerCase() : " "}`;
                         return <TableRow key={result.id} id={domID}>
                             <TableCell id={`${domID}_version`}>{result.version}</TableCell>
-                            <TableCell id={`${domID}_passed`}>{result.passed ? "PASSED" : "FAILED"}</TableCell>
                             <TableCell id={`${domID}_name`}>{result.automated === "TRUE" ? "AUTOMATED" : "MANUAL"}</TableCell>
+                            <TableCell id={`${domID}_passed`}>{result.passed ? "PASSED" : "FAILED"}</TableCell>
+                            <TableCell id={`${domID}_reason`}>{result.reason}</TableCell>
                         </TableRow>
                     } )}
                 </TableBody>

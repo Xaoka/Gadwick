@@ -2,15 +2,20 @@ var mysql = require('mysql');
 const util = require('util');
 const config = require('dotenv').config();
 
-var connection = mysql.createConnection({
-    host     : process.env.DB_HOST || process.env.SLS_DB_HOST,
-    user     : process.env.DB_USER || process.env.SLS_DB_USER,
-    password : process.env.DB_PASSWORD || process.env.SLS_DB_PASSWORD,
-    port     : process.env.DB_PORT || process.env.SLS_DB_PORT
-  });
+let connection;
+function createConnection()
+{
+    connection = mysql.createConnection({
+        host     : process.env.DB_HOST || process.env.SLS_DB_HOST,
+        user     : process.env.DB_USER || process.env.SLS_DB_USER,
+        password : process.env.DB_PASSWORD || process.env.SLS_DB_PASSWORD,
+        port     : process.env.DB_PORT || process.env.SLS_DB_PORT
+    });
+}
 
 function connectToDatabase()
 {
+    createConnection();
     connection.connect(function(err) {
         if (err) {
             console.error('Database connection failed: ' + err.stack);

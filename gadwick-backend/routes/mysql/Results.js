@@ -10,6 +10,11 @@ router.get('/', cors(corsOptions), async function(req, res, next) {
     const response = await awaitQuery("SELECT * FROM Results LEFT JOIN Features ON Results.feature_id = Features.id");
     res.send(response);
 });
+// router.get('/:id', cors(corsOptions), async function(req, res, next) {
+//     const id = req.params.id;
+//     const response = await awaitQuery(`SELECT * FROM Results WHERE id = ${mysql.escape(id)}`);
+//     res.send(response);
+// });
 router.get('/:id', cors(corsOptions), async function(req, res, next) {
     const id = req.params.id;
     const response = await awaitQuery(`SELECT * FROM Results LEFT JOIN Features ON Results.feature_id = Features.id WHERE Features.id = ${mysql.escape(id)}`);
@@ -24,7 +29,7 @@ router.get('/session/:id', cors(corsOptions), async function(req, res, next) {
 router.post('/', cors(corsOptions), function(req, res, next) {
     // TODO: Verify credentials here?
     delete req.body.api_key;
-    insertInto(["passed", "version", "feature_id", "automated"], ["session_id"], "Results", req, res, next);
+    insertInto(["passed", "version", "feature_id", "automated"], ["session_id", "reason"], "Results", req, res, next);
 });
 
 router.get('/versions', cors(corsOptions), async function(req, res, next) {

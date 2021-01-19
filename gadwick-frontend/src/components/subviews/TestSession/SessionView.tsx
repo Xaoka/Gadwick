@@ -1,5 +1,5 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import { List, ListItem, SvgIconTypeMap } from '@material-ui/core';
+import { List, ListItem, SvgIconTypeMap, TextField } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import serverAPI, { API, HTTP } from '../../../apis/api';
@@ -32,6 +32,7 @@ export default function SessionView(props: ISessionView)
     const [results, setResults] = useState<boolean[]>([])
     const [featureIndex, setFeatureIndex] = useState<number>(0);
     const [submitDialogOpen, setSubmitDialogOpen] = useState<boolean>(false)
+    const [reason, setReason] = useState<string>("");
 
     useEffect(loadSession, [])
 
@@ -106,7 +107,7 @@ export default function SessionView(props: ISessionView)
             Icon = CheckCircleIcon;
         }
 
-        return <ListItem button={false} style={{ padding: 15 }} className={className}>
+        return <ListItem button={false} style={{ padding: 15 }} className={className} key={featureIndex}>
             <span style={{width: "100%"}}>
                 {index===featureIndex && <ChevronRightIcon style={{verticalAlign: "bottom"}} fontSize="small"/>}
                 {step}
@@ -125,8 +126,9 @@ export default function SessionView(props: ISessionView)
         {
             serverAPI<ISession>(API.Sessions, HTTP.UPDATE, match?.params.sessionID, { status: Status.INCOMPLETE })
         }
-        serverAPI<ISession>(API.TestResults, HTTP.CREATE, undefined, { feature_id: features[featureIndex].id, passed, version: session?.app_version, session_id: session?.id, automated: "FALSE" })
+        serverAPI<ISession>(API.TestResults, HTTP.CREATE, undefined, { feature_id: features[featureIndex].id, passed, version: session?.app_version, session_id: session?.id, automated: "FALSE", reason })
 
+        setReason("");
         const newResults = [...results];
         newResults[featureIndex] = passed;
         setFeatureIndex(featureIndex + 1);
@@ -177,6 +179,7 @@ export default function SessionView(props: ISessionView)
                 {!features[featureIndex].steps && <>
                     <p>There aren't any steps available for this feature.</p>
                 </>}
+                <TextField label="Reason (Optional)" multiline={true} style={{ display: "block" }} fullWidth={true} onChange={(evt) => setReason(evt.target.value)} value={reason}/>
                 <button className="danger" onClick={() => onResult(false)}>Failed</button>
                 <button className="success" onClick={() => onResult(true)}>Passed</button>
             </div>
