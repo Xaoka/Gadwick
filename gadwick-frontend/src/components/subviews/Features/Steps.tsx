@@ -76,7 +76,7 @@ export default function Steps(props: ISteps)
     }
 
     return <>
-        {steps.map(step)}
+        {steps && steps.map(step)}
         <div>
             <button disabled={saveDisabled} style={{ float: "right"}} className="success" onClick={onSaved}>
                 Save

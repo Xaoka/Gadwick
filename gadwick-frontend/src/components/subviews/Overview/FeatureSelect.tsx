@@ -1,15 +1,20 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import { Tooltip } from '@material-ui/core';
+import { Tab, TablePagination, Tabs, Tooltip } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import serverAPI, { API, HTTP } from '../../../apis/api';
 import getUserID from '../../../apis/user';
-import { IConfiguredApplication } from '../Applications/AppView';
+import { IConfiguredApplication, IUserApps } from '../Applications/AppView';
 import { IFeature } from '../Features/Features';
 import { Stages } from './FeatureImport';
-import { ThirdPartyProviders } from '../../../apis/thirdParty/providers';
+import Provider, { ThirdPartyProviders } from '../../../apis/thirdParty/providers';
 import { appNameToURL } from '../../../utils/ToURL';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ListIcon from '@material-ui/icons/List';
+import TablePaginationActions from '@material-ui/core/TablePagination/TablePaginationActions';
+import { IBoard } from '../../../apis/thirdParty/IThirdparty';
+import TrelloAPI from '../../../apis/thirdParty/trello';
+import { Skeleton } from '@material-ui/lab';
 
 /** TODO: Better name for this */
 export interface IImport
@@ -29,7 +34,8 @@ interface IImportedFeature
 interface IFeatureSelect
 {
     provider: ThirdPartyProviders;
-    importedFeatures: IImport;
+    // importedFeatures: IImport;
+    importedBoards: IBoard[];
     setStage: (stage: Stages) => void;
 }
 
@@ -37,6 +43,7 @@ export default function FeatureSelect(props: IFeatureSelect)
 {
     const { user } = useAuth0();
     const history = useHistory();
+    const [tab, setTab] = useState<number>(0);
 
     const [importButtonDisabled, setImportButtonDisabled] = useState<boolean>(true);
     const [isImporting, setIsImporting] = useState<boolean>(false);
@@ -47,7 +54,41 @@ export default function FeatureSelect(props: IFeatureSelect)
     const [apps, setApps] = useState<IConfiguredApplication[]>([]);
     const [appSelected, setAppSelected] = useState<IConfiguredApplication|null>(null);
     const [featuresForApp, setFeaturesForApp] = useState<IFeature[]>([]);
+    const [importedFeatures, setImportedFeatures] = useState<IImport>({});
+
+    const [page, setPage] = React.useState(0);
+    const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+        setPage(newPage);
+    };
     
+    useEffect(() => {
+        const api = Provider(props.provider);
+        const board = props.importedBoards[tab];
+        if (!board)
+        {
+            console.warn(`Board ${tab} not found.`);
+            return;
+        }
+        api.getCards(board.id).then((cards) =>
+        {
+            // console.log(cards.map((card: any) => card.name));
+            let features: IImport = { ...importedFeatures };
+            for (const card of cards)
+            {
+                features[tab] = features[tab] || [];
+                const feature = 
+                {
+                    name: card.name,
+                    board: board.name,
+                    boardID: board.id,
+                    ticketID: card.id,
+                    link: card.link
+                }
+                features[tab].push(feature);
+            }
+            setImportedFeatures(features);
+        })
+    }, [tab, props.importedBoards])
 
     function selectFeature(feature: IImportedFeature, selected: boolean)
     {
@@ -92,10 +133,10 @@ export default function FeatureSelect(props: IFeatureSelect)
         getUserID(user.sub).then((id) =>
         {
             if (!id) { return; }
-            serverAPI<IConfiguredApplication[]>(API.ApplicationsForUser, HTTP.READ, id).then((apps) =>
+            serverAPI<IUserApps>(API.ApplicationsForUser, HTTP.READ, id).then((apps) =>
             {
-                setApps(apps);
-                setAppSelected(apps[0]);
+                setApps(apps.applications);
+                setAppSelected(apps.applications[0]);
             });
         });
     }, [])
@@ -106,13 +147,24 @@ export default function FeatureSelect(props: IFeatureSelect)
 
     useEffect(() => {
         if (!appSelected) { return; }
-        serverAPI<IFeature[]>(API.Features, HTTP.READ, appSelected!.id).then(setFeaturesForApp);
+        serverAPI<IFeature[]>(API.AppFeatures, HTTP.READ, appSelected!.id).then(setFeaturesForApp);
     }, [appSelected])
 
     function selectAll(boardName: string, checked: boolean)
     {
         
     }
+
+    function skeletons(boardIndex: number)
+    {
+        let skeletons = [];
+        for (let i = 0; i < 10 - (importedFeatures[boardIndex]?.length || 0); i++)
+        {
+            skeletons.push(<Skeleton><div style={{ padding: 5 }}><input type="checkbox"/><label>{"Example Feature"}</label></div></Skeleton>);
+        }
+        return skeletons;
+    }
+
     const chevron = <ChevronRightIcon style={{ right: 0, verticalAlign: "bottom" }} fontSize="large"/>;
 
 
@@ -137,12 +189,22 @@ export default function FeatureSelect(props: IFeatureSelect)
         <div>
             We found these features on your {props.provider} account, select which features you would like to import.
         </div>
-        {Object.keys(props.importedFeatures).map((boardName: string) =>
-        <>
+        <Tabs
+            value={tab}
+            onChange={(evt, value) => setTab(value)}
+            indicatorColor="primary"
+            textColor="primary"
+            variant="scrollable"
+            scrollButtons="auto"
+            aria-label="icon tabs example">
+            { props.importedBoards.map((board: IBoard, index: number) => <Tab icon={<ListIcon />} aria-label={board.name} aria-controls={`scrollable-auto-tabpanel-${index}`} label={board.name} />)}
+        </Tabs>
+        {props.importedBoards.map((board: IBoard, index: number) =>
+        <div hidden={tab !== index}>
             {/** TODO: Disable if all sub-features exist */}
             {/* <input type="checkbox"  onClick={(evt: React.MouseEvent<HTMLInputElement, MouseEvent>) => selectAll(boardName, (evt.target as any).checked)} checked={false}/> */}
-            <b>{boardName}</b>
-            {props.importedFeatures[boardName].map((feature) =>
+            <b>{board.name}</b>
+            {importedFeatures[index]?.slice(page * 10, page * 10 + 10).map((feature) =>
             {
                 const exists = featuresForApp.filter((f) => f.name == feature.name).length > 0;
                 const help = `This feature already exists on this app.`;
@@ -165,7 +227,21 @@ export default function FeatureSelect(props: IFeatureSelect)
                     </div>
                 }
             })}
-        </>)}
+            {skeletons(index)}
+            <TablePagination
+                rowsPerPageOptions={[10]}
+                colSpan={7}
+                count={importedFeatures[index]?.length || 0}
+                rowsPerPage={10}
+                page={page}
+                SelectProps={{
+                    inputProps: { 'aria-label': 'rows per page' },
+                    native: true,
+                }}
+                onChangePage={handleChangePage}
+                ActionsComponent={TablePaginationActions}
+                />
+        </div>)}
         <div>
             Import to application:
         </div>

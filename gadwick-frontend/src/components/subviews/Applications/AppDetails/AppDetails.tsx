@@ -17,6 +17,8 @@ import getUserID, { IUser } from '../../../../apis/user';
 import { IAppUser } from './UserTable';
 import getCurrentPermissionLevel from './permissionLevel';
 import { useAuth0 } from '@auth0/auth0-react';
+import LocalOfferIcon from '@material-ui/icons/LocalOffer';
+import TagsManager from './TagsManager';
 
 interface IAppDetails
 {
@@ -79,6 +81,7 @@ export default function AppDetails(props: IAppDetails)
             aria-label="icon tabs example">
             <Tab icon={<EqualizerIcon />} aria-label="Analytics" label="Analytics" />
             <Tab icon={<ListIcon />} aria-label="Features" label="Features" />
+            <Tab icon={<LocalOfferIcon />} aria-label="Tags" label="Tags" />
             <Tab icon={<PeopleIcon />} aria-label="Users" label="Users" />
             <Tab icon={<SettingsIcon />} aria-label="Settings" label="Settings" />
         </Tabs>
@@ -104,9 +107,12 @@ export default function AppDetails(props: IAppDetails)
             <Features appID={props.app.id} permissionLevel={permissionLevel}/>
         </div>
         <div hidden={tab !== 2}>
-            <UserRoles app={props.app} invites={invites} setInvites={setInvites} owner={owner} users={users} setUsers={setUsers} permissionLevel={permissionLevel}/>
+            <TagsManager appID={props.app.id} permissionLevel={permissionLevel}/>
         </div>
         <div hidden={tab !== 3}>
+            <UserRoles app={props.app} invites={invites} setInvites={setInvites} owner={owner} users={users} setUsers={setUsers} permissionLevel={permissionLevel}/>
+        </div>
+        <div hidden={tab !== 4}>
             <Settings app={props.app} permissionLevel={permissionLevel}/>
         </div>
     </>

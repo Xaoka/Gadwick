@@ -67,7 +67,7 @@ router.post("/create-checkout-session", async (req, res, next) => {
     // TODO: Local/Dev
     const url = `https://gadwick.co.uk/dashboard/subscription`
     const { product_name, user_id } = req.body;
-    const products = (await awaitQuery(`SELECT * FROM Products WHERE product_name = ${mysql.escape(product_name)}`));
+    const products = (await awaitQuery(`SELECT * FROM Products WHERE product_name = ${mysql.escape(product_name)} AND env = ${config.ENV}`));
     if (products.length === 0)
     {
       next(`Product "${product_name}" not found.`);

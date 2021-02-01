@@ -11,12 +11,19 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import StarIcon from '@material-ui/icons/Star';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import Results from './Results';
+import Info from '../../InfoIcon';
 
 interface IFeatureConfig
 {
     feature: IFeature;
     style?: CSSProperties;
     onDeleted: () => void;
+}
+
+export interface ITag
+{
+    id: string;
+    name: string;
 }
 
 export default function FeatureConfig(props: IFeatureConfig)
@@ -29,15 +36,21 @@ export default function FeatureConfig(props: IFeatureConfig)
     const [volatilityRating, setVolatilityRating] = useState(0);
     const [priorityRating, setPriorityRating] = useState(0);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [tags, setTags] = useState<ITag[]>([]);
 
     const [name, setName] = useState(props.feature.name);
     const [description, setDescription] = useState(props.feature.description);
+    const [tag, setTag] = useState(props.feature.tag);
     // const [lastSavedScore, setLastSavedScore] = useState(0);
 
     function calculateRisk()
     {
         return Math.ceil((riskRating + valueRating + efficiencyRating + volatilityRating) / 4);
     }
+
+    useEffect(() => {
+        serverAPI<ITag[]>(API.AppTags, HTTP.READ, props.feature.app_id).then(setTags);
+    }, [])
 
     useEffect(() => {
         setPriorityRating(calculateRisk());
@@ -86,7 +99,7 @@ export default function FeatureConfig(props: IFeatureConfig)
 
     function onFeatureSaved()
     {
-        serverAPI<IFeature[]>(API.Features, HTTP.UPDATE, props.feature.id, { name, description });
+        serverAPI<IFeature[]>(API.Features, HTTP.UPDATE, props.feature.id, { name, description, tag });
     }
 
     function onRatingsSaved()
@@ -124,6 +137,15 @@ export default function FeatureConfig(props: IFeatureConfig)
             <h4>Feature</h4>
             {renderTextField("Feature Name", props.feature.name, setName, "40%")}
             {renderTextField("Description", props.feature.description, setDescription, "90%")}
+            <div>
+                <span>Tag </span>
+                <select style={{ width: 100 }} onChange={(evt) => setTag(evt.target.value)} value={tag}>
+                    <option>-</option>
+                    {tags.map((t) => <option value={t.id}>{t.name}</option>)}
+                </select>
+                <Info title="Each application can have a range of tags for categorizing features." style={{ verticalAlign: "middle" }}/>
+            </div>
+
             <div>
                 <button style={{ float: "right" }} className="success" onClick={onFeatureSaved}>Save</button>
             </div>

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import CodeSnippet from './CodeSnippet';
+import TutorialBox from './TutorialBox';
 
 export default function Setup(/*props: { app: IConfiguredApplication }*/)
 {
     const [language, setLanguage] = useState<string>("NodeJS");
     return <>
+        <TutorialBox topics={["How to install gadwick integrations", "How to integrate with your gadwick account"]}/>
         <p>Testing with Gadwick is simple and fits right into your existing test suites.</p>
         <div>First we'll need to install the Gadwick dependency.</div>
         <CodeSnippet language={language} onLanguageChanged={setLanguage} code={{ "NodeJS": ["npm i gadwick"], "Python": ["pip install -i https://test.pypi.org/simple/ gadwick-pkg-Xaoka"]}}/>

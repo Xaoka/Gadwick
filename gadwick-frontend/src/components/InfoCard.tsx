@@ -16,7 +16,7 @@ media: {
 },
 });
 
-export enum MediaType { Code, Application, Testing, AvailableSoon, TAU }
+export enum MediaType { Code, Application, Testing, AvailableSoon, TAU, Cypress, Postman }
 
 interface IInfoCard
 {
@@ -46,6 +46,12 @@ export default function InfoCard(props: IInfoCard)
           image="/tutorials/tutorial_blur.png"
           title="Code"
         />
+      case MediaType.Cypress:
+        return <CardMedia
+          className={classes.media}
+          image="/tutorials/cypress.png"
+          title="Cypress"
+        />
       case MediaType.Application:
         return <Tooltip title={"Business vector created by freepik - www.freepik.com"}>
           <CardMedia
@@ -68,6 +74,12 @@ export default function InfoCard(props: IInfoCard)
           image="/tutorials/tau_logo.png"
           title="Test Automation University"
           />
+      case MediaType.Postman:
+        return <CardMedia
+          className={classes.media}
+          image="/tutorials/postman.png"
+          title="Postman"
+        />
     }
   }
 

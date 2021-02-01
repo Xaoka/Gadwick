@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import CodeSnippet from './CodeSnippet';
+import TutorialBox from './TutorialBox';
 
 export default function FirstTest()
 {
@@ -14,6 +15,7 @@ export default function FirstTest()
     }
 
     return <>
+        <TutorialBox topics={["How to install a test framework", "How to run your first test"]}/>
         <p>Let's write our first test.</p>
         <div>First we'll need to install the testing library we want to use.</div>
         <CodeSnippet language={language} onLanguageChanged={setLanguage}

@@ -10,6 +10,8 @@ import getUserID from '../../../apis/user';
 import FeatureConfigDialog from '../Features/FeatureConfigDialog';
 import FeaturePriority from '../Features/FeaturePriority';
 import NoData from '../NoData';
+import { IConfiguredApplication, IUserApps } from '../Applications/AppView';
+import { Tooltip } from '@material-ui/core';
 
 // const optionCSS: CSSProperties =
 // {
@@ -33,6 +35,7 @@ export default function QuickSetup()
     const [importDialogOpen, setImportDialogOpen] = useState(false)
     const [featureDialogOpen, setFeatureDialogOpen] = useState(false)
     const [priorityFeatures, setPriorityFeatures] = useState<IFeature[]>([])
+    const [apps, setApps] = useState<IConfiguredApplication[]>([])
     const [quickEditFeature, setQuickEditFeature] = useState<IFeature|null>(null)
 
     const chevron = <ChevronRightIcon style={{ right: 0, verticalAlign: "bottom" }} fontSize="large"/>;
@@ -44,18 +47,28 @@ export default function QuickSetup()
         getUserID(user.sub).then((user_id) =>
         {
             if (!user_id) { return; }
-            serverAPI<IFeature[]>(API.PriorityFeatures, HTTP.READ, user_id).then(setPriorityFeatures);
+            serverAPI<IFeature[]>(API.PriorityFeatures, HTTP.READ, user_id).then((features) =>
+            {
+                setPriorityFeatures(features.map((f) =>
+                {
+                    f.steps = f.steps ? JSON.parse(f.steps as any) : [""];
+                    return f;
+                }))
+            });
+            serverAPI<IUserApps>(API.ApplicationsForUser, HTTP.READ, user_id).then((userApps) => setApps(userApps.applications));
         });
     }
 
     return <>
-        <h2>Features</h2>
-        {/* <h4>Quick Setup</h4> */}
-        {/** TODO: Re-add feature importing later */}
-        {/* <button onClick={() => setImportDialogOpen(true)}>
+        <h4>Quick Setup</h4>
+        {/* {apps.length === 0 && <button onClick={() => setImportDialogOpen(true)}>
+            Create App
+            {chevron}
+        </button>} */}
+        {<Tooltip title={apps.length === 0 ? "No apps to import into" : ""}><button onClick={() => setImportDialogOpen(true)} disabled={apps.length === 0}>
             Import Features
             {chevron}
-        </button> */}
+        </button></Tooltip>}
         {/* <button onClick={() => setFeatureDialogOpen(true)}>
             Import Test Results
             {chevron}

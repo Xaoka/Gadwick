@@ -28,7 +28,11 @@ export enum API
     PurchasesForUser = "purchases/user",
     UserSubscription = "purchases/subscription",
     CancelSubscription = "purchases/cancel-subscription/user",
-    CheckoutSession = "purchases/create-checkout-session"
+    CheckoutSession = "purchases/create-checkout-session",
+    Authentication = "auth",
+    Tags = "tags",
+    AppTags = "tags/app",
+    Asana = "asana"
 }
 export enum HTTP { CREATE, READ, UPDATE, DELETE }
 

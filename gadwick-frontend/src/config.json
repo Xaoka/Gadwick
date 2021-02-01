@@ -1,4 +1,4 @@
 {
-    "API_URL": "http://localhost:3003",
-    "STRIPE_KEY": "pk_test_51I1uUQBdEJQZjJeTeQAdniHjnSIBYoebSjmB3bZ5Kq7ZWQFnEkZ1Bh7YTpLJyrKy96NLAmpfQiKAD6yQ8kb5UNVj00pKWCn3v4"
+    "API_URL": "https://7j1ryn45f7.execute-api.us-east-1.amazonaws.com",
+    "STRIPE_KEY": "pk_live_51I1uUQBdEJQZjJeTyY7bYp881RhkBO4bRp94siFLTO73o7dMTS9H1ViN5OtJB8nc1QN9Km8qW6kLUQq0yLmxQDZr00R3E8ujWu"
 }

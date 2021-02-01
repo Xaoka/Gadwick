@@ -78,7 +78,7 @@ router.post('/s/:app_secret', cors(corsOptions), async function(req, res, next) 
 router.put('/:id', cors(corsOptions), function(req, res, next) {
     const id = req.params.id;
     const userData = req.body;
-    const optionalFields = ["name", "description", "use_frequency", "severity", "distinctness", "fix_priority", "ease", "time_cost", "similar_problem_frequency", "problem_frequency", "steps"];
+    const optionalFields = ["name", "description", "use_frequency", "severity", "distinctness", "fix_priority", "ease", "time_cost", "similar_problem_frequency", "problem_frequency", "steps", "tag"];
     
     const response = update(userData, optionalFields, "Features", id);
     res.send(response)

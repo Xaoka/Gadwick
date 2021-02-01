@@ -10,6 +10,8 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import FeaturePriority from './FeaturePriority';
 import { Roles } from '../Applications/AppDetails/UserRoles';
 import DeleteDialog from '../../DeleteDialog';
+import { ITag } from './FeatureConfig';
+import Search from '../../Search';
 
 export interface IFeatureRatings
 {
@@ -43,6 +45,8 @@ export interface IFeature extends IFeatureRatings
     steps: string[];
     /** Calculated automation priority score */
     priority: number;
+    /** Tag */
+    tag?: string;
 }
 
 interface IFeatures
@@ -58,9 +62,14 @@ export default function Features(props: IFeatures)
     const [features, setFeatures] = useState<IFeature[]>([])
     const [featureToDelete, setFeatureToDelete] = useState<IFeature|null>(null);
     const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
+    const [tags, setTags] = useState<ITag[]>([]);
 
     useEffect(() => {
-        updateList();
+        serverAPI<ITag[]>(API.AppTags, HTTP.READ, props.appID).then((tags) =>
+        {
+            setTags(tags);
+            updateList();
+        });
     }, [])
     // const useStyles = makeStyles({
     //   table: {
@@ -81,11 +90,15 @@ export default function Features(props: IFeatures)
             {
                 name: "Description",
                 value: feature.description
-            }
+            },
             // {
             //     name: "Pass Rate",
             //     value: `${feature.passRate}%`
-            // }
+            // },
+            {
+                name: "Tag",
+                value: tags.filter((t) => t.id == feature.tag)[0]?.name
+            }
         ]
     }
 
@@ -141,6 +154,7 @@ export default function Features(props: IFeatures)
     function renderFeatureTable()
     {
         return <>
+            {/* <Search/> */}
             <TableContainer component={Paper}>
             <Table aria-label="simple table">
                 <TableHead>
@@ -149,6 +163,7 @@ export default function Features(props: IFeatures)
                         {/* <TableCell align="right">Status</TableCell> */}
                         <TableCell align="left">Description</TableCell>
                         {/* <TableCell align="left">Pass Rate (%)</TableCell> */}
+                        <TableCell align="left">Tag</TableCell>
                         <TableCell align="left">Ticket Link</TableCell>
                         <TableCell align="left">Priority</TableCell>
                         {(props.permissionLevel === Roles.Admin || props.permissionLevel === Roles.Maintainer) && <TableCell></TableCell>}

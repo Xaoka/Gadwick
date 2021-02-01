@@ -18,6 +18,9 @@ var rolesRouter = require('./routes/mysql/Roles');
 var purchasesRouter = require('./routes/mysql/Purchases');
 var productsRouter = require('./routes/mysql/Products');
 var stripeRouter = require('./routes/mysql/Stripe');
+var authenticationRouter = require('./routes/mysql/Authentication');
+var tagsRouter = require('./routes/mysql/Tags');
+var asanaRouter = require('./routes/thirdparty/Asana');
 
 // var cors = require('cors')
 var app = express();
@@ -50,6 +53,9 @@ app.use('/roles', rolesRouter);
 app.use('/purchases', purchasesRouter);
 app.use('/products', productsRouter);
 app.use('/stripe', stripeRouter);
+app.use('/auth', authenticationRouter);
+app.use('/tags', tagsRouter);
+app.use('/asana', asanaRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
