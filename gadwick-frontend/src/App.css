@@ -4,6 +4,8 @@ html, body, #root
 }
 :root {
   --theme-primary:  rgb(39, 133, 187);
+  --theme-secondary: #0c4f75;
+  --theme-tertiary: #53aadb;
 }
 
 h1
@@ -41,7 +43,7 @@ h3
   font-size: 28px;
   /* width: 90%; */
   /* border-bottom: var(--theme-primary) 2px solid; */
-  color: var(--theme-primary);
+  color: var(--theme-tertiary);
   margin-bottom: 2.5vh;
 }
 
@@ -50,8 +52,8 @@ h4
   font-weight: bold;
   font-size: 18px;
   width: 100%;
-  border-bottom: var(--theme-primary) 2px solid;
-  color: var(--theme-primary);
+  border-bottom: var(--theme-tertiary) 2px solid;
+  color: var(--theme-tertiary);
   margin-bottom: 2vh;
 }
 

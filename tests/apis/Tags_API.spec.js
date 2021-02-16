@@ -9,20 +9,20 @@ describe(`Tags API`, function() {
         const feature = featureArray.data;
         // console.dir(feature)
         // R
-        let features = (await axios.get(`${endpoint}/tags/${feature.id}`)).data;
-        console.dir(features);
-        expect(features.id).toBe(feature.id); // TODO: Deep equal
+        let tag = (await axios.get(`${endpoint}/tags/${feature.id}`)).data;
+        console.dir(tag);
+        expect(tag.id).toBe(feature.id); // TODO: Deep equal
         // app
-        let appFeatures = (await axios.get(`${endpoint}/tags/app/0`)).data;
+        let tags = (await axios.get(`${endpoint}/tags/app/0`)).data;
         // console.dir(features);
-        expect(appFeatures.length).toBe(1);
+        expect(tags.length).toBe(1);
 
         // // D
         let singleGetResponse;
-        await axios.delete(`${endpoint}/tags/${feature.id}`);
+        await axios.delete(`${endpoint}/tags/${tag.id}`);
         try
         {
-            singleGetResponse = await axios.get(`${endpoint}/tags/${feature.id}`);
+            singleGetResponse = await axios.get(`${endpoint}/tags/${tag.id}`);
         }
         catch (err)
         {
