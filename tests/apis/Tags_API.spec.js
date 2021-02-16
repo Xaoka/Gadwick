@@ -30,16 +30,7 @@ describe(`Tags API`, function() {
             return;
         }
         expect(singleGetResponse.status).toBe(404, "Specific tag did not return 404 after being deleted.");
-        let collectionGetResponse;
-        try
-        {
-            collectionGetResponse = await axios.get(`${endpoint}/tags/app/0`);
-        }
-        catch (err)
-        {
-            expect(err.response.status).toBe(404, "Tag collection for app did not return 404 after being emptied.");
-            return;
-        }
-        expect(collectionGetResponse.status).toBe(404, "Tag collection for app did not return 404 after being emptied.");
+        let collectionGetResponse = await axios.get(`${endpoint}/tags/app/0`);
+        expect(collectionGetResponse.data.length).toBe(0);
 	})
 })
