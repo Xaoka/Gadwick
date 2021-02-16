@@ -25,7 +25,7 @@ describe(`Tags API`, function() {
         }
         catch (err)
         {
-            expect(err.response.status).toBe(404);
+            expect(err.response.status).toBe(404, "Specific tag did not return 404 after being deleted.");
             return;
         }
         try
@@ -34,7 +34,7 @@ describe(`Tags API`, function() {
         }
         catch (err)
         {
-            expect(err.response.status).toBe(404);
+            expect(err.response.status).toBe(404, "Tag collection for app did not return 404 after being emptied.");
             return;
         }
         fail(`Endpoint did not return 404 for deleted tag`)
