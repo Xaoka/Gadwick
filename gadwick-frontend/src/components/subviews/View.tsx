@@ -14,8 +14,10 @@ export interface IView
         buttonID: string;
         pageURL: string;
         localOnly?: boolean;
+        showAlert?: boolean;
     }[];
     sidebarScale: number;
+    onPageChanged?: () => void;
 }
 
 export default function View(props: IView)
@@ -38,12 +40,16 @@ export default function View(props: IView)
 
     function onPageChanged(index: number)
     {
+        if (props.onPageChanged)
+        {
+            props.onPageChanged();
+        }
         history.push(`${url}/${props.pages[index].pageURL}`);
         setActiveIndex(index);
     }
     
     return <span style={{ display: "flex", height: "100%", flexDirection: "row", overflow: "hidden" }}>
-        <Sidebar options={ props.pages.map((page) => { return { icon: page.icon, callback: onPageChanged, buttonID: page.buttonID, localOnly: page.localOnly }}) } scale={props.sidebarScale} selected={activeIndex}/>
+        <Sidebar options={ props.pages.map((page) => { return { icon: page.icon, showAlert: page.showAlert, callback: onPageChanged, buttonID: page.buttonID, localOnly: page.localOnly }}) } scale={props.sidebarScale} selected={activeIndex}/>
         <div style={{flex: 5, paddingLeft: 20, height: "100%"}}>
             <Switch>
                 {props.pages.map((page) =>

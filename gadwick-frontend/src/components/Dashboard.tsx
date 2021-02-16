@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import View from './subviews/View';
 import Overview from './subviews/Overview/overview';
 import AppView from './subviews/Applications/AppView';
@@ -22,12 +22,31 @@ import MailIcon from '@material-ui/icons/Mail';
 
 export default function Dashboard()
 {
-    return <View pages={[
+    const [newMail, setNewMail] = useState<boolean>(false);
+    useEffect(checkMail, [])
+
+
+    function checkMail()
+    {
+        // TODO: Do this server side, have mail on server and have it's viewed status tracked there.
+        const cookies = window.document.cookie.split(";").map((s) => s.split("="));
+        const hasMailCookie = cookies.filter((c) => c[0] == "mail").length == 0;
+        setNewMail(hasMailCookie);
+    }
+
+    return <View onPageChanged={checkMail} pages={[
         {
             subView: <Overview/>,
             icon: AccountCircleIcon,
             buttonID: "sidebar_overview",
             pageURL: "overview"
+        },
+        {
+            subView: <Mail/>,
+            icon: MailIcon,
+            buttonID: "sidebar_mail",
+            pageURL: "mail",
+            showAlert: newMail
         },
         // {
         //     subView: <Overview/>,
@@ -70,12 +89,6 @@ export default function Dashboard()
             icon: SettingsIcon,
             buttonID: "sidebar_settings",
             pageURL: "settings"
-        },
-        {
-            subView: <Mail/>,
-            icon: MailIcon,
-            buttonID: "sidebar_mail",
-            pageURL: "mail"
         },
         {
             subView: <Admin/>,
