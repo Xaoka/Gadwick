@@ -79,13 +79,16 @@ export default function AppDetails(props: IAppDetails)
             indicatorColor="primary"
             textColor="primary"
             aria-label="icon tabs example">
-            <Tab icon={<EqualizerIcon />} aria-label="Analytics" label="Analytics" />
             <Tab icon={<ListIcon />} aria-label="Features" label="Features" />
+            <Tab icon={<EqualizerIcon />} aria-label="Analytics" label="Analytics" />
             <Tab icon={<LocalOfferIcon />} aria-label="Tags" label="Tags" />
             <Tab icon={<PeopleIcon />} aria-label="Users" label="Users" />
             <Tab icon={<SettingsIcon />} aria-label="Settings" label="Settings" />
         </Tabs>
         <div hidden={tab !== 0}>
+            <Features appID={props.app.id} permissionLevel={permissionLevel}/>
+        </div>
+        <div hidden={tab !== 1}>
             {/* <h3>Analytics</h3>
             <StatBox label="Version" icon={CategoryIcon} value={0} style={{ display: "inline-block" }}/>
             <StatBox label="Features" icon={CategoryIcon} value={0} style={{ display: "inline-block" }}/>
@@ -102,9 +105,6 @@ export default function AppDetails(props: IAppDetails)
             <WidgetContainer>
                 <NotAvailable reason={NotAvailableReason.ComingSoon}/>
             </WidgetContainer>
-        </div>
-        <div hidden={tab !== 1}>
-            <Features appID={props.app.id} permissionLevel={permissionLevel}/>
         </div>
         <div hidden={tab !== 2}>
             <TagsManager appID={props.app.id} permissionLevel={permissionLevel}/>

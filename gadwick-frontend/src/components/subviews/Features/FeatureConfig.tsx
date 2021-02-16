@@ -12,6 +12,7 @@ import StarIcon from '@material-ui/icons/Star';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import Results from './Results';
 import Info from '../../InfoIcon';
+import { useSnackbarMessages } from '../../snackbar/SnackbarContext';
 
 interface IFeatureConfig
 {
@@ -28,6 +29,8 @@ export interface ITag
 
 export default function FeatureConfig(props: IFeatureConfig)
 {
+    const snackbar = useSnackbarMessages();
+
     const [tab, setTab] = useState<number>(0);
     const [ratings, setRatings] = useState<{ [key: string]: number }>({});
     const [riskRating, setRiskRating] = useState(0);
@@ -97,26 +100,30 @@ export default function FeatureConfig(props: IFeatureConfig)
             onChange={(evt) => onChanged(evt.target.value)}/>
     }
 
-    function onFeatureSaved()
+    async function onFeatureSaved()
     {
-        serverAPI<IFeature[]>(API.Features, HTTP.UPDATE, props.feature.id, { name, description, tag });
+        await serverAPI<IFeature[]>(API.Features, HTTP.UPDATE, props.feature.id, { name, description, tag });
+        snackbar?.sendSnackbarMessage("Feature Saved", "success");
     }
 
-    function onRatingsSaved()
+    async function onRatingsSaved()
     {
-        serverAPI<IFeature[]>(API.Features, HTTP.UPDATE, props.feature.id, ratings);
+        await serverAPI<IFeature[]>(API.Features, HTTP.UPDATE, props.feature.id, ratings);
+        snackbar?.sendSnackbarMessage("Feature Saved", "success");
     }
 
-    function onStepsChanged(steps: string[])
+    async function onStepsChanged(steps: string[])
     {
-        serverAPI<IFeature[]>(API.Features, HTTP.UPDATE, props.feature.id, { steps: JSON.stringify(steps) })
+        await serverAPI<IFeature[]>(API.Features, HTTP.UPDATE, props.feature.id, { steps: JSON.stringify(steps) })
+        snackbar?.sendSnackbarMessage("Feature Saved", "success");
     }
 
-    function deleteFeature()
+    async function deleteFeature()
     {
-        serverAPI<IFeature[]>(API.Features, HTTP.DELETE, props.feature.id);
+        await serverAPI<IFeature[]>(API.Features, HTTP.DELETE, props.feature.id);
         setDeleteDialogOpen(false);
         props.onDeleted();
+        snackbar?.sendSnackbarMessage("Feature Deleted", "success");
     }
 
     return <>
@@ -145,7 +152,6 @@ export default function FeatureConfig(props: IFeatureConfig)
                 </select>
                 <Info title="Each application can have a range of tags for categorizing features." style={{ verticalAlign: "middle" }}/>
             </div>
-
             <div>
                 <button style={{ float: "right" }} className="success" onClick={onFeatureSaved}>Save</button>
             </div>

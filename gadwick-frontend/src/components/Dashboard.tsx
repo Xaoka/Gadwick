@@ -7,6 +7,8 @@ import TestSession from './subviews/TestSession/TestSession';
 import Settings from './subviews/Settings/Settings';
 import Subscription from './subviews/Subscription/Subscription';
 import Admin from './subviews/Admin/Admin';
+import QuickStart from './subviews/QuickStart/QuickStart';
+import Mail from './subviews/Mail/Mail';
 
 import AppsIcon from '@material-ui/icons/Apps';
 import CreditCardIcon from '@material-ui/icons/CreditCard';
@@ -15,6 +17,8 @@ import EmojiObjectsIcon from '@material-ui/icons/EmojiObjects';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import BuildIcon from '@material-ui/icons/Build';
 import SettingsIcon from '@material-ui/icons/Settings';
+import BarChartIcon from '@material-ui/icons/BarChart';
+import MailIcon from '@material-ui/icons/Mail';
 
 export default function Dashboard()
 {
@@ -25,6 +29,12 @@ export default function Dashboard()
             buttonID: "sidebar_overview",
             pageURL: "overview"
         },
+        // {
+        //     subView: <Overview/>,
+        //     icon: BarChartIcon,
+        //     buttonID: "sidebar_insights",
+        //     pageURL: "insights"
+        // },
         {
             subView: <AppView/>,
             icon: AppsIcon,
@@ -60,6 +70,12 @@ export default function Dashboard()
             icon: SettingsIcon,
             buttonID: "sidebar_settings",
             pageURL: "settings"
+        },
+        {
+            subView: <Mail/>,
+            icon: MailIcon,
+            buttonID: "sidebar_mail",
+            pageURL: "mail"
         },
         {
             subView: <Admin/>,

@@ -1,11 +1,9 @@
 {
-  "name": "server",
+  "name": "tutorial-tests",
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "cypress run --spec \"cypress/integration/*.spec.js\" --reporter gadwick/reporter.cjs --quiet",
-    "test": "jest",
-    "tutorials": "jest --testPathPattern=tutorials"
+    "test": "jest"
   },
   "jest": {
     "testEnvironment": "node",
@@ -13,7 +11,7 @@
       "/node_modules/"
     ],
     "testMatch": [
-      "**/apis/*.spec.js"
+      "**.spec.js"
     ]
   },
   "dependencies": {

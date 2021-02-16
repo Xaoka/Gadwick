@@ -4,8 +4,7 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { Auth0Provider } from "@auth0/auth0-react";
-
-
+import { SnackbarProvider } from './components/snackbar/SnackbarContext';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -14,7 +13,9 @@ ReactDOM.render(
     clientId="eoun44L6fDIskjM3mfwTLsLrq21WvJZd"
     redirectUri={`${window.location.origin}/dashboard/overview`}
     >
-      <App />
+        <SnackbarProvider >
+          <App />
+      </SnackbarProvider>
     </Auth0Provider>
   </React.StrictMode>,
   document.getElementById('root')

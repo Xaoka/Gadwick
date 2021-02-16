@@ -12,6 +12,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { Status } from './Overview';
 import { ITestResult } from '../Features/Results';
 import SubmitResultsDialog from './SubmitResultsDialog';
+import Loading from '../../Loading';
 
 interface ISessionView
 {
@@ -154,7 +155,7 @@ export default function SessionView(props: ISessionView)
     {
         if (features.length === 0)
         {
-            return <p>Loading...</p>
+            return <Loading/>
         }
         if (featureIndex === features.length)
         {

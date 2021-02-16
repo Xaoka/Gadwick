@@ -19,6 +19,8 @@ import { Roles } from './AppDetails/UserRoles';
 import useSubscription from '../../../apis/subscription';
 import { SubscriptionTier } from '../Subscription/Subscription';
 import InfoIcon from '@material-ui/icons/Info';
+import Loading from '../../Loading';
+import { Skeleton } from '@material-ui/lab';
 
 export interface IConfiguredApplication
 {
@@ -111,13 +113,6 @@ export default function AppView()
         loadApplications();
     }
 
-    if (isLoading)
-    {
-        return <div>
-            Loading...
-        </div>
-    }
-
     function onAppSelected(app: IConfiguredApplication)
     {
         history.push(`${url}/${appNameToURL(app.name)}`)
@@ -161,15 +156,16 @@ export default function AppView()
                         </Tooltip>
                     </>}
                 </h2>
-                {configuredApplications.applications.map((app) =>
+                {isLoading && <Skeleton><InfoCard image={MediaType.Application} title={""} summary={""} key={""}/></Skeleton>}
+                {!isLoading && configuredApplications.applications.map((app) =>
                     <InfoCard image={MediaType.Application} title={app.name} summary={app.description} key={app.name} onClick={() => onAppSelected(app)}/>
                 )}
-                {canMakeApp && <Card style={{ width: 300, height: 260, display: "inline-block", margin: 10, boxShadow: "grey 3px 3px 11px -4px"}}>
+                {!isLoading && canMakeApp && <Card style={{ width: 300, height: 260, display: "inline-block", margin: 10, boxShadow: "grey 3px 3px 11px -4px"}}>
                     <IconButton style={{ width: "100%", height: "100%" }} onClick={() => setNewDialogOpen(true)}>
                         <AddIcon fontSize="large"/>
                     </IconButton>
                 </Card>}
-                {configuredApplications.shared.length>0 && <>
+                {!isLoading && configuredApplications.shared.length>0 && <>
                     <h2>Shared with me</h2>
                     {configuredApplications.shared.map((app) =>
                         <InfoCard image={MediaType.Application} title={app.name} summary={app.description} key={app.name} onClick={() => onAppSelected(app)}/>

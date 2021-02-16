@@ -2,7 +2,7 @@ import TutorialBox from './TutorialBox';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import CodeSnippet from './CodeSnippet';
-import Link from './Link';
+import Link from '../../Link';
 import ProCon from './ProCon';
 
 export default function CIBasics()

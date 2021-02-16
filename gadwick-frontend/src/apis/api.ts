@@ -16,6 +16,7 @@ export enum API
     ApplicationsForUser = "applications/user",
     ApplicationsVersions = "applications/versions",
     Users = "users",
+    UserApps = "users/apps/all",
     UsersByAuth = "users/auth",
     UserAPIKey = "users/key",
     Roles = "roles",

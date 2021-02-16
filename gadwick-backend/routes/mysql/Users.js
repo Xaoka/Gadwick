@@ -19,8 +19,16 @@ router.get('/:user_id', cors(corsOptions), async function(req, res, next) {
     res.send(user)
 });
 router.get('/', cors(corsOptions), async function(req, res, next) {
-    const user = (await awaitQuery(`SELECT name, id, email FROM Users`));
+    console.log(`Test log`)
+    const user = (await awaitQuery(`SELECT name, id, email FROM Users ORDER BY email`));
     res.send(user)
+});
+router.get('/apps/all', cors(corsOptions), async function(req, res, next) {
+    // console.log(`Getting apps...`)
+    const apps = await awaitQuery(`SELECT Users.name user_name, Applications.name app_name, description, email FROM Applications LEFT JOIN Users ON user_id = Users.id WHERE email IS NOT NULL ORDER BY email`);
+    // console.log(`Apps:`)
+    // console.dir(apps);
+    res.send(apps)
 });
 router.post('/', cors(corsOptions), async function(req, res, next) {
     insertInto(["name", "auth_id", "auth_service", "email"], [], "Users", req, res, next);

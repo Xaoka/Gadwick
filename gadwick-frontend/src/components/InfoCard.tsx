@@ -4,15 +4,28 @@ import NotAvailable, { NotAvailableReason } from './subviews/NotAvailable';
 import { SubscriptionTier } from './subviews/Subscription/Subscription';
 import TierIcon from './TierIcon';
 
-const useStyles = makeStyles({
+const mediumStyles = makeStyles({
 root: {
     maxWidth: 345,
+    width: 300, height: 260,
     display: "inline-block",
     margin: 10,
     boxShadow: "grey 3px 3px 11px -4px"
 },
 media: {
     height: 140,
+},
+});
+const smallStyles = makeStyles({
+root: {
+    maxWidth: 145,
+    width: 120, height: 100,
+    display: "inline-block",
+    margin: 5,
+    boxShadow: "grey 3px 3px 11px -4px"
+},
+media: {
+    height: 60,
 },
 });
 
@@ -23,6 +36,7 @@ interface IInfoCard
     title: string;
     summary: string;
     image: MediaType;
+    // size?: "sm"|"md";
     onClick?: () => void;
     actions?: ICardActions[];
     subscription?: SubscriptionTier;
@@ -84,8 +98,9 @@ export default function InfoCard(props: IInfoCard)
   }
 
     const maxDescLength = 80;
-    const classes = useStyles();
-    return  <Card className={classes.root} style={{ width: 300, height: 260 }}>
+    // const size = props.size || "md";
+    const classes = mediumStyles();
+    return  <Card className={classes.root}>
       <CardActionArea onClick={props.onClick}>
         <div style={{position: "relative"}}>
           {getImage()}

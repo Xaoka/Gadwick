@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Route, useHistory } from 'react-router-dom';
 import { useAuth0 } from "@auth0/auth0-react";
+import Loading from './Loading';
 
 export default function PrivateRoute(props: React.PropsWithChildren<{ path: string }>)
 {
@@ -13,6 +14,6 @@ export default function PrivateRoute(props: React.PropsWithChildren<{ path: stri
             history.push("/");
         }
     }, [isLoading, isAuthenticated])
-
-    return <Route path={props.path}>{isAuthenticated ? props.children : <div>Loading...</div>}</Route>
+    
+    return <Route path={props.path}>{isAuthenticated ? props.children : <Loading/>}</Route>
 }

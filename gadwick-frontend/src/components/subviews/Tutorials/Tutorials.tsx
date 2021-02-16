@@ -46,6 +46,11 @@ export default function Tutorials()
                         image = tutorial.mediaType || MediaType.Code;
                         link = () => openTutorial(tutorial.link!.url);
                     }
+                    if (tutorial.externalLink)
+                    {
+                        image = tutorial.mediaType || MediaType.Application;
+                        link = () => window.open(tutorial.externalLink!);
+                    }
                     return <InfoCard image={image} onClick={link} title={tutorial.title} summary={tutorial.summary} subscription={tutorial.subscription} key={tutorial.title}/>
                 })}
         </div>
@@ -66,9 +71,7 @@ export default function Tutorials()
                 <h2>Advanced</h2>
                 {createCards(tutorialsData.advanced)}
                 <h2>External Links</h2>
-                <div style={{ padding: 40 }}>
-                    <InfoCard image={MediaType.TAU} title="Automation University" summary="Visit the test automation university and take courses on automation." onClick={() => window.open("https://testautomationu.applitools.com/")}/>
-                </div>
+                {createCards(tutorialsData.external)}
             </PrivateRoute>
         </Switch>
     </SubView>

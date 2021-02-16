@@ -65,10 +65,14 @@ export default function QuickSetup()
             Create App
             {chevron}
         </button>} */}
-        {<Tooltip title={apps.length === 0 ? "No apps to import into" : ""}><button onClick={() => setImportDialogOpen(true)} disabled={apps.length === 0}>
-            Import Features
-            {chevron}
-        </button></Tooltip>}
+        {<Tooltip title={apps.length === 0 ? "No apps to import into" : ""}>
+            <span>
+                <button onClick={() => setImportDialogOpen(true)} disabled={apps.length === 0}>
+                    Import Features
+                    {chevron}
+                </button>
+            </span>
+        </Tooltip>}
         {/* <button onClick={() => setFeatureDialogOpen(true)}>
             Import Test Results
             {chevron}

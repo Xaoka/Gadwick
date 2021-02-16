@@ -4,6 +4,7 @@ import DevTools from './DevTools';
 import BasicWebTest from './BasicWebTest';
 import PostmanBasics from './PostmanBasics';
 import CIBasics from './CIBasics';
+import BasicAPITest from './BasicAPITest';
 import { MediaType } from '../../InfoCard';
 import { SubscriptionTier } from '../Subscription/Subscription';
 
@@ -18,6 +19,7 @@ export interface ITutorial
         url: string;
         component: React.FC;
     }
+    externalLink?: string;
 }
 
 const tutorialData: { [difficulty: string]: ITutorial[]} =
@@ -34,7 +36,7 @@ const tutorialData: { [difficulty: string]: ITutorial[]} =
             }
         },
         {
-            title: "Setting up Gadwick",
+            title: "Intro to Gadwick NPM",
             summary: "Learn how to integrate your test suites with Gadwick",
             link:
             {
@@ -69,6 +71,16 @@ const tutorialData: { [difficulty: string]: ITutorial[]} =
             {
                 url: "postman-basics",
                 component: PostmanBasics
+            }
+        },
+        {
+            title: "API Testing",
+            summary: "Learn the basics of automated API testing",
+            mediaType: MediaType.Code,
+            link:
+            {
+                url: "api-tests",
+                component: BasicAPITest
             }
         }
     ],
@@ -107,6 +119,25 @@ const tutorialData: { [difficulty: string]: ITutorial[]} =
             title: "SQL Injection",
             summary: "Discover how your databases might be vulnerable to SQL injection.",
             subscription: SubscriptionTier.Premium
+        }
+    ], 
+    external:
+    [
+        {
+            title: "Automation University",
+            summary: "Visit the test automation university and take courses on automation.",
+            mediaType: MediaType.TAU,
+            externalLink: "https://testautomationu.applitools.com/"
+        },
+        {
+            title: "Security testing with BurpSuite",
+            summary: "Learn how to use BurpSuite",
+            externalLink: "https://portswigger.net/support/using-burp-to-test-for-the-owasp-top-ten"
+        },
+        {
+            title: "Ministry of Testing",
+            summary: "Join thousands of other testers in a huge community",
+            externalLink: "https://www.ministryoftesting.com/dojo/catalog"
         }
     ]
 }

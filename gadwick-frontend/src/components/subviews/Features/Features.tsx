@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, IconButton, Tooltip } from '@material-ui/core';
+import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, IconButton, Tooltip, ButtonGroup, Button } from '@material-ui/core';
 import serverAPI, { API, HTTP } from '../../../apis/api';
 import { IData } from '../../ExpandableTableRow'
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
@@ -11,7 +11,11 @@ import FeaturePriority from './FeaturePriority';
 import { Roles } from '../Applications/AppDetails/UserRoles';
 import DeleteDialog from '../../DeleteDialog';
 import { ITag } from './FeatureConfig';
+import ListIcon from '@material-ui/icons/List';
+import CategoryIcon from '@material-ui/icons/Category';
 import Search from '../../Search';
+import Link from '../../Link';
+import FeatureImport from '../Overview/FeatureImport';
 
 export interface IFeatureRatings
 {
@@ -56,13 +60,17 @@ interface IFeatures
     permissionLevel: Roles;
 }
 
+enum ViewType { List, Tag }
+
 export default function Features(props: IFeatures)
 {
     const [dialogFeature, setDialogFeature] = useState<IFeature|null>(null);
     const [features, setFeatures] = useState<IFeature[]>([])
     const [featureToDelete, setFeatureToDelete] = useState<IFeature|null>(null);
     const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
+    const [importOpen, setImportOpen] = useState<boolean>(false);
     const [tags, setTags] = useState<ITag[]>([]);
+    const [viewType, setViewType] = useState<ViewType>(ViewType.List)
 
     useEffect(() => {
         serverAPI<ITag[]>(API.AppTags, HTTP.READ, props.appID).then((tags) =>
@@ -151,9 +159,17 @@ export default function Features(props: IFeatures)
         window.open(link);
     }
 
+    function onImportClosed()
+    {
+        updateList();
+        setImportOpen(false);
+    }
+
     function renderFeatureTable()
     {
         return <>
+            <p>You can create features for your application which can then be used in <Link label="test sessions" src="/dashboard/test_session" internal={true}/> and for generating test suite code.</p>
+            <p>If you've already got your features set up on another tool such as Asana or Trello, you can import them into Gadwick!</p>
             {/* <Search/> */}
             <TableContainer component={Paper}>
             <Table aria-label="simple table">
@@ -203,14 +219,32 @@ export default function Features(props: IFeatures)
         </>
     }
 
+    const selectedStyle: CSSProperties =
+    {
+        backgroundColor: "grey",
+        color: "white"
+    }
+
     return <>
         <span style={props.style}>
             <h3>
                 Features
+                {/* <ButtonGroup style={{ float: "right" }}>
+                    <Button style={viewType === ViewType.List ? selectedStyle : undefined} title="List View" onClick={() => setViewType(ViewType.List)}>
+                        <ListIcon/>
+                    </Button>
+                    <Button style={viewType === ViewType.Tag ? selectedStyle : undefined} title="Tag View" onClick={() => setViewType(ViewType.Tag)}>
+                        <CategoryIcon/>
+                    </Button>
+                </ButtonGroup> */}
             </h3>
             {renderFeatureTable()}
-            <button style={{ color: "green", float: "right" }} onClick={createNew}>New Feature</button>
+            <div style={{float: "right"}}>
+                <button className="success" onClick={createNew}>New Feature</button>
+                <button className="success" onClick={() => setImportOpen(true)}>Import Features</button>
+            </div>
         </span>
+        <FeatureImport open={importOpen} onClose={onImportClosed}/>
         <FeatureConfigDialog feature={dialogFeature} onClose={() =>
         {
             setDialogFeature(null)
