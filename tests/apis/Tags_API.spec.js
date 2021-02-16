@@ -18,25 +18,28 @@ describe(`Tags API`, function() {
         expect(appFeatures.length).toBe(1);
 
         // // D
+        let singleGetResponse;
         await axios.delete(`${endpoint}/tags/${feature.id}`);
         try
         {
-            await axios.get(`${endpoint}/tags/${feature.id}`);
+            singleGetResponse = await axios.get(`${endpoint}/tags/${feature.id}`);
         }
         catch (err)
         {
             expect(err.response.status).toBe(404, "Specific tag did not return 404 after being deleted.");
             return;
         }
+        expect(singleGetResponse.status).toBe(404, "Specific tag did not return 404 after being deleted.");
+        let collectionGetResponse;
         try
         {
-            await axios.get(`${endpoint}/tags/app/0`);
+            collectionGetResponse = await axios.get(`${endpoint}/tags/app/0`);
         }
         catch (err)
         {
             expect(err.response.status).toBe(404, "Tag collection for app did not return 404 after being emptied.");
             return;
         }
-        fail(`Endpoint did not return 404 for deleted tag`)
+        expect(collectionGetResponse.status).toBe(404, "Tag collection for app did not return 404 after being emptied.");
 	})
 })
