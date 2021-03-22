@@ -8,18 +8,20 @@ export default function Authenticated()
     const [buttonClass, setButtonClass] = useState("");
 
     useEffect(() => {
-        if (!window.opener)
-        {
-            setTitle("Invalid Redirect");
-            setMessage("Could not find the redirecting page, click below to close this window and return to Gadwick.");
-            setButtonClass("danger");
-        }
-        else if (window.location.search.includes("?code="))
+        // if (!window.opener)
+        // {
+        //     setTitle("Invalid Redirect");
+        //     setMessage("Could not find the redirecting page, click below to close this window and return to Gadwick.");
+        //     setButtonClass("danger");
+        // }
+        // else 
+        if (window.location.search.includes("?code="))
         {
             setTitle("Authentication Success");
             setMessage("Authentication has been successful, click below to close this window and return to Gadwick.");
             setButtonClass("success");
-            window.opener.postMessage({ code: window.location.search.replace("?code=", "")});
+            const code = window.location.search.replace("?", "").split("&").filter((param) => param.startsWith("code"))[0].split("=")[1];
+            window.opener.postMessage({ code });
         }
         else
         {

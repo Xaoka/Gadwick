@@ -10,9 +10,10 @@ import DeleteDialog from '../../DeleteDialog';
 import SettingsIcon from '@material-ui/icons/Settings';
 import StarIcon from '@material-ui/icons/Star';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
-import Results from './Results';
+import Results, { ITestResult } from './Results';
 import Info from '../../InfoIcon';
 import { useSnackbarMessages } from '../../snackbar/SnackbarContext';
+import { Alert } from '@material-ui/lab';
 
 interface IFeatureConfig
 {
@@ -44,16 +45,37 @@ export default function FeatureConfig(props: IFeatureConfig)
     const [name, setName] = useState(props.feature.name);
     const [description, setDescription] = useState(props.feature.description);
     const [tag, setTag] = useState(props.feature.tag);
+
+    const [results, setResults] = useState<ITestResult[]>([]);
+    const [passRate, setPassRate] = useState<number>(1);
     // const [lastSavedScore, setLastSavedScore] = useState(0);
 
     function calculateRisk()
     {
         return Math.ceil((riskRating + valueRating + efficiencyRating + volatilityRating) / 4);
     }
-
     useEffect(() => {
         serverAPI<ITag[]>(API.AppTags, HTTP.READ, props.feature.app_id).then(setTags);
+        serverAPI<ITestResult[]>(API.TestResults, HTTP.READ, props.feature.id).then(setResults);
     }, [])
+    
+    useEffect(() => {
+        if (results.length === 0) { return; }
+        let newPassRate = 0;
+        if (results.length === 1)
+        {
+            newPassRate = results[0].passed ? 0 : 1;
+        }
+        else
+        {
+            newPassRate = results.map((r) => (r.passed ? 1 : 0) as number).reduceRight((r1, r2) => r1 + r2) / results.length;
+        }
+        setPassRate(1 + (newPassRate * 4));
+    }, [results])
+
+    useEffect(() => {
+        setVolatilityRating( passRate * 1);
+    }, [passRate])
 
     useEffect(() => {
         setPriorityRating(calculateRisk());
@@ -126,6 +148,11 @@ export default function FeatureConfig(props: IFeatureConfig)
         snackbar?.sendSnackbarMessage("Feature Deleted", "success");
     }
 
+    function renderStaticRating(primaryTitle: string, primary_value: number, primaryTip: string, secondaryTitle: string, secondary_value: number, secondaryTip: string, resultTitle: string, resultTip: string)
+    {
+        return <CombinedRating primaryRating={{ title: primaryTitle, initialValue: primary_value, toolTip: primaryTip }} secondaryRating={{ title: secondaryTitle, toolTip: secondaryTip, initialValue: secondary_value }} resultRatingTitle={resultTitle} resultRatingToolTip={resultTip}/>
+    }
+
     return <>
         <span style={props.style}>
         <Tabs
@@ -137,7 +164,7 @@ export default function FeatureConfig(props: IFeatureConfig)
             aria-label="icon tabs example">
             <Tab icon={<SettingsIcon />} aria-label="Settings" label="Settings" />
             <Tab icon={<StarIcon />} aria-label="Rating" label="Rating" />
-            <Tab icon={<AssignmentTurnedInIcon />} aria-label="Results" label="Results" />
+            <Tab icon={<AssignmentTurnedInIcon />} aria-label="Test Results" label="Test Results" />
         </Tabs>
         <div hidden={tab !== 0}>
             <h3>Settings</h3>
@@ -170,7 +197,8 @@ export default function FeatureConfig(props: IFeatureConfig)
             {renderCombinedRating("Distinctness", "distinctness", "How much of this feature is not covered by other tests or features", "Fix Priority", "fix_priority", "How urgent is the feature to fix", "Value", "Calculated value of testing the feature", setValueRating)}
             {/* <h4>Automation<div className="info">Is it worth our time to automate</div></h4> */}
             {renderCombinedRating("Time Cost", "time_cost", "How much time will it take to write a test for this feature, higher is faster", "Ease", "ease", "How easy would it be to write a test for this feature", "Efficiency", "Efficiency of writing a test for this feature", setEfficiencyRating)}
-            {renderCombinedRating("Similar Problem Frequency", "similar_problem_frequency", "How often similar features have problems", "Problem Frequency", "problem_frequency", "How often this feature has problems", "Volatility", "Calculated volatility of the feature", setVolatilityRating)}
+            {renderStaticRating("Similar Problem Frequency", 1, "How often similar features have problems", "Problem Frequency", passRate, "How often this feature has problems", "Volatility", "Calculated volatility of the feature")}
+            {results.length === 0 && <Alert severity="warning">No test results found for this feature, problem frequency will not be accurate.</Alert>}
             <h4>Summary</h4>
 
             <span>This feature is {riskRating > 3 ? "high" : "low"} risk, </span>

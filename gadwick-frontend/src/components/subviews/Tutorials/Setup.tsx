@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import CodeSnippet from './CodeSnippet';
-import TutorialBox from './TutorialBox';
+import CodeSnippet from './Components/CodeSnippet';
+import TutorialBox from './Components/TutorialBox';
 
 export default function Setup(/*props: { app: IConfiguredApplication }*/)
 {

@@ -4,7 +4,7 @@ import BreadcrumbPath from '../../BreadcrumbPath';
 import InfoCard, { MediaType } from '../../InfoCard';
 import PrivateRoute from '../../PrivateRoute';
 import Setup from './Setup';
-import RobustTests from './RobustTests';
+import RobustTests from './Articles/RobustTests';
 import SubView from '../SubView';
 import { SubscriptionTier } from '../Subscription/Subscription';
 import tutorialsData, { ITutorial } from './tutorialsData';

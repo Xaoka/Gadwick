@@ -1,10 +1,13 @@
-import FirstTest from './FirstTest';
+import FirstTest from './Articles/FirstTest';
 import Setup from './Setup';
-import DevTools from './DevTools';
-import BasicWebTest from './BasicWebTest';
-import PostmanBasics from './PostmanBasics';
-import CIBasics from './CIBasics';
-import BasicAPITest from './BasicAPITest';
+import DevTools from './Articles/DevTools';
+import BasicWebTest from './Articles/BasicWebTest';
+import PostmanBasics from './Articles/PostmanBasics';
+import CIBasics from './Articles/CIBasics';
+import BasicAPITest from './Articles/BasicAPITest';
+import SQLInjection from './Articles/SQLInjection';
+import MITM from './Articles/MITM';
+import SeleniumScreenshots from './Articles/SeleniumScreenshots';
 import { MediaType } from '../../InfoCard';
 import { SubscriptionTier } from '../Subscription/Subscription';
 
@@ -87,6 +90,15 @@ const tutorialData: { [difficulty: string]: ITutorial[]} =
     foundational:
     [
         {
+            title: "Get screenshots of test failures",
+            summary: "Take screenshots of failing selenium tests",
+            link:
+            {
+                url: "selenium-screenshots",
+                component: SeleniumScreenshots
+            }
+        },
+        {
             title: "Writing robust tests",
             summary: "Learn how to write tests that don't break every time you change something"
         },
@@ -113,12 +125,23 @@ const tutorialData: { [difficulty: string]: ITutorial[]} =
         },
         {
             title: "MITM Attacks",
-            summary: "Learn about man in the middle attacks and how they can be used in testing."
+            summary: "Learn about man in the middle attacks and how they can be used in testing.",
+            // link:
+            // {
+            //     url: "mitm-attacks",
+            //     component: MITM
+            // },
+            subscription: SubscriptionTier.Standard
         },
         {
             title: "SQL Injection",
             summary: "Discover how your databases might be vulnerable to SQL injection.",
-            subscription: SubscriptionTier.Premium
+            subscription: SubscriptionTier.Standard,
+            // link:
+            // {
+            //     url: "sql-injection",
+            //     component: SQLInjection
+            // }
         }
     ], 
     external:

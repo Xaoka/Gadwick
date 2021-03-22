@@ -19,6 +19,8 @@ import getCurrentPermissionLevel from './permissionLevel';
 import { useAuth0 } from '@auth0/auth0-react';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import TagsManager from './TagsManager';
+import ReportIcon from '@material-ui/icons/Report';
+import IncidentReports from './IncidentReports';
 
 interface IAppDetails
 {
@@ -81,6 +83,7 @@ export default function AppDetails(props: IAppDetails)
             aria-label="icon tabs example">
             <Tab icon={<ListIcon />} aria-label="Features" label="Features" />
             <Tab icon={<EqualizerIcon />} aria-label="Analytics" label="Analytics" />
+            {/* <Tab icon={<ReportIcon/>} aria-label="Incident Reports" label="Incident Reports"/> */}
             <Tab icon={<LocalOfferIcon />} aria-label="Tags" label="Tags" />
             <Tab icon={<PeopleIcon />} aria-label="Users" label="Users" />
             <Tab icon={<SettingsIcon />} aria-label="Settings" label="Settings" />
@@ -106,6 +109,9 @@ export default function AppDetails(props: IAppDetails)
                 <NotAvailable reason={NotAvailableReason.ComingSoon}/>
             </WidgetContainer>
         </div>
+        {/* <div hidden={tab !== 2}>
+            <IncidentReports/>
+        </div> */}
         <div hidden={tab !== 2}>
             <TagsManager appID={props.app.id} permissionLevel={permissionLevel}/>
         </div>

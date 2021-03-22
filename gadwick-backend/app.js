@@ -21,6 +21,7 @@ var stripeRouter = require('./routes/mysql/Stripe');
 var authenticationRouter = require('./routes/mysql/Authentication');
 var tagsRouter = require('./routes/mysql/Tags');
 var asanaRouter = require('./routes/thirdparty/Asana');
+var jiraRouter = require('./routes/thirdparty/Jira');
 
 // var cors = require('cors')
 var app = express();
@@ -56,6 +57,7 @@ app.use('/stripe', stripeRouter);
 app.use('/auth', authenticationRouter);
 app.use('/tags', tagsRouter);
 app.use('/asana', asanaRouter);
+app.use('/jira', jiraRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

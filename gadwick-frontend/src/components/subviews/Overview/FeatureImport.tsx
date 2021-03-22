@@ -9,8 +9,9 @@ import { useAuth0 } from '@auth0/auth0-react';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import FeatureSelect, { IImport } from './FeatureSelect';
 import TrelloAPI from '../../../apis/thirdParty/trello';
+import JiraAPI from '../../../apis/thirdParty/jira';
 import AsanaAPI, { IAsanaAuthResponse } from '../../../apis/thirdParty/asana';
-import { ThirdPartyProviders } from '../../../apis/thirdParty/providers';
+import Provider, { ThirdPartyProviders } from '../../../apis/thirdParty/providers';
 import { IBoard } from '../../../apis/thirdParty/IThirdparty';
 
 export enum Stages { Provider, Connect, Authorizing, Import, Importing, Success }
@@ -75,8 +76,8 @@ export default function FeatureImport(props: IFeatureImport)
         if (window.location.hostname == "localhost")
         {
             // TODO: Figure this out, no longer works
-            setStage(Stages.Import);
-            return;
+            // setStage(Stages.Import);
+            // return;
         }
         if (provider == ThirdPartyProviders.Trello)
         {
@@ -109,7 +110,7 @@ export default function FeatureImport(props: IFeatureImport)
             {
                 window.addEventListener("message", (event: any) =>
                 {
-                    if (event.origin !== "https://gadwick.co.uk" &&  event.origin !== "https://d92df6qhdnhfk.cloudfront.net")
+                    if (event.origin !== "https://gadwick.co.uk" && event.origin !== "https://d92df6qhdnhfk.cloudfront.net" && event.origin !== "http://localhost")
                     {
                         console.error(`An unauthorised window attempted to trigger the authentication callback: ${event.origin}`);
                         return;
@@ -128,6 +129,11 @@ export default function FeatureImport(props: IFeatureImport)
                 }, { once: true });
             }
         }
+        else if (provider == ThirdPartyProviders.JIRA)
+        {
+            await JiraAPI.OAuth()
+            setStage(Stages.Import);
+        }
     }
 
     async function importFeatures()
@@ -141,24 +147,6 @@ export default function FeatureImport(props: IFeatureImport)
         {
             const boards = await TrelloAPI.getBoards();
             setBoards(boards);
-            // for (const board of boards)
-            // {
-            //     const cards = await TrelloAPI.getCards(board.id);
-            //     // console.log(cards.map((card: any) => card.name));
-            //     for (const card of cards)
-            //     {
-            //         features[board.name] = features[board.name] || [];
-            //         const feature = 
-            //         {
-            //             name: card.name,
-            //             board: board.name,
-            //             boardID: board.id,
-            //             ticketID: card.id,
-            //             link: card.link
-            //         }
-            //         features[board.name].push(feature);
-            //     }
-            // }
         }
         else if (provider == ThirdPartyProviders.Asana)
         {
@@ -167,23 +155,6 @@ export default function FeatureImport(props: IFeatureImport)
             console.dir(projects);
             
             setBoards(projects);
-            // for (const project of projects)
-            // {
-            //     const cards = await AsanaAPI.getCards(project.id);
-            //     for (const card of cards)
-            //     {
-            //         features[project.name] = features[project.name] || [];
-            //         const feature = 
-            //         {
-            //             name: card.name,
-            //             board: project.name,
-            //             boardID: project.id,
-            //             ticketID: card.id,
-            //             link: card.link
-            //         }
-            //         features[project.name].push(feature);
-            //     }
-            // }
         }
         else if (provider == ThirdPartyProviders.CucumberStudio)
         {

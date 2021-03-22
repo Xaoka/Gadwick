@@ -10,6 +10,15 @@ export default function Mail()
     }, [])
     return <SubView title="Mail">
         Your notifications about events related to your Gadwick account will be shown here.
+        <Notification title="1.0.2 Update" date="18/02/2021">
+            {/** Accessing a page while not logged in will redirect back there after login */}
+            <p>
+                You can now revoke the client secret for an app and a new one will automatically be generated.
+            </p>
+            <p>
+                Feature problem frequency is no longer set by the user and is instead determined by the test results.
+            </p>
+        </Notification>
         <Notification title="1.0.1 Update" date="05/02/2021">
             <p>
                 We've launched several new FREE tutorials for you to try out! Upgrade your toolkit with our tutorials on Cypress and Postman, learn the basics of API testing and learn how to take advantage of continuous integration techniques!

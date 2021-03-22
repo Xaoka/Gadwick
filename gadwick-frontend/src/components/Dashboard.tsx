@@ -9,6 +9,7 @@ import Subscription from './subviews/Subscription/Subscription';
 import Admin from './subviews/Admin/Admin';
 import QuickStart from './subviews/QuickStart/QuickStart';
 import Mail from './subviews/Mail/Mail';
+// import IncidentReports from './subviews/Applications/AppDetails/IncidentReports';
 
 import AppsIcon from '@material-ui/icons/Apps';
 import CreditCardIcon from '@material-ui/icons/CreditCard';
@@ -19,6 +20,7 @@ import BuildIcon from '@material-ui/icons/Build';
 import SettingsIcon from '@material-ui/icons/Settings';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import MailIcon from '@material-ui/icons/Mail';
+// import ReportIcon from '@material-ui/icons/Report';
 
 export default function Dashboard()
 {

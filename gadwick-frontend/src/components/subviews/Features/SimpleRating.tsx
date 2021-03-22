@@ -2,7 +2,7 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { Box, Tooltip } from '@material-ui/core';
 import Rating from '@material-ui/lab/Rating';
-import { CSSProperties } from 'material-ui/styles/withStyles';
+import { CSSProperties } from '@material-ui/core/styles/withStyles';
 
 export interface ISimpleRating
 {

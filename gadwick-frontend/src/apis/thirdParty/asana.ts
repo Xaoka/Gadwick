@@ -83,7 +83,8 @@ const AsanaAPI: IThirdPartyAPI =
         const description = `While testing ${session.app_name} v${session.app_version} this feature failed as:\n${reason.message}`;
         await Axios.post(` https://app.asana.com/api/1.0/tasks`, { ...config, data: { name: ticketName, projects: boardID }})
         throw new Error(`Not implemented`);
-    }
+    },
+    OAuth: async () => {}
 }
 
 export default AsanaAPI;

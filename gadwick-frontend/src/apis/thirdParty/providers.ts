@@ -1,6 +1,7 @@
 import TrelloAPI from './trello';
 import AsanaAPI from './asana';
 import IThirdPartyAPI from './IThirdparty';
+import JiraAPI from './jira';
 
 export enum ThirdPartyProviders
 {
@@ -20,6 +21,8 @@ function Provider(prov: ThirdPartyProviders): IThirdPartyAPI
             return TrelloAPI;
         case "Asana":
             return AsanaAPI;
+        case "JIRA":
+            return JiraAPI;
         default:
             throw new Error(`Third party provider ${prov} not currently supported.`)
     }

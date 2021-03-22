@@ -25,7 +25,8 @@ const TrelloAPI: IThirdPartyAPI =
         const description = `While testing ${session.app_name} v${session.app_version} this feature failed as:\n${reason.message}`;
 
         await Axios.post(`https://api.trello.com/1/cards?key=${trelloAPIKey}&token=${token}&name=${ticketName}&idList=${columnID}&desc="${description}"`);
-    }
+    },
+    OAuth: async () => {}
 }
 
 export default TrelloAPI;

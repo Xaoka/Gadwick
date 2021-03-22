@@ -31,4 +31,5 @@ export default interface IThirdPartyAPI
     getCards: (boardID: string) => Promise<ICard[]>;
     getColumns: (boardID: string) => Promise<IBoardColumn[]>
     createTicket: (boardID: string, columnID: string, session: ISession, feature: IFeature, reason: { message: string }) => Promise<void>;
+    OAuth: () => Promise<void>;
 }

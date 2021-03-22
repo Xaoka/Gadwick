@@ -59,5 +59,11 @@ router.get('/versions/:app_id', cors(corsOptions), async function(req, res, next
     const response = await awaitQuery(`SELECT version From Results GROUP BY version`)
     res.send(response);
 })
+router.post('/key/:app_id', cors(corsOptions), async function(req, res, next) {
+    const app_id = req.params.app_id;
+    req.body.client_secret = uuidv4();
+    update(req.body, ["client_secret"], "Applications", app_id)
+    res.send({ client_secret: req.body.client_secret });
+})
 
 module.exports = router;

@@ -30,7 +30,7 @@ export default function Results(props: IResults)
     if (results.length === 0)
     {
         return <>
-            <h3>Results</h3>
+            <h3>Test Results</h3>
             <NoData/>
         </>
     }

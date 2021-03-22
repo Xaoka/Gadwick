@@ -1,5 +1,5 @@
 {
     "STRIPE_KEY": "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",
     "STRIPE_ENDPOINT_SECRET": "whsec_xXPiVsqVTLRnVhoKQaZlBymEBvtA7AJN",
-    "ENV": "LIVE"
+    "ENV": "DEV"
 }

@@ -15,6 +15,7 @@ export enum API
     Applications = "applications",
     ApplicationsForUser = "applications/user",
     ApplicationsVersions = "applications/versions",
+    ApplicationsAPIKey = "applications/key",
     Users = "users",
     UserApps = "users/apps/all",
     UsersByAuth = "users/auth",
@@ -33,7 +34,8 @@ export enum API
     Authentication = "auth",
     Tags = "tags",
     AppTags = "tags/app",
-    Asana = "asana"
+    Asana = "asana",
+    Jira = "jira"
 }
 export enum HTTP { CREATE, READ, UPDATE, DELETE }
 
