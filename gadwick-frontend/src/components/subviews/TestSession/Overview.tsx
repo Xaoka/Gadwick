@@ -5,6 +5,7 @@ import serverAPI, { API, HTTP } from '../../../apis/api';
 import getUserID from '../../../apis/user';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 import TablePaginationActions from '@material-ui/core/TablePagination/TablePaginationActions';
+import { TestType } from './NewSession';
 
 interface IBaseSession
 {
@@ -18,6 +19,7 @@ interface IBaseSession
     user_name: string;
     features_passed: number;
     submitted: 0|1;
+    type: TestType;
 }
 
 export interface ISession extends IBaseSession
@@ -78,15 +80,20 @@ export default function Overview()
 
     function renderPassRate(session: ISession)
     {
-        const passed = session.features_passed;
-        // const failed = () - passed;
-        const featureCount = session.feature_ids ? JSON.parse(session.feature_ids as any).length : 0;
-        const rate = ((passed/featureCount) * 100);
+        let cellContent = "N/A";
         let className = "success";
-        if (rate < 60) { className = "danger"; }
-        else if (rate < 80) { className = "major-warning"; }
-        else if (rate < 100) { className = "warning"; }
-        return <TableCell className={className}>{rate.toFixed(1)}% ({passed}/{featureCount})</TableCell>
+        if (session.type !== TestType.Exploratory)
+        {
+            const passed = session.features_passed;
+            // const failed = () - passed;
+            const featureCount = session.feature_ids ? JSON.parse(session.feature_ids as any).length : 0;
+            const rate = (featureCount>0) ? ((passed/featureCount) * 100) : 0;
+            if (rate < 60) { className = "danger"; }
+            else if (rate < 80) { className = "major-warning"; }
+            else if (rate < 100) { className = "warning"; }
+            cellContent = `${rate.toFixed(1)}% (${passed}/${featureCount})`;
+        }
+        return <TableCell className={className}>{cellContent}</TableCell>
     }
 
     function goToSession(session: ISession)
@@ -112,6 +119,7 @@ export default function Overview()
                     <TableRow>
                         <TableCell>App</TableCell>
                         <TableCell>Version</TableCell>
+                        <TableCell>Type</TableCell>
                         <TableCell>Status</TableCell>
                         <TableCell>Features Passed</TableCell>
                         {/** TODO: Future feature */}
@@ -131,6 +139,7 @@ export default function Overview()
                     <TableRow id={session.id} hover onClick={() => goToSession(session)} key={session.id}>
                         <TableCell>{session.app_name}</TableCell>
                         <TableCell>{session.app_version}</TableCell>
+                        <TableCell>{session.type}</TableCell>
                         <TableCell className={getStatusStyling(session.status)}>{session.status}</TableCell>
                         {renderPassRate(session)}
                         {/* <TableCell>0/0</TableCell>

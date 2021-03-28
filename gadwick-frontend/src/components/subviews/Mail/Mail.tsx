@@ -1,3 +1,4 @@
+import { Alert } from '@material-ui/lab';
 import React, { useEffect } from 'react';
 import SubView from '../SubView';
 import Notification from './Notification';
@@ -9,14 +10,30 @@ export default function Mail()
         window.document.cookie = "mail=true"
     }, [])
     return <SubView title="Mail">
+        {!window.navigator.cookieEnabled && <Alert severity="warning">Your browser has cookies disabled for this site, please enable them or you will always see a "New Message" alert.</Alert>}
         Your notifications about events related to your Gadwick account will be shown here.
         <Notification title="1.0.2 Update" date="18/02/2021">
             {/** Accessing a page while not logged in will redirect back there after login */}
             <p>
-                You can now revoke the client secret for an app and a new one will automatically be generated.
+                You can now tailor your test sessions to match exactly what you need to cover, run a test that only covers all features with a specific tag with our new test options.
             </p>
             <p>
-                Feature problem frequency is no longer set by the user and is instead determined by the test results.
+                We've also added support for exploratory sessions, report as many issues as you like within one session and simply mark the session as finished when you're done.
+            </p>
+            <p>
+                You can now revoke the client secret for an app and a new one will automatically be generated, careful though as the old secret will be revoked and will disable any integrations still using it.
+            </p>
+            <p>
+                Fixed a bug where sessions with no features to test show up as "NaN%" complete as well as fixing test sessions endlessly showing "loading" if there were no features associated with it.
+            </p>
+            <p>
+                Fixed a bug where features with no version data would fail to load.
+            </p>
+            <p>
+                Fixed a bug where importing features from Trello would present an error when trying to authenticate.
+            </p>
+            <p>
+                Fixed an issue where app descriptions were not being rendered with the correct text.
             </p>
         </Notification>
         <Notification title="1.0.1 Update" date="05/02/2021">

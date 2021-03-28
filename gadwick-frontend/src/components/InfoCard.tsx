@@ -14,7 +14,7 @@ root: {
 },
 media: {
     height: 140,
-},
+}
 });
 const smallStyles = makeStyles({
 root: {
@@ -26,10 +26,10 @@ root: {
 },
 media: {
     height: 60,
-},
+}
 });
 
-export enum MediaType { Code, Application, Testing, AvailableSoon, TAU, Cypress, Postman }
+export enum MediaType { Code, Application, Testing, AvailableSoon, TAU, Cypress, Postman, Tagged, Searching }
 
 interface IInfoCard
 {
@@ -40,6 +40,7 @@ interface IInfoCard
     onClick?: () => void;
     actions?: ICardActions[];
     subscription?: SubscriptionTier;
+    disabled?: boolean;
 }
 
 export interface ICardActions
@@ -52,47 +53,59 @@ export default function InfoCard(props: IInfoCard)
 {
   function getImage()
   {
+    const styleClassname = classes.media;
     switch (props.image)
     {
       case MediaType.Code:
         return <CardMedia
-          className={classes.media}
+          className={styleClassname}
           image="/tutorials/tutorial_blur.png"
           title="Code"
         />
       case MediaType.Cypress:
         return <CardMedia
-          className={classes.media}
+          className={styleClassname}
           image="/tutorials/cypress.png"
           title="Cypress"
         />
       case MediaType.Application:
         return <Tooltip title={"Business vector created by freepik - www.freepik.com"}>
           <CardMedia
-            className={classes.media}
+            className={styleClassname}
             image="/tutorials/app_laptop.png"
           />
         </Tooltip>
       case MediaType.Testing:
         return <Tooltip title={"Business vector created by jcomp - www.freepik.com"}>
           <CardMedia
-            className={classes.media}
+            className={styleClassname}
             image="/tutorials/test_type.png"
           />
         </Tooltip>
+      case MediaType.Tagged:
+        return <CardMedia
+          className={styleClassname}
+          image="/tutorials/test_tagged.jpg"
+        />
       case MediaType.AvailableSoon:
         return <NotAvailable reason={NotAvailableReason.ComingSoon} size="sm"/>
       case MediaType.TAU:
         return <CardMedia
-          className={classes.media}
+          className={styleClassname}
           image="/tutorials/tau_logo.png"
           title="Test Automation University"
           />
       case MediaType.Postman:
         return <CardMedia
-          className={classes.media}
+          className={styleClassname}
           image="/tutorials/postman.png"
           title="Postman"
+        />
+      case MediaType.Searching:
+        return <CardMedia
+          className={styleClassname}
+          image="/tutorials/searching.jpg"
+          title="Searching"
         />
     }
   }

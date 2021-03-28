@@ -13,6 +13,8 @@ import { Status } from './Overview';
 import { ITestResult } from '../Features/Results';
 import SubmitResultsDialog from './SubmitResultsDialog';
 import Loading from '../../Loading';
+import { TestType } from './NewSession';
+import ExploratorySession from './SessionTypes/Exploratory'
 
 interface ISessionView
 {
@@ -35,11 +37,14 @@ export default function SessionView(props: ISessionView)
     const [submitDialogOpen, setSubmitDialogOpen] = useState<boolean>(false)
     const [reason, setReason] = useState<string>("");
 
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+
     useEffect(loadSession, [])
 
     function loadSession()
     {
         if (!match) { return; }
+        setIsLoading(true);
         serverAPI<ISessionResponse[]>(API.Sessions, HTTP.READ, match?.params.sessionID).then((s) =>
         {
             const feature_ids: string[] = JSON.parse(s[0].feature_ids);
@@ -56,11 +61,17 @@ export default function SessionView(props: ISessionView)
     }
 
     useEffect(() => {
+        if (!session?.feature_ids || session?.feature_ids.length == 0)
+        {
+            setIsLoading(false);
+            return;
+        }
         serverAPI<IFeature[]>(API.Features, HTTP.READ, `?ids=${session?.feature_ids.join(",")}`).then((features) =>
         {
             features.forEach((f) => f.steps = JSON.parse(f.steps as any));
             setFeatures(features)
             setFeatureIndex(0);
+            setIsLoading(false);
         });
     }, [session])
 
@@ -75,7 +86,7 @@ export default function SessionView(props: ISessionView)
                 const index = session!.feature_ids.indexOf(result.feature_id);
                 if (index >= 0)
                 {
-                    resultsPassed[index] = result.passed === "true";
+                    resultsPassed[index] = result.passed === "1";
                     trueFeatureIndex = Math.max(index + 1, trueFeatureIndex);
                 }
             }
@@ -108,7 +119,7 @@ export default function SessionView(props: ISessionView)
             Icon = CheckCircleIcon;
         }
 
-        return <ListItem button={false} style={{ padding: 15 }} className={className} key={featureIndex}>
+        return <ListItem button={false} style={{ padding: 15 }} className={className} key={index}>
             <span style={{width: "100%"}}>
                 {index===featureIndex && <ChevronRightIcon style={{verticalAlign: "bottom"}} fontSize="small"/>}
                 {step}
@@ -121,7 +132,7 @@ export default function SessionView(props: ISessionView)
     {
         if (featureIndex + 1 === features.length)
         {
-            serverAPI<ISession>(API.Sessions, HTTP.UPDATE, match?.params.sessionID, { status: Status.COMPLETE })
+            onComplete();
         }
         else if (featureIndex === 0)
         {
@@ -134,6 +145,16 @@ export default function SessionView(props: ISessionView)
         newResults[featureIndex] = passed;
         setFeatureIndex(featureIndex + 1);
         setResults(newResults);
+    }
+
+    function onComplete()
+    {
+        serverAPI<ISession>(API.Sessions, HTTP.UPDATE, match?.params.sessionID, { status: Status.COMPLETE })
+        if (session != null)
+        {
+            setSession({...session, status: Status.COMPLETE });
+        }
+        // TODO: Open report dialog
     }
 
     useEffect(() => 
@@ -155,7 +176,14 @@ export default function SessionView(props: ISessionView)
     {
         if (features.length === 0)
         {
-            return <Loading/>
+            if (isLoading)
+            {
+                return <Loading/>
+            }
+            else
+            {
+                return <p>No details found.</p>
+            }
         }
         if (featureIndex === features.length)
         {
@@ -198,22 +226,37 @@ export default function SessionView(props: ISessionView)
         return <p>Uh oh, we couldn't find that session.</p>
     }
 
+    function renderSession()
+    {
+        if (!session) { return null; }
+        if (session.type == TestType.Exploratory)
+        {
+            return <ExploratorySession session={session} onComplete={onComplete}/>
+        }
+        else
+        {
+            return <div style={{ display: "grid", gridTemplateColumns: "30% calc(70% - 35px)"}}>
+                <span>
+                    <h3>Features</h3>
+                    <div className="info">{session.type}</div>
+                    <List>
+                        {!isLoading && features.map((f,i) => checklistItem(f.name, i))}
+                        {!isLoading && features.length === 0 && <p>No features found for session.</p>}
+                        {isLoading && <Loading/>}
+                    </List>
+                </span>
+                <span style={{ marginLeft: 20 }}>
+                    <h3>Details</h3>
+                    {renderFeatureDetails()}
+                </span>
+            </div>
+        }
+    }
+
     return <>
         <p>This is your active session for {session?.app_name}.</p>
         {featureIndex<features.length && <button onClick={onAbandon}>Abandon</button>}
-        {features.length === 0 && <div>Loading</div>}
-        {features.length > 0 && <div style={{ display: "grid", gridTemplateColumns: "30% calc(70% - 35px)"}}>
-            <span>
-                <h3>Features</h3>
-                <List>
-                    {features.map((f,i) => checklistItem(f.name, i))}
-                </List>
-            </span>
-            <span style={{ marginLeft: 20 }}>
-                <h3>Details</h3>
-                {renderFeatureDetails()}
-            </span>
-        </div>}
+        {renderSession()}
         {session && <SubmitResultsDialog open={submitDialogOpen && linkedTicketsToSubmit.length > 0} onClose={onDialogClosed} features={linkedTicketsToSubmit} session={session}/>}
     </>
 }
