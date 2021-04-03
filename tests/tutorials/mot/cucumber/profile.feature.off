@@ -1,0 +1,15 @@
+Feature: Profile
+
+  We expect to be able to navigate the profile
+
+  Scenario: Settings
+    Given We have logged in as "test@yoello.com" with password "testpass9!" at "localhost:3000"
+    When I click on "Profile"
+    When I click on "My Settings"
+    Then Page title should be "Merchant Dashboard"
+
+  Scenario: Trading Times
+    Given We have logged in as "test@yoello.com" with password "testpass9!" at "localhost:3000"
+    When I click on "Profile"
+    When I click on "Trading times"
+    Then I should be able to set trading times

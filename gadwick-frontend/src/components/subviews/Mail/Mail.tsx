@@ -12,7 +12,8 @@ export default function Mail()
     return <SubView title="Mail">
         {!window.navigator.cookieEnabled && <Alert severity="warning">Your browser has cookies disabled for this site, please enable them or you will always see a "New Message" alert.</Alert>}
         Your notifications about events related to your Gadwick account will be shown here.
-        <Notification title="1.0.2 Update" date="18/02/2021">
+        {/* <Notification title="1.0.2 Update" date="18/02/2021"> */}
+        <Notification title="1.0.2 Update" date="03/04/2021">
             {/** Accessing a page while not logged in will redirect back there after login */}
             <p>
                 You can now tailor your test sessions to match exactly what you need to cover, run a test that only covers all features with a specific tag with our new test options.
