@@ -4,6 +4,7 @@ import deploymentConfig from '../config.json';
 export enum API
 {
     Features = "features",
+    BulkFeatures = "features/bulk", // TODO: Wrap this into features?
     AppFeatures = "features/app",
     PriorityFeatures = "features/priority",
     TestResults = "results",

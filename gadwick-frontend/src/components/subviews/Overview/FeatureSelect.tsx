@@ -15,6 +15,7 @@ import TablePaginationActions from '@material-ui/core/TablePagination/TablePagin
 import { IBoard } from '../../../apis/thirdParty/IThirdparty';
 import TrelloAPI from '../../../apis/thirdParty/trello';
 import { Skeleton } from '@material-ui/lab';
+import Chevron from '../../Chevron';
 
 /** TODO: Better name for this */
 export interface IImport
@@ -165,9 +166,6 @@ export default function FeatureSelect(props: IFeatureSelect)
         return skeletons;
     }
 
-    const chevron = <ChevronRightIcon style={{ right: 0, verticalAlign: "bottom" }} fontSize="large"/>;
-
-
     if (isImporting)
     {
         return <div>
@@ -180,8 +178,8 @@ export default function FeatureSelect(props: IFeatureSelect)
             <div>
                 We have added {Object.keys(featuresSelected).filter((f) => featuresSelected[f].selected).length} features from your {props.provider} account.
             </div>
-            <button onClick={() => history.push(`applications/${appNameToURL(appSelected?.name || "")}`)}>View App{chevron}</button>
-            <button onClick={() => props.setStage(Stages.Provider)}>Import More{chevron}</button>
+            <button onClick={() => history.push(`applications/${appNameToURL(appSelected?.name || "")}`)}>View App<Chevron/></button>
+            <button onClick={() => props.setStage(Stages.Provider)}>Import More<Chevron/></button>
         </>
     }
 

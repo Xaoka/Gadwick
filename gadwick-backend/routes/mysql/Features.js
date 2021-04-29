@@ -3,7 +3,7 @@ var cors = require('cors')
 var corsOptions = require('../cors')
 var router = express.Router();
 const { awaitQuery } = require('./commands/mysql');
-const { insertInto } = require('./commands/insert');
+const { insertInto, bulkInsertInto } = require('./commands/insert');
 const { deleteEntry } = require('./commands/delete');
 const { update } = require('./commands/update');
 var mysql = require('mysql');
@@ -45,10 +45,44 @@ router.get('/s/:client_secret', cors(corsOptions), async function(req, res, next
     res.send(response);
 });
 
-
 router.post('/', cors(corsOptions), function(req, res, next) {
     insertInto(["name", "description", "app_id"], ["thirdparty_id", "thirdparty_provider", "thirdparty_board", "thirdparty_link"], "Features", req, res, next);
 })
+
+router.post('/bulk', cors(corsOptions), function(req, res, next) {
+    let invalid = false;
+    let featureArray = req.body;
+    // try {
+    //     featureArray = JSON.parse(body);
+    // }
+    // catch (e) {
+    //     invalid = true;
+    // }
+
+    if (!Array.isArray(featureArray)) {
+        invalid = true;
+    }
+    else {
+        for (const featureObject of featureArray) {
+            if (typeof featureObject !== "object") {
+                invalid = true;
+                break;
+            }
+            else if (featureObject.app_id == null || featureObject.name == null) {
+                invalid = true;
+                break;
+            }
+        }
+    }
+    if (invalid) {
+        res.status(400).send("Request body must be an array of feature objects.");
+        return;
+    }
+    bulkInsertInto(["name", "app_id"], "Features", req, res, next);
+
+    //insertInto(["name", "description", "app_id"], ["thirdparty_id", "thirdparty_provider", "thirdparty_board", "thirdparty_link"], "Features", req, res, next);
+})
+
 router.post('/s/:app_secret', cors(corsOptions), async function(req, res, next) {
     if (!req.body.name)
     {

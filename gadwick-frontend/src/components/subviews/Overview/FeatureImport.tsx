@@ -13,8 +13,9 @@ import JiraAPI from '../../../apis/thirdParty/jira';
 import AsanaAPI, { IAsanaAuthResponse } from '../../../apis/thirdParty/asana';
 import Provider, { ThirdPartyProviders } from '../../../apis/thirdParty/providers';
 import { IBoard } from '../../../apis/thirdParty/IThirdparty';
+import BulkImport from './BulkImport';
 
-export enum Stages { Provider, Connect, Authorizing, Import, Importing, Success }
+export enum Stages { Provider, Connect, Authorizing, Import, BulkImport, Importing, Success }
 
 interface IFeatureImport
 {
@@ -49,6 +50,10 @@ export default function FeatureImport(props: IFeatureImport)
         else if (prov === ThirdPartyProviders.Asana && window.localStorage.asana_access_token)
         {
             setStage(Stages.Import);
+        }
+        else if (prov === ThirdPartyProviders.BulkImport)
+        {
+            setStage(Stages.BulkImport);
         }
         else
         {
@@ -199,6 +204,8 @@ export default function FeatureImport(props: IFeatureImport)
             <div style={{ padding: 25, paddingTop: 0 }}>
                 {stage == Stages.Provider ?
                     <>
+                        <p>If you have a list of features you would like to import, you may import them in bulk.</p>
+                        <button onClick={() => onSelectProvider(ThirdPartyProviders.BulkImport)}>Bulk Import{chevron}</button>
                         <p>Gadwick allows you to import features from other third party services, select which service you would like to connect:</p>
                         <button onClick={() => onSelectProvider(ThirdPartyProviders.Trello)}>Trello{chevron}</button>
                         <button onClick={() => onSelectProvider(ThirdPartyProviders.Asana)}>Asana{chevron}</button>
@@ -232,6 +239,7 @@ export default function FeatureImport(props: IFeatureImport)
                         <FeatureSelect importedBoards={boards} provider={provider} setStage={setStage}/>
                     </>
                 : null }
+                {stage == Stages.BulkImport && <BulkImport setStage={setStage}/>}
             </div>
 
         </Dialog>

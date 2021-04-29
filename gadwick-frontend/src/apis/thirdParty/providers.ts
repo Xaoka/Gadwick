@@ -10,6 +10,7 @@ export enum ThirdPartyProviders
     JIRA = "JIRA",
     GitLab = "GitLab",
     CucumberStudio = "Cucumber Studio",
+    BulkImport = "Bulk Import",
     None = "None"
 }
 
